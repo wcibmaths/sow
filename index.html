@@ -221,69 +221,55 @@
 <script>
 const TEACHERS={Ma1:'MKM',Ma2:'HPA',Ma3:'ADE',Ma4:'FTA'};
 const SETS=['Ma1','Ma2','Ma3','Ma4'];
-const BIN_ID='69fefa7e250b1311c325b597';
-// Keys encoded to avoid special character corruption
-const MASTER_KEY=atob('JDJhJDEwJDhCWUlpRUg0Z2RYRzBXcDIzbi9sbi5EQS5sRjlpNy5ybktQZGV4YXhnVlNtMkdlTHgzeGY2');
-const ACCESS_KEY=atob('JDJhJDEwJFUuM0RkeUFQbEpDWFFCLkRpYmloZ09NbmVNeFJQM29IT2RtdTZDako3TjhVdUVGR2hPWHRD');
-const API='https://api.jsonbin.io/v3/b/'+BIN_ID;
-
-let cache={};
-let saveTimer=null;
-let saving=false;
-
-// ── JSONBin sync ──────────────────────────────────────────────────
-async function loadFromBin(){
-  try{
-    const r=await fetch(API+'/latest',{headers:{'X-Master-Key':MASTER_KEY,'X-Access-Key':ACCESS_KEY}});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    cache=d.record.progress||{};
-    return true;
-  }catch(e){
-    console.warn('Load failed:',e);
-    // Fall back to localStorage
-    try{ cache=JSON.parse(localStorage.getItem('wcib_progress')||'{}'); }catch(x){ cache={}; }
-    return false;
-  }
-}
-
-async function saveToBin(){
-  if(saving) return;
-  saving=true;
-  showSync(true);
-  // Also save to localStorage as backup
-  try{ localStorage.setItem('wcib_progress',JSON.stringify(cache)); }catch(e){}
-  try{
-    const r=await fetch(API,{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY,'X-Access-Key':ACCESS_KEY},
-      body:JSON.stringify({progress:cache})
-    });
-    if(!r.ok) throw new Error('HTTP '+r.status);
-  }catch(e){
-    console.warn('Save failed:',e);
-  }
-  saving=false;
-  showSync(false);
-}
-
-function showSync(show){
-  document.getElementById('sync-ind').classList.toggle('show',show);
-}
+// ── Storage: localStorage with cross-tab sync ────────────────────
+const STORE_KEY = 'wcib_sow_progress';
 
 function getKey(yg,set,week,no,name){
-  return (yg+'_'+set+'_'+week+'_'+no+'_'+name).replace(/[\s\/\\]/g,'_');
+  return [yg,set,week,String(no),name].join('||').replace(/\s/g,'_');
+}
+
+function loadAll(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+
+function saveAll(data){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    // Broadcast to other tabs
+    localStorage.setItem('wcib_ping', Date.now().toString());
+  }catch(e){ console.warn('Save failed',e); }
 }
 
 function getStatus(yg,set,lesson){
-  return cache[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)]||'Not started';
+  const data = loadAll();
+  return data[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)] || 'Not started';
 }
 
 function setStatus(yg,set,lesson,val){
-  cache[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)]=val;
-  clearTimeout(saveTimer);
-  saveTimer=setTimeout(saveToBin,2000);
+  const data = loadAll();
+  data[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)] = val;
+  saveAll(data);
+  showSync(true);
+  setTimeout(()=>showSync(false), 800);
 }
+
+function showSync(show){
+  const el = document.getElementById('sync-ind');
+  if(el) el.classList.toggle('show', show);
+}
+
+// Listen for changes from other tabs
+window.addEventListener('storage', function(e){
+  if(e.key === 'wcib_ping'){
+    // Another tab saved — refresh HOD if visible
+    if(document.getElementById('view-hod').classList.contains('active')){
+      renderHOD('7'); updateStats();
+    }
+  }
+});
 
 // ── Navigation ────────────────────────────────────────────────────
 function showView(id,btn){
@@ -640,19 +626,11 @@ const Y7_SOW=[
 ];
 
 // ── Init ──────────────────────────────────────────────────────────
-window.onload=async()=>{
-  await loadFromBin();
+window.onload=function(){
   renderHOD('7');
   updateStats();
   renderAssessments();
   renderCalendar();
-  // Auto-refresh HOD every 60 seconds
-  setInterval(async()=>{
-    await loadFromBin();
-    if(document.getElementById('view-hod').classList.contains('active')){
-      renderHOD('7');updateStats();
-    }
-  },60000);
 };
 </script>
 </body>

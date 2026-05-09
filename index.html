@@ -6,244 +6,163 @@
 <title>WCIB Maths Department — Scheme of Work</title>
 <style>
   :root {
-    --navy: #1F4E79; --blue: #2E75B6; --light-blue: #BDD7EE;
-    --green: #70AD47; --light-green: #E2EFDA; --dark-green: #375623;
-    --amber: #FFD966; --dark-amber: #7F4F00; --light-amber: #FFF2CC;
-    --coral: #FCE4D6; --red: #C00000;
-    --gray: #F2F2F2; --mid-gray: #D6DCE4; --dark-gray: #595959;
-    --white: #ffffff;
-    --font: 'Segoe UI', Arial, sans-serif;
+    --navy:#1F4E79;--blue:#2E75B6;--light-blue:#BDD7EE;
+    --green:#70AD47;--light-green:#E2EFDA;--dark-green:#375623;
+    --amber:#FFD966;--dark-amber:#7F4F00;--light-amber:#FFF2CC;
+    --coral:#FCE4D6;--red:#C00000;
+    --gray:#F2F2F2;--mid-gray:#D6DCE4;--dark-gray:#595959;
+    --white:#ffffff;--font:'Segoe UI',Arial,sans-serif;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); background: #f0f4f8; color: #222; font-size: 14px; }
-
-  /* ── Header ── */
-  header {
-    background: var(--navy); color: white; padding: 0;
-    display: flex; align-items: stretch; position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .header-brand { padding: 12px 20px; display: flex; align-items: center; gap: 12px; border-right: 1px solid rgba(255,255,255,0.15); }
-  .header-brand .logo { width: 36px; height: 36px; background: var(--amber); border-radius: 6px;
-    display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; color: var(--navy); }
-  .header-brand h1 { font-size: 15px; font-weight: 600; line-height: 1.2; }
-  .header-brand p { font-size: 11px; opacity: 0.7; }
-  .header-nav { display: flex; align-items: center; gap: 4px; padding: 0 16px; flex: 1; }
-  .nav-btn { padding: 8px 16px; border: none; background: transparent; color: rgba(255,255,255,0.75);
-    cursor: pointer; font-size: 13px; font-family: var(--font); border-radius: 6px; transition: all 0.15s; }
-  .nav-btn:hover { background: rgba(255,255,255,0.1); color: white; }
-  .nav-btn.active { background: rgba(255,255,255,0.2); color: white; font-weight: 600; }
-  .header-right { padding: 0 16px; display: flex; align-items: center; gap: 8px; }
-  .school-badge { background: var(--amber); color: var(--navy); font-size: 11px; font-weight: 700;
-    padding: 4px 10px; border-radius: 12px; }
-
-  /* ── Views ── */
-  .view { display: none; padding: 20px; max-width: 1400px; margin: 0 auto; }
-  .view.active { display: block; }
-
-  /* ── Cards ── */
-  .card { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    padding: 20px; margin-bottom: 16px; }
-  .card-title { font-size: 13px; font-weight: 600; color: var(--dark-gray); text-transform: uppercase;
-    letter-spacing: 0.05em; margin-bottom: 12px; }
-
-  /* ── HOD Dashboard ── */
-  .hod-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 20px; }
-  .stat-card { background: white; border-radius: 10px; padding: 16px 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1); border-left: 4px solid var(--blue); }
-  .stat-card.green { border-color: var(--green); }
-  .stat-card.amber { border-color: #E9A800; }
-  .stat-card.red { border-color: var(--red); }
-  .stat-num { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1; }
-  .stat-label { font-size: 12px; color: var(--dark-gray); margin-top: 4px; }
-
-  /* Year group tabs */
-  .yg-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-  .yg-tab { padding: 6px 14px; border: 2px solid var(--mid-gray); background: white;
-    border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 500;
-    transition: all 0.15s; color: var(--dark-gray); }
-  .yg-tab:hover { border-color: var(--blue); color: var(--blue); }
-  .yg-tab.active { background: var(--blue); border-color: var(--blue); color: white; }
-  .yg-tab.coming-soon { opacity: 0.45; cursor: default; }
-
-  /* Progress table */
-  .progress-table { width: 100%; border-collapse: collapse; }
-  .progress-table th { background: var(--navy); color: white; padding: 8px 12px;
-    text-align: left; font-size: 12px; font-weight: 600; }
-  .progress-table td { padding: 7px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: middle; }
-  .progress-table tr:hover td { background: #f8faff; }
-  .progress-bar-wrap { background: #eee; border-radius: 4px; height: 8px; width: 120px; overflow: hidden; }
-  .progress-bar { height: 100%; background: var(--green); border-radius: 4px; transition: width 0.3s; }
-  .progress-bar.amber { background: #E9A800; }
-  .progress-bar.red { background: var(--red); }
-  .teacher-col { display: flex; align-items: center; gap: 8px; }
-  .teacher-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--light-blue);
-    color: var(--navy); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  .status-pill { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .pill-done { background: var(--light-green); color: var(--dark-green); }
-  .pill-progress { background: var(--light-amber); color: var(--dark-amber); }
-  .pill-not { background: var(--coral); color: var(--red); }
-  .pill-na { background: var(--mid-gray); color: var(--dark-gray); }
-
-  /* Assessment banner */
-  .assess-banner { background: var(--light-amber); border: 1px solid var(--amber);
-    border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; display: flex;
-    align-items: center; gap: 12px; }
-  .assess-banner .icon { font-size: 20px; }
-  .assess-banner strong { color: var(--dark-amber); }
-
-  /* ── Teacher View ── */
-  .teacher-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
-  .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
-  .ctrl-group label { font-size: 11px; font-weight: 600; color: var(--dark-gray); text-transform: uppercase; }
-  .ctrl-group select { padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 6px;
-    font-size: 13px; font-family: var(--font); background: white; cursor: pointer; min-width: 140px; }
-  .ctrl-group select:focus { outline: none; border-color: var(--blue); }
-
-  /* Term section */
-  .term-section { margin-bottom: 24px; }
-  .term-header { background: var(--navy); color: white; padding: 10px 16px;
-    border-radius: 8px 8px 0 0; font-weight: 600; font-size: 14px;
-    display: flex; align-items: center; justify-content: space-between; }
-  .term-progress { font-size: 12px; opacity: 0.8; }
-
-  /* Week block */
-  .week-block { border: 1px solid #e8e8e8; border-top: none; background: white; }
-  .week-header { padding: 8px 16px; background: #f8faff; border-bottom: 1px solid #e8e8e8;
-    display: flex; align-items: center; gap: 12px; }
-  .week-label { font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase;
-    min-width: 60px; }
-  .week-dates { font-size: 11px; color: var(--dark-gray); }
-  .week-alert { font-size: 11px; color: var(--red); font-weight: 600; margin-left: auto; }
-
-  /* Lesson row */
-  .lesson-row { display: grid; grid-template-columns: 32px 1fr auto auto; align-items: center;
-    gap: 12px; padding: 8px 16px; border-bottom: 1px solid #f5f5f5; transition: background 0.1s; }
-  .lesson-row:last-child { border-bottom: none; }
-  .lesson-row:hover { background: #fafcff; }
-  .lesson-row.assessment { background: var(--light-amber); }
-  .lesson-row.cse { background: var(--light-green); }
-  .lesson-row.flex-row { background: var(--gray); }
-  .lesson-num { font-size: 11px; font-weight: 700; color: var(--dark-gray); text-align: center; }
-  .lesson-name { font-size: 13px; }
-  .lesson-unit { font-size: 11px; color: var(--dark-gray); }
-  .lesson-name.assessment-name { font-weight: 700; color: var(--dark-amber); }
-  .lesson-type-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
-    white-space: nowrap; }
-  .badge-core { background: #EBF3FB; color: var(--blue); }
-  .badge-cse { background: var(--light-green); color: var(--dark-green); }
-  .badge-assessment { background: var(--amber); color: var(--dark-amber); }
-  .badge-flex { background: var(--mid-gray); color: var(--dark-gray); }
-
-  .status-select { padding: 4px 8px; border: 1.5px solid #ddd; border-radius: 5px;
-    font-size: 12px; font-family: var(--font); background: white; cursor: pointer;
-    min-width: 120px; transition: border-color 0.15s; }
-  .status-select:focus { outline: none; border-color: var(--blue); }
-  .status-select.done { background: var(--light-green); border-color: #70AD47; color: var(--dark-green); }
-  .status-select.in-progress { background: var(--light-amber); border-color: #E9A800; color: var(--dark-amber); }
-  .status-select.not-started { background: var(--coral); border-color: #E09080; color: var(--red); }
-  .status-select.na { background: var(--mid-gray); border-color: #aaa; color: var(--dark-gray); }
-
-  /* ── Assessment Schedule ── */
-  .assess-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-  .assess-card { border-radius: 8px; padding: 14px 16px; border-left: 5px solid var(--amber); background: white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .assess-card.interim { border-color: var(--red); }
-  .assess-card.eoy { border-color: var(--navy); }
-  .assess-card-term { font-size: 10px; font-weight: 700; text-transform: uppercase;
-    color: var(--dark-gray); margin-bottom: 6px; }
-  .assess-card-name { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .assess-card-date { font-size: 12px; color: var(--dark-gray); }
-  .assess-card-note { font-size: 11px; color: var(--red); font-weight: 600; margin-top: 4px; }
-
-  /* ── Calendar alerts ── */
-  .calendar-alert { background: #FFF5F5; border: 1px solid #FFC7C7; border-radius: 8px;
-    padding: 12px 16px; margin-bottom: 12px; }
-  .calendar-alert h4 { color: var(--red); font-size: 13px; margin-bottom: 6px; }
-  .calendar-alert p { font-size: 12px; color: #555; line-height: 1.5; }
-
-  /* ── Coming soon ── */
-  .coming-soon-card { background: white; border-radius: 10px; padding: 40px;
-    text-align: center; color: var(--dark-gray); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .coming-soon-card h3 { font-size: 18px; margin-bottom: 8px; color: var(--navy); }
-  .coming-soon-card p { font-size: 13px; max-width: 400px; margin: 0 auto; }
-
-  /* ── Scrollable table ── */
-  .table-scroll { overflow-x: auto; }
-
-  /* ── Utilities ── */
-  .flex { display: flex; }
-  .gap-8 { gap: 8px; }
-  .mt-8 { margin-top: 8px; }
-  .bold { font-weight: 600; }
-  .text-sm { font-size: 12px; }
-  .text-muted { color: var(--dark-gray); }
-
-  @media (max-width: 600px) {
-    .header-nav { display: none; }
-    .lesson-row { grid-template-columns: 24px 1fr; }
-    .lesson-row .status-select, .lesson-row .lesson-type-badge { display: none; }
-  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:#f0f4f8;color:#222;font-size:14px;}
+  header{background:var(--navy);color:white;padding:0;display:flex;align-items:stretch;
+    position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+  .header-brand{padding:12px 20px;display:flex;align-items:center;gap:12px;
+    border-right:1px solid rgba(255,255,255,0.15);}
+  .header-brand .logo{width:36px;height:36px;background:var(--amber);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:var(--navy);}
+  .header-brand h1{font-size:15px;font-weight:600;line-height:1.2;}
+  .header-brand p{font-size:11px;opacity:0.7;}
+  .header-nav{display:flex;align-items:center;gap:4px;padding:0 16px;flex:1;}
+  .nav-btn{padding:8px 16px;border:none;background:transparent;color:rgba(255,255,255,0.75);
+    cursor:pointer;font-size:13px;font-family:var(--font);border-radius:6px;transition:all 0.15s;}
+  .nav-btn:hover{background:rgba(255,255,255,0.1);color:white;}
+  .nav-btn.active{background:rgba(255,255,255,0.2);color:white;font-weight:600;}
+  .header-right{padding:0 16px;display:flex;align-items:center;gap:8px;}
+  .school-badge{background:var(--amber);color:var(--navy);font-size:11px;font-weight:700;
+    padding:4px 10px;border-radius:12px;}
+  .view{display:none;padding:20px;max-width:1400px;margin:0 auto;}
+  .view.active{display:block;}
+  .card{background:white;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.1);
+    padding:20px;margin-bottom:16px;}
+  .card-title{font-size:13px;font-weight:600;color:var(--dark-gray);text-transform:uppercase;
+    letter-spacing:0.05em;margin-bottom:12px;}
+  .hod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-bottom:20px;}
+  .stat-card{background:white;border-radius:10px;padding:16px 20px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.1);border-left:4px solid var(--blue);}
+  .stat-card.green{border-color:var(--green);}
+  .stat-card.amber{border-color:#E9A800;}
+  .stat-card.red{border-color:var(--red);}
+  .stat-num{font-size:32px;font-weight:700;color:var(--navy);line-height:1;}
+  .stat-label{font-size:12px;color:var(--dark-gray);margin-top:4px;}
+  .yg-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .yg-tab{padding:6px 14px;border:2px solid var(--mid-gray);background:white;
+    border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;
+    transition:all 0.15s;color:var(--dark-gray);}
+  .yg-tab:hover{border-color:var(--blue);color:var(--blue);}
+  .yg-tab.active{background:var(--blue);border-color:var(--blue);color:white;}
+  .yg-tab.coming-soon{opacity:0.45;cursor:default;}
+  .progress-table{width:100%;border-collapse:collapse;}
+  .progress-table th{background:var(--navy);color:white;padding:8px 12px;
+    text-align:left;font-size:12px;font-weight:600;}
+  .progress-table td{padding:7px 12px;border-bottom:1px solid #f0f0f0;font-size:13px;vertical-align:middle;}
+  .progress-table tr:hover td{background:#f8faff;}
+  .progress-bar-wrap{background:#eee;border-radius:4px;height:8px;width:120px;overflow:hidden;}
+  .progress-bar-inner{height:100%;background:var(--green);border-radius:4px;transition:width 0.3s;}
+  .progress-bar-inner.amber{background:#E9A800;}
+  .progress-bar-inner.red{background:var(--red);}
+  .teacher-col{display:flex;align-items:center;gap:8px;}
+  .teacher-avatar{width:28px;height:28px;border-radius:50%;background:var(--light-blue);
+    color:var(--navy);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .status-pill{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+  .pill-done{background:var(--light-green);color:var(--dark-green);}
+  .pill-progress{background:var(--light-amber);color:var(--dark-amber);}
+  .pill-not{background:var(--coral);color:var(--red);}
+  .assess-banner{background:var(--light-amber);border:1px solid var(--amber);
+    border-radius:8px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+  .teacher-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px;}
+  .ctrl-group{display:flex;flex-direction:column;gap:4px;}
+  .ctrl-group label{font-size:11px;font-weight:600;color:var(--dark-gray);text-transform:uppercase;}
+  .ctrl-group select{padding:8px 12px;border:1.5px solid #ddd;border-radius:6px;
+    font-size:13px;font-family:var(--font);background:white;cursor:pointer;min-width:140px;}
+  .term-section{margin-bottom:24px;}
+  .term-header{background:var(--navy);color:white;padding:10px 16px;
+    border-radius:8px 8px 0 0;font-weight:600;font-size:14px;
+    display:flex;align-items:center;justify-content:space-between;}
+  .week-block{border:1px solid #e8e8e8;border-top:none;background:white;}
+  .week-header{padding:8px 16px;background:#f8faff;border-bottom:1px solid #e8e8e8;
+    display:flex;align-items:center;gap:12px;}
+  .week-label{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;min-width:60px;}
+  .week-dates{font-size:11px;color:var(--dark-gray);}
+  .week-alert{font-size:11px;color:var(--red);font-weight:600;margin-left:auto;}
+  .lesson-row{display:grid;grid-template-columns:32px 1fr auto auto;align-items:center;
+    gap:12px;padding:8px 16px;border-bottom:1px solid #f5f5f5;transition:background 0.1s;}
+  .lesson-row:last-child{border-bottom:none;}
+  .lesson-row:hover{background:#fafcff;}
+  .lesson-row.assessment{background:var(--light-amber);}
+  .lesson-row.cse{background:var(--light-green);}
+  .lesson-row.flex-row{background:var(--gray);}
+  .lesson-num{font-size:11px;font-weight:700;color:var(--dark-gray);text-align:center;}
+  .lesson-name{font-size:13px;}
+  .lesson-unit{font-size:11px;color:var(--dark-gray);}
+  .lesson-name.assessment-name{font-weight:700;color:var(--dark-amber);}
+  .lesson-type-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;}
+  .badge-core{background:#EBF3FB;color:var(--blue);}
+  .badge-cse{background:var(--light-green);color:var(--dark-green);}
+  .badge-assessment{background:var(--amber);color:var(--dark-amber);}
+  .badge-flex{background:var(--mid-gray);color:var(--dark-gray);}
+  .status-select{padding:4px 8px;border:1.5px solid #ddd;border-radius:5px;
+    font-size:12px;font-family:var(--font);background:white;cursor:pointer;
+    min-width:120px;transition:all 0.15s;}
+  .status-select.done{background:var(--light-green);border-color:#70AD47;color:var(--dark-green);}
+  .status-select.in-progress{background:var(--light-amber);border-color:#E9A800;color:var(--dark-amber);}
+  .status-select.not-started{background:var(--coral);border-color:#E09080;color:var(--red);}
+  .status-select.na{background:var(--mid-gray);border-color:#aaa;color:var(--dark-gray);}
+  .assess-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+  .assess-card{border-radius:8px;padding:14px 16px;border-left:5px solid var(--amber);background:white;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+  .assess-card.interim{border-color:var(--red);}
+  .assess-card.eoy{border-color:var(--navy);}
+  .assess-card-name{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+  .assess-card-date{font-size:12px;color:var(--dark-gray);}
+  .assess-card-note{font-size:11px;color:var(--red);font-weight:600;margin-top:4px;}
+  .coming-soon-card{background:white;border-radius:10px;padding:40px;
+    text-align:center;color:var(--dark-gray);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+  .coming-soon-card h3{font-size:18px;margin-bottom:8px;color:var(--navy);}
+  .sync-indicator{position:fixed;bottom:16px;right:16px;background:var(--navy);color:white;
+    padding:8px 14px;border-radius:20px;font-size:12px;opacity:0;transition:opacity 0.3s;z-index:999;}
+  .sync-indicator.show{opacity:1;}
+  .table-scroll{overflow-x:auto;}
 </style>
 </head>
 <body>
-
+<div class="sync-indicator" id="sync-ind">💾 Saving...</div>
 <header>
   <div class="header-brand">
     <div class="logo">W</div>
-    <div>
-      <h1>WCIB Maths Department</h1>
-      <p>Scheme of Work 2026/27</p>
-    </div>
+    <div><h1>WCIB Maths Department</h1><p>Scheme of Work 2026/27</p></div>
   </div>
   <nav class="header-nav">
-    <button class="nav-btn active" onclick="showView('hod')">HOD Dashboard</button>
-    <button class="nav-btn" onclick="showView('teacher')">Teacher View</button>
-    <button class="nav-btn" onclick="showView('assessments')">Assessment Schedule</button>
-    <button class="nav-btn" onclick="showView('calendar')">School Calendar</button>
+    <button class="nav-btn active" onclick="showView('hod',this)">HOD Dashboard</button>
+    <button class="nav-btn" onclick="showView('teacher',this)">Teacher View</button>
+    <button class="nav-btn" onclick="showView('assessments',this)">Assessment Schedule</button>
+    <button class="nav-btn" onclick="showView('calendar',this)">School Calendar</button>
   </nav>
-  <div class="header-right">
-    <span class="school-badge">2026/27</span>
-  </div>
+  <div class="header-right"><span class="school-badge">2026/27</span></div>
 </header>
 
-<!-- ══════════════════════════════════════════════════════ HOD DASHBOARD -->
 <div id="view-hod" class="view active">
   <div class="hod-grid">
-    <div class="stat-card green">
-      <div class="stat-num" id="stat-done">—</div>
-      <div class="stat-label">Lessons marked Done (Y7)</div>
-    </div>
-    <div class="stat-card amber">
-      <div class="stat-num" id="stat-progress">—</div>
-      <div class="stat-label">Lessons In Progress (Y7)</div>
-    </div>
-    <div class="stat-card red">
-      <div class="stat-num" id="stat-behind">—</div>
-      <div class="stat-label">Classes behind assessment pace</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num">11</div>
-      <div class="stat-label">Assessments scheduled this year (Y7)</div>
-    </div>
+    <div class="stat-card green"><div class="stat-num" id="stat-done">—</div><div class="stat-label">Avg lessons Done (Y7)</div></div>
+    <div class="stat-card amber"><div class="stat-num" id="stat-progress">—</div><div class="stat-label">Avg lessons In Progress (Y7)</div></div>
+    <div class="stat-card red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Classes behind assessment pace</div></div>
+    <div class="stat-card"><div class="stat-num">11</div><div class="stat-label">Assessments scheduled this year (Y7)</div></div>
   </div>
-
   <div class="card">
     <div class="card-title">Year Group</div>
     <div class="yg-tabs">
       <button class="yg-tab active" onclick="selectYG(this,'7')">Year 7</button>
-      <button class="yg-tab coming-soon" title="Upload Y8 SoW to activate">Year 8</button>
-      <button class="yg-tab coming-soon" title="Upload Y9 SoW to activate">Year 9</button>
-      <button class="yg-tab coming-soon" title="Upload Y10 SoW to activate">Year 10</button>
-      <button class="yg-tab coming-soon" title="Upload Y11 SoW to activate">Year 11</button>
-      <button class="yg-tab coming-soon" title="Upload Y12 SoW to activate">Year 12</button>
-      <button class="yg-tab coming-soon" title="Upload Y13 SoW to activate">Year 13</button>
+      <button class="yg-tab coming-soon">Year 8</button>
+      <button class="yg-tab coming-soon">Year 9</button>
+      <button class="yg-tab coming-soon">Year 10</button>
+      <button class="yg-tab coming-soon">Year 11</button>
+      <button class="yg-tab coming-soon">Year 12</button>
+      <button class="yg-tab coming-soon">Year 13</button>
     </div>
     <div id="hod-content"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════ TEACHER VIEW -->
 <div id="view-teacher" class="view">
   <div class="teacher-controls">
     <div class="ctrl-group">
@@ -251,11 +170,6 @@
       <select id="sel-yg" onchange="renderTeacherView()">
         <option value="7">Year 7</option>
         <option disabled>Year 8 (coming soon)</option>
-        <option disabled>Year 9 (coming soon)</option>
-        <option disabled>Year 10 (coming soon)</option>
-        <option disabled>Year 11 (coming soon)</option>
-        <option disabled>Year 12 (coming soon)</option>
-        <option disabled>Year 13 (coming soon)</option>
       </select>
     </div>
     <div class="ctrl-group">
@@ -286,23 +200,17 @@
   <div id="teacher-content"></div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════ ASSESSMENTS -->
 <div id="view-assessments" class="view">
   <div class="card">
     <div class="card-title">Year 7 — Assessment Schedule 2026/27</div>
     <div class="assess-banner">
-      <span class="icon">📋</span>
-      <div>
-        <strong>Fixed dates — same for all sets.</strong>
-        All four classes sit assessments on the same week regardless of pace.
-        If a class hasn't finished all lessons, the teacher makes a professional judgement on coverage.
-      </div>
+      <span style="font-size:20px">📋</span>
+      <div><strong>Fixed dates — same for all sets.</strong> All four classes sit assessments on the same week regardless of pace.</div>
     </div>
-    <div class="assess-grid" id="assess-grid"></div>
+    <div id="assess-grid"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════ CALENDAR -->
 <div id="view-calendar" class="view">
   <div class="card">
     <div class="card-title">WCIB Academic Calendar 2026/27 — Key Dates for Maths</div>
@@ -311,659 +219,438 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════════════════════════════
+const TEACHERS={Ma1:'MKM',Ma2:'HPA',Ma3:'ADE',Ma4:'FTA'};
+const SETS=['Ma1','Ma2','Ma3','Ma4'];
+const BIN_ID='69fefa7e250b1311c325b597';
+const MASTER_KEY='$2a$10$U.3DdyAPlJCXQB.DibihgOMneMxRP3oHOdmu6CjJ7N8UuEFGhOXtC';
+const API='https://api.jsonbin.io/v3/b/'+BIN_ID;
 
-const TEACHERS = { Ma1:'MKM', Ma2:'HPA', Ma3:'ADE', Ma4:'FTA' };
-const SETS = ['Ma1','Ma2','Ma3','Ma4'];
+let cache={};
+let saveTimer=null;
+let saving=false;
 
-// School calendar key dates
-const CALENDAR_EVENTS = [
-  { type:'break', label:'Michaelmas Half Term', dates:'19–23 Oct 2026', term:'Michaelmas' },
-  { type:'holiday', label:'National Holiday', dates:'Tue 13 Oct 2026', term:'Michaelmas', note:'Reduced lessons M8B' },
-  { type:'holiday', label:'National Holidays', dates:'Mon 7 Dec + Thu 10 Dec 2026', term:'Michaelmas', note:'Reduced to ~2 lessons M15A' },
-  { type:'partial', label:'Term ends (12pm)', dates:'Wed 16 Dec 2026', term:'Michaelmas', note:'M16B partial week' },
-  { type:'inset', label:'INSET Day', dates:'Wed 6 Jan 2027', term:'Lent', note:'Teaching starts Thu 7 Jan' },
-  { type:'break', label:'Lent Half Term', dates:'15–19 Feb 2027', term:'Lent' },
-  { type:'adventure', label:'⚠️ Adventure Week (Y7–9)', dates:'22–26 Feb 2027', term:'Lent', note:'Full week lost — no Y7 teaching' },
-  { type:'holiday', label:'National Holidays', dates:'Thu 3 Jun + Fri 4 Jun 2027', term:'Summer', note:'Reduced lessons S7A' },
-  { type:'exams', label:'⚠️ Y7–9 Summer Exams', dates:'31 May–4 Jun 2027', term:'Summer', note:'No curriculum teaching S7A' },
-  { type:'partial', label:'Term ends (12pm)', dates:'Wed 30 Jun 2027', term:'Summer', note:'S11A partial week' },
-];
-
-// Y7 SoW — complete lesson data
-const Y7_SOW = [
-  // MICHAELMAS
-  // M1A — partial, baseline only
-  {week:'M1A',dates:'26–28 Aug',cycle:'A',unit:0,unitName:'Baseline',lessonNo:'',lessonName:'Baseline Assessment',type:'flex',term:'Michaelmas',alert:'Partial week (3 days) — Welcome Day Wed 26 Aug'},
-
-  // M2B
-  {week:'M2B',dates:'31 Aug–4 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.1',lessonName:'Averages and range',type:'core',term:'Michaelmas'},
-  {week:'M2B',dates:'31 Aug–4 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.2',lessonName:'More averages and range',type:'core',term:'Michaelmas'},
-  {week:'M2B',dates:'31 Aug–4 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.3',lessonName:'Two-way tables and bar charts',type:'core',term:'Michaelmas'},
-
-  // M3A
-  {week:'M3A',dates:'7–11 Sep',cycle:'A',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.4',lessonName:'More graphs and tables 1',type:'core',term:'Michaelmas'},
-  {week:'M3A',dates:'7–11 Sep',cycle:'A',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.5',lessonName:'More graphs and tables 2',type:'core',term:'Michaelmas'},
-  {week:'M3A',dates:'7–11 Sep',cycle:'A',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas'},
-
-  // M4B — assessment
-  {week:'M4B',dates:'14–18 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
-  {week:'M4B',dates:'14–18 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'★',lessonName:'Unit 1 Assessment',type:'assessment',term:'Michaelmas',assessDate:'14–18 Sep 2026'},
-
-  // M5A
-  {week:'M5A',dates:'21–25 Sep',cycle:'A',unit:2,unitName:'Number',lessonNo:'2.1',lessonName:'Rules of divisibility',type:'core',term:'Michaelmas'},
-  {week:'M5A',dates:'21–25 Sep',cycle:'A',unit:2,unitName:'Number',lessonNo:'2.2',lessonName:'Factors, multiples and primes',type:'core',term:'Michaelmas'},
-  {week:'M5A',dates:'21–25 Sep',cycle:'A',unit:2,unitName:'Number',lessonNo:'2.3',lessonName:'Positive and negative numbers',type:'core',term:'Michaelmas'},
-
-  // M6B
-  {week:'M6B',dates:'28 Sep–2 Oct',cycle:'B',unit:2,unitName:'Number',lessonNo:'2.4',lessonName:'Squares and square roots',type:'core',term:'Michaelmas'},
-  {week:'M6B',dates:'28 Sep–2 Oct',cycle:'B',unit:2,unitName:'Number',lessonNo:'2.5',lessonName:'More powers and roots',type:'core',term:'Michaelmas'},
-  {week:'M6B',dates:'28 Sep–2 Oct',cycle:'B',unit:2,unitName:'Number',lessonNo:'2.6',lessonName:'Calculations',type:'core',term:'Michaelmas'},
-
-  // M7A — last week before half term
-  {week:'M7A',dates:'5–9 Oct',cycle:'A',unit:2,unitName:'Number',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas',alert:'Last week before half term'},
-  {week:'M7A',dates:'5–9 Oct',cycle:'A',unit:2,unitName:'Number',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
-  {week:'M7A',dates:'5–9 Oct',cycle:'A',unit:2,unitName:'Number',lessonNo:'★',lessonName:'Unit 2 Assessment',type:'assessment',term:'Michaelmas',assessDate:'5–9 Oct 2026'},
-
-  // M8B — national holiday Tue 13 Oct
-  {week:'M8B',dates:'12–16 Oct',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.1',lessonName:'Simplifying algebraic expressions',type:'core',term:'Michaelmas',alert:'⚠️ Tue 13 Oct national holiday — reduced week'},
-  {week:'M8B',dates:'12–16 Oct',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.2',lessonName:'Writing algebraic expressions',type:'core',term:'Michaelmas'},
-  {week:'M8B',dates:'12–16 Oct',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.3',lessonName:'STEM: Using formulae',type:'core',term:'Michaelmas'},
-
-  // HALF TERM 19–23 Oct
-
-  // M9A — after half term
-  {week:'M9A',dates:'26–30 Oct',cycle:'A',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.4',lessonName:'Writing formulae',type:'core',term:'Michaelmas',alert:'After half term'},
-  {week:'M9A',dates:'26–30 Oct',cycle:'A',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.5',lessonName:'Brackets and formulae',type:'core',term:'Michaelmas'},
-  {week:'M9A',dates:'26–30 Oct',cycle:'A',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas'},
-
-  // M10B
-  {week:'M10B',dates:'2–6 Nov',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
-  {week:'M10B',dates:'2–6 Nov',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'★',lessonName:'Unit 3 Assessment',type:'assessment',term:'Michaelmas',assessDate:'2–6 Nov 2026'},
-  {week:'M10B',dates:'2–6 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'4.1',lessonName:'Working with fractions',type:'core',term:'Michaelmas'},
-
-  // M11A
-  {week:'M11A',dates:'9–13 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'4.2',lessonName:'Adding and subtracting fractions',type:'core',term:'Michaelmas'},
-  {week:'M11A',dates:'9–13 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'4.3',lessonName:'Fractions, decimals and percentages',type:'core',term:'Michaelmas'},
-  {week:'M11A',dates:'9–13 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'4.4',lessonName:'Multiplying by a fraction',type:'core',term:'Michaelmas'},
-
-  // M12B
-  {week:'M12B',dates:'16–20 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'4.5',lessonName:'Working with mixed numbers',type:'core',term:'Michaelmas'},
-  {week:'M12B',dates:'16–20 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas'},
-  {week:'M12B',dates:'16–20 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
-
-  // M13A — interim data drop
-  {week:'M13A',dates:'23–27 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'★',lessonName:'Unit 4 Assessment — INTERIM DATA DROP (Units 1–4)',type:'assessment',term:'Michaelmas',assessDate:'23–27 Nov 2026',interim:true},
-  {week:'M13A',dates:'23–27 Nov',cycle:'A',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
-  {week:'M13A',dates:'23–27 Nov',cycle:'A',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
-
-  // M14B, M15A, M16B — flex buffer
-  {week:'M14B',dates:'30 Nov–4 Dec',cycle:'B',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
-  {week:'M14B',dates:'30 Nov–4 Dec',cycle:'B',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
-  {week:'M14B',dates:'30 Nov–4 Dec',cycle:'B',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
-  {week:'M15A',dates:'7–11 Dec',cycle:'A',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas',alert:'⚠️ Mon 7 + Thu 10 Dec national holidays'},
-  {week:'M15A',dates:'7–11 Dec',cycle:'A',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
-  {week:'M16B',dates:'14–16 Dec',cycle:'B',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas',alert:'Partial week — term ends Wed 16 Dec'},
-
-  // LENT
-  // L1A — partial, INSET Wed
-  {week:'L1A',dates:'4–8 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'5.1',lessonName:'Working with angles',type:'core',term:'Lent',alert:'⚠️ INSET Wed 6 Jan — teaching starts Thu 7 Jan (~2 days)'},
-  {week:'L1A',dates:'4–8 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'5.2',lessonName:'Triangles',type:'core',term:'Lent'},
-
-  // L2B
-  {week:'L2B',dates:'11–15 Jan',cycle:'B',unit:5,unitName:'Angles & Shapes',lessonNo:'5.3',lessonName:'Quadrilaterals',type:'core',term:'Lent'},
-  {week:'L2B',dates:'11–15 Jan',cycle:'B',unit:5,unitName:'Angles & Shapes',lessonNo:'5.4',lessonName:'Construction',type:'core',term:'Lent'},
-  {week:'L2B',dates:'11–15 Jan',cycle:'B',unit:5,unitName:'Angles & Shapes',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent'},
-
-  // L3A — unit 5 ends
-  {week:'L3A',dates:'18–22 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
-  {week:'L3A',dates:'18–22 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'★',lessonName:'Unit 5 Assessment',type:'assessment',term:'Lent',assessDate:'18–22 Jan 2027'},
-  {week:'L3A',dates:'18–22 Jan',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.1',lessonName:'Place value and rounding',type:'core',term:'Lent'},
-
-  // L4B
-  {week:'L4B',dates:'25–29 Jan',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.2',lessonName:'Ordering decimals',type:'core',term:'Lent'},
-  {week:'L4B',dates:'25–29 Jan',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.3',lessonName:'Adding and subtracting decimals',type:'core',term:'Lent'},
-  {week:'L4B',dates:'25–29 Jan',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.4',lessonName:'Multiplying decimals',type:'core',term:'Lent'},
-
-  // L5A
-  {week:'L5A',dates:'1–5 Feb',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.5',lessonName:'Dividing decimals',type:'core',term:'Lent'},
-  {week:'L5A',dates:'1–5 Feb',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.6',lessonName:'Decimals, fractions and percentages',type:'core',term:'Lent'},
-  {week:'L5A',dates:'1–5 Feb',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.7',lessonName:'Calculating percentages',type:'core',term:'Lent'},
-
-  // L6B — last week before half term
-  {week:'L6B',dates:'8–12 Feb',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent',alert:'Last week before half term'},
-  {week:'L6B',dates:'8–12 Feb',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
-  {week:'L6B',dates:'8–12 Feb',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'★',lessonName:'Unit 6 Assessment',type:'assessment',term:'Lent',assessDate:'8–12 Feb 2027'},
-
-  // HALF TERM 15–19 Feb
-
-  // L7A — ADVENTURE WEEK — NO TEACHING Y7
-  {week:'L7A',dates:'22–26 Feb',cycle:'A',unit:0,unitName:'Adventure Week',lessonNo:'',lessonName:'Adventure Week — No Y7 teaching this week',type:'flex',term:'Lent',alert:'⚠️ ADVENTURE WEEK (Y7–9) — Full week lost'},
-
-  // L8B — Unit 7 starts
-  {week:'L8B',dates:'1–5 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.1',lessonName:'Writing ratios',type:'core',term:'Lent',alert:'After Adventure Week'},
-  {week:'L8B',dates:'1–5 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.2',lessonName:'Sharing in a given ratio',type:'core',term:'Lent'},
-  {week:'L8B',dates:'1–5 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.3',lessonName:'Proportion',type:'core',term:'Lent'},
-
-  // L9A
-  {week:'L9A',dates:'8–12 Mar',cycle:'A',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.4',lessonName:'Proportional reasoning',type:'core',term:'Lent'},
-  {week:'L9A',dates:'8–12 Mar',cycle:'A',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.5',lessonName:'Using the unitary method',type:'core',term:'Lent'},
-  {week:'L9A',dates:'8–12 Mar',cycle:'A',unit:7,unitName:'Ratio & Proportion',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent'},
-
-  // L10B — Unit 7 ends + interim, Unit 8 begins
-  {week:'L10B',dates:'15–19 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
-  {week:'L10B',dates:'15–19 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'★',lessonName:'Unit 7 Assessment — INTERIM DATA DROP (Units 5–7)',type:'assessment',term:'Lent',assessDate:'15–19 Mar 2027',interim:true},
-  {week:'L10B',dates:'15–19 Mar',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'8.1',lessonName:'STEM: Metric measures',type:'core',term:'Lent'},
-
-  // L11A
-  {week:'L11A',dates:'22–26 Mar',cycle:'A',unit:8,unitName:'Measures & Shapes',lessonNo:'8.2',lessonName:'Perimeter',type:'core',term:'Lent'},
-  {week:'L11A',dates:'22–26 Mar',cycle:'A',unit:8,unitName:'Measures & Shapes',lessonNo:'8.3',lessonName:'Area',type:'core',term:'Lent'},
-  {week:'L11A',dates:'22–26 Mar',cycle:'A',unit:8,unitName:'Measures & Shapes',lessonNo:'8.4',lessonName:'3D solids',type:'core',term:'Lent'},
-
-  // L12B — last week of Lent
-  {week:'L12B',dates:'29 Mar–2 Apr',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent',alert:'Last week of Lent — ends Fri 2 Apr'},
-  {week:'L12B',dates:'29 Mar–2 Apr',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
-  {week:'L12B',dates:'29 Mar–2 Apr',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'★',lessonName:'Unit 8 Assessment',type:'assessment',term:'Lent',assessDate:'29 Mar–2 Apr 2027'},
-
-  // SUMMER
-  // S1A
-  {week:'S1A',dates:'19–23 Apr',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.1',lessonName:'Sequences',type:'core',term:'Summer',alert:'First week of Summer term'},
-  {week:'S1A',dates:'19–23 Apr',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.2',lessonName:'The nth term',type:'core',term:'Summer'},
-  {week:'S1A',dates:'19–23 Apr',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.3',lessonName:'Pattern sequences',type:'core',term:'Summer'},
-
-  // S2B
-  {week:'S2B',dates:'26–30 Apr',cycle:'B',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.4',lessonName:'Coordinates and line segments',type:'core',term:'Summer'},
-  {week:'S2B',dates:'26–30 Apr',cycle:'B',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.5',lessonName:'Graphs',type:'core',term:'Summer'},
-  {week:'S2B',dates:'26–30 Apr',cycle:'B',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.6',lessonName:'Working with graphs',type:'core',term:'Summer'},
-
-  // S3A
-  {week:'S3A',dates:'3–7 May',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Summer',alert:'⚠️ Tue 4 May national holiday'},
-  {week:'S3A',dates:'3–7 May',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Summer'},
-  {week:'S3A',dates:'3–7 May',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'★',lessonName:'Unit 9 Assessment',type:'assessment',term:'Summer',assessDate:'3–7 May 2027'},
-
-  // S4B
-  {week:'S4B',dates:'10–14 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'10.1',lessonName:'Congruency and enlargements',type:'core',term:'Summer'},
-  {week:'S4B',dates:'10–14 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'10.2',lessonName:'Reflection',type:'core',term:'Summer'},
-  {week:'S4B',dates:'10–14 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'10.3',lessonName:'Rotation',type:'core',term:'Summer'},
-
-  // S5A
-  {week:'S5A',dates:'17–21 May',cycle:'A',unit:10,unitName:'Transformations',lessonNo:'10.4',lessonName:'Translations and combined transformations',type:'core',term:'Summer'},
-  {week:'S5A',dates:'17–21 May',cycle:'A',unit:10,unitName:'Transformations',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Summer'},
-  {week:'S5A',dates:'17–21 May',cycle:'A',unit:10,unitName:'Transformations',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Summer'},
-
-  // S6B
-  {week:'S6B',dates:'24–28 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'★',lessonName:'Unit 10 Assessment',type:'assessment',term:'Summer',assessDate:'24–28 May 2027'},
-  {week:'S6B',dates:'24–28 May',cycle:'B',unit:11,unitName:'Probability',lessonNo:'11.1',lessonName:'Comparing and calculating probabilities',type:'core',term:'Summer'},
-  {week:'S6B',dates:'24–28 May',cycle:'B',unit:11,unitName:'Probability',lessonNo:'11.2',lessonName:'More probability calculations',type:'core',term:'Summer'},
-
-  // S7A — Y7-9 Summer exams + holidays
-  {week:'S7A',dates:'31 May–4 Jun',cycle:'A',unit:11,unitName:'Probability',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Summer',alert:'⚠️ Y7–9 Summer Exams Mon–Wed + Thu/Fri national holidays'},
-  {week:'S7A',dates:'31 May–4 Jun',cycle:'A',unit:11,unitName:'Probability',lessonNo:'★',lessonName:'Unit 11 Assessment',type:'assessment',term:'Summer',assessDate:'31 May–4 Jun 2027'},
-
-  // S8B — revision
-  {week:'S8B',dates:'7–11 Jun',cycle:'B',unit:0,unitName:'Revision',lessonNo:'',lessonName:'Revision — Units 1 to 5',type:'flex',term:'Summer'},
-  {week:'S8B',dates:'7–11 Jun',cycle:'B',unit:0,unitName:'Revision',lessonNo:'',lessonName:'Revision — Units 6 to 11',type:'flex',term:'Summer'},
-  {week:'S8B',dates:'7–11 Jun',cycle:'B',unit:0,unitName:'Revision',lessonNo:'',lessonName:'Practice Paper',type:'flex',term:'Summer'},
-
-  // S9A — EoY exams
-  {week:'S9A',dates:'14–18 Jun',cycle:'A',unit:0,unitName:'EoY Exam',lessonNo:'',lessonName:'End of Year Examination — Paper 1',type:'assessment',term:'Summer',assessDate:'14–18 Jun 2027',eoy:true},
-  {week:'S9A',dates:'14–18 Jun',cycle:'A',unit:0,unitName:'EoY Exam',lessonNo:'',lessonName:'End of Year Examination — Paper 2',type:'assessment',term:'Summer',assessDate:'14–18 Jun 2027',eoy:true},
-  {week:'S9A',dates:'14–18 Jun',cycle:'A',unit:0,unitName:'EoY Exam',lessonNo:'',lessonName:'Return and Review',type:'flex',term:'Summer'},
-
-  // S10B, S11A — PBL
-  {week:'S10B',dates:'21–25 Jun',cycle:'B',unit:0,unitName:'PBL',lessonNo:'',lessonName:'PBL Activity',type:'flex',term:'Summer'},
-  {week:'S10B',dates:'21–25 Jun',cycle:'B',unit:0,unitName:'PBL',lessonNo:'',lessonName:'PBL Activity',type:'flex',term:'Summer'},
-  {week:'S11A',dates:'28–30 Jun',cycle:'A',unit:0,unitName:'PBL',lessonNo:'',lessonName:'PBL Activity',type:'flex',term:'Summer',alert:'Partial week — term ends Wed 30 Jun 12pm'},
-];
-
-const ASSESSMENTS_Y7 = [
-  {name:'Unit 1 Assessment',subtitle:'Analysing & Displaying Data',week:'M4B',dates:'14–18 Sep 2026',term:'Michaelmas',interim:false,eoy:false},
-  {name:'Unit 2 Assessment',subtitle:'Number',week:'M7A',dates:'5–9 Oct 2026',term:'Michaelmas',interim:false,eoy:false},
-  {name:'Unit 3 Assessment',subtitle:'Equations, Functions & Formulae',week:'M10B',dates:'2–6 Nov 2026',term:'Michaelmas',interim:false,eoy:false},
-  {name:'Unit 4 Assessment ★ INTERIM',subtitle:'Fractions — Data Drop covers Units 1–4',week:'M13A',dates:'23–27 Nov 2026',term:'Michaelmas',interim:true,eoy:false},
-  {name:'Unit 5 Assessment',subtitle:'Angles & Shapes',week:'L3A',dates:'18–22 Jan 2027',term:'Lent',interim:false,eoy:false},
-  {name:'Unit 6 Assessment',subtitle:'Decimals & Percentages',week:'L6B',dates:'8–12 Feb 2027',term:'Lent',interim:false,eoy:false},
-  {name:'Unit 7 Assessment ★ INTERIM',subtitle:'Ratio & Proportion — Data Drop covers Units 5–7',week:'L10B',dates:'15–19 Mar 2027',term:'Lent',interim:true,eoy:false},
-  {name:'Unit 8 Assessment',subtitle:'Measures & Shapes',week:'L12B',dates:'29 Mar–2 Apr 2027',term:'Lent',interim:false,eoy:false},
-  {name:'Unit 9 Assessment',subtitle:'Sequences & Graphs',week:'S3A',dates:'3–7 May 2027',term:'Summer',interim:false,eoy:false},
-  {name:'Unit 10 Assessment',subtitle:'Transformations',week:'S6B',dates:'24–28 May 2027',term:'Summer',interim:false,eoy:false},
-  {name:'Unit 11 Assessment',subtitle:'Probability',week:'S7A',dates:'31 May–4 Jun 2027',term:'Summer',interim:false,eoy:false},
-  {name:'End of Year Examination',subtitle:'Full year — Units 1–11 (2 papers)',week:'S9A',dates:'14–18 Jun 2027',term:'Summer',interim:false,eoy:true},
-];
-
-// ══════════════════════════════════════════════════════════════════
-// JSONBIN SYNC — Live shared database
-// ══════════════════════════════════════════════════════════════════
-
-const JSONBIN_ID = '69fefa7e250b1311c325b597';
-const JSONBIN_KEY = '$2a$10$U.3DdyAPlJCXQB.DibihgOMneMxRP3oHOdmu6CjJ7N8UuEFGhOXtC';
-const API_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
-
-// Local cache so UI is instant
-let progressCache = {};
-let saveTimer = null;
-
-async function loadProgress() {
-  try {
-    const res = await fetch(API_URL + '/latest', {
-      headers: { 'X-Master-Key': JSONBIN_KEY }
-    });
-    const data = await res.json();
-    progressCache = data.record.progress || {};
-    console.log('Progress loaded from JSONBin');
-  } catch(e) {
-    console.warn('Could not load from JSONBin, using local cache', e);
-    progressCache = {};
+// ── JSONBin sync ──────────────────────────────────────────────────
+async function loadFromBin(){
+  try{
+    const r=await fetch(API+'/latest',{headers:{'X-Master-Key':MASTER_KEY}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    cache=d.record.progress||{};
+    return true;
+  }catch(e){
+    console.warn('Load failed:',e);
+    // Fall back to localStorage
+    try{ cache=JSON.parse(localStorage.getItem('wcib_progress')||'{}'); }catch(x){ cache={}; }
+    return false;
   }
 }
 
-async function saveProgress() {
-  try {
-    await fetch(API_URL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': JSONBIN_KEY
-      },
-      body: JSON.stringify({ progress: progressCache })
+async function saveToBin(){
+  if(saving) return;
+  saving=true;
+  showSync(true);
+  // Also save to localStorage as backup
+  try{ localStorage.setItem('wcib_progress',JSON.stringify(cache)); }catch(e){}
+  try{
+    const r=await fetch(API,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
+      body:JSON.stringify({progress:cache})
     });
-  } catch(e) {
-    console.warn('Could not save to JSONBin', e);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+  }catch(e){
+    console.warn('Save failed:',e);
   }
+  saving=false;
+  showSync(false);
 }
 
-function getKey(yg, set, week, lessonNo, lessonName) {
-  return `${yg}_${set}_${week}_${lessonNo}_${lessonName}`.replace(/[\s/]/g,'_');
+function showSync(show){
+  document.getElementById('sync-ind').classList.toggle('show',show);
 }
 
-function getStatus(yg, set, lesson) {
-  const key = getKey(yg, set, lesson.week, lesson.lessonNo, lesson.lessonName);
-  return progressCache[key] || 'Not started';
+function getKey(yg,set,week,no,name){
+  return (yg+'_'+set+'_'+week+'_'+no+'_'+name).replace(/[\s\/\\]/g,'_');
 }
 
-function setStatus(yg, set, lesson, val) {
-  const key = getKey(yg, set, lesson.week, lesson.lessonNo, lesson.lessonName);
-  progressCache[key] = val;
-  // Debounce saves — wait 1.5s after last change before saving
+function getStatus(yg,set,lesson){
+  return cache[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)]||'Not started';
+}
+
+function setStatus(yg,set,lesson,val){
+  cache[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)]=val;
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveProgress, 1500);
-  updateStats();
+  saveTimer=setTimeout(saveToBin,2000);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════════════════════════════
-
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+// ── Navigation ────────────────────────────────────────────────────
+function showView(id,btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('view-'+id).classList.add('active');
-  event.target.classList.add('active');
-  if (id==='hod') renderHOD('7');
-  if (id==='teacher') renderTeacherView();
-  if (id==='assessments') renderAssessments();
-  if (id==='calendar') renderCalendar();
+  if(btn) btn.classList.add('active');
+  if(id==='hod') renderHOD('7');
+  if(id==='teacher') renderTeacherView();
+  if(id==='assessments') renderAssessments();
+  if(id==='calendar') renderCalendar();
 }
 
-// ══════════════════════════════════════════════════════════════════
-// HOD DASHBOARD
-// ══════════════════════════════════════════════════════════════════
-
-function selectYG(btn, yg) {
-  document.querySelectorAll('.yg-tab:not(.coming-soon)').forEach(t => t.classList.remove('active'));
+function selectYG(btn,yg){
+  document.querySelectorAll('.yg-tab:not(.coming-soon)').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   renderHOD(yg);
 }
 
-function renderHOD(yg) {
-  if (yg !== '7') {
-    document.getElementById('hod-content').innerHTML = `
-      <div class="coming-soon-card">
-        <h3>Year ${yg} — Coming Soon</h3>
-        <p>Upload the Year ${yg} SoW file and this dashboard will populate automatically.</p>
-      </div>`;
-    return;
-  }
-
-  const teachableTypes = ['core','cse','assessment'];
-  const teachable = Y7_SOW.filter(l => teachableTypes.includes(l.type));
-  const total = teachable.length;
-
-  let html = `<div class="table-scroll"><table class="progress-table">
-    <thead><tr>
-      <th>Teacher</th><th>Class</th>
-      <th>Done</th><th>In Progress</th><th>Not Started</th>
-      <th>Progress</th><th>Next Assessment</th>
-    </tr></thead><tbody>`;
-
-  let totalDone = 0, totalInProg = 0, behind = 0;
-
-  SETS.forEach(set => {
-    const teacher = TEACHERS[set] || '—';
-    let done=0, inprog=0, notstarted=0;
-    teachable.forEach(l => {
-      const s = getStatus('7', set, l);
-      if (s==='Done') done++;
-      else if (s==='In progress') inprog++;
-      else notstarted++;
+// ── HOD ───────────────────────────────────────────────────────────
+function renderHOD(yg){
+  const teachable=Y7_SOW.filter(l=>['core','cse','assessment'].includes(l.type));
+  const total=teachable.length;
+  let html=`<div class="table-scroll"><table class="progress-table">
+    <thead><tr><th>Teacher</th><th>Class</th><th>Done</th><th>In Progress</th><th>Not Started</th><th>Progress</th></tr></thead><tbody>`;
+  let td=0,tp=0,behind=0;
+  SETS.forEach(set=>{
+    let done=0,prog=0,ns=0;
+    teachable.forEach(l=>{
+      const s=getStatus('7',set,l);
+      if(s==='Done')done++;
+      else if(s==='In progress')prog++;
+      else ns++;
     });
-    totalDone += done;
-    totalInProg += inprog;
-    const pct = Math.round(done/total*100);
-    const barClass = pct >= 70 ? '' : pct >= 40 ? 'amber' : 'red';
-    if (pct < 40) behind++;
-
-    // Find next upcoming assessment
-    const nextAssess = ASSESSMENTS_Y7[Math.floor(done / (total/ASSESSMENTS_Y7.length))] || ASSESSMENTS_Y7[ASSESSMENTS_Y7.length-1];
-
-    html += `<tr>
-      <td><div class="teacher-col">
-        <div class="teacher-avatar">${teacher}</div>
-        <strong>${teacher}</strong>
-      </div></td>
+    td+=done;tp+=prog;
+    const pct=Math.round(done/total*100);
+    const bc=pct>=70?'':pct>=40?'amber':'red';
+    if(pct<40)behind++;
+    html+=`<tr>
+      <td><div class="teacher-col"><div class="teacher-avatar">${TEACHERS[set]}</div><strong>${TEACHERS[set]}</strong></div></td>
       <td>${set}</td>
       <td><span class="status-pill pill-done">${done}</span></td>
-      <td><span class="status-pill pill-progress">${inprog}</span></td>
-      <td><span class="status-pill pill-not">${notstarted}</span></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div class="progress-bar-wrap"><div class="progress-bar ${barClass}" style="width:${pct}%"></div></div>
-          <span style="font-size:11px;color:var(--dark-gray)">${pct}%</span>
-        </div>
-      </td>
-      <td style="font-size:12px;color:var(--dark-amber);">${nextAssess ? nextAssess.dates : '—'}</td>
-    </tr>`;
+      <td><span class="status-pill pill-progress">${prog}</span></td>
+      <td><span class="status-pill pill-not">${ns}</span></td>
+      <td><div style="display:flex;align-items:center;gap:8px;">
+        <div class="progress-bar-wrap"><div class="progress-bar-inner ${bc}" style="width:${pct}%"></div></div>
+        <span style="font-size:11px;color:var(--dark-gray)">${pct}%</span>
+      </div></td></tr>`;
   });
-
-  html += `</tbody></table></div>`;
-  document.getElementById('hod-content').innerHTML = html;
-
-  document.getElementById('stat-done').textContent = Math.round(totalDone/SETS.length);
-  document.getElementById('stat-progress').textContent = Math.round(totalInProg/SETS.length);
-  document.getElementById('stat-behind').textContent = behind;
+  html+=`</tbody></table></div>`;
+  document.getElementById('hod-content').innerHTML=html;
+  document.getElementById('stat-done').textContent=Math.round(td/SETS.length);
+  document.getElementById('stat-progress').textContent=Math.round(tp/SETS.length);
+  document.getElementById('stat-behind').textContent=behind;
 }
 
-function updateStats() {
-  const yg = '7';
-  const teachable = Y7_SOW.filter(l => ['core','cse','assessment'].includes(l.type));
-  let done=0, prog=0;
-  SETS.forEach(set => {
-    teachable.forEach(l => {
-      const s = getStatus(yg, set, l);
-      if (s==='Done') done++;
-      else if (s==='In progress') prog++;
-    });
-  });
-  document.getElementById('stat-done').textContent = Math.round(done/SETS.length);
-  document.getElementById('stat-progress').textContent = Math.round(prog/SETS.length);
+function updateStats(){
+  const teachable=Y7_SOW.filter(l=>['core','cse','assessment'].includes(l.type));
+  let td=0,tp=0;
+  SETS.forEach(set=>teachable.forEach(l=>{
+    const s=getStatus('7',set,l);
+    if(s==='Done')td++;else if(s==='In progress')tp++;
+  }));
+  document.getElementById('stat-done').textContent=Math.round(td/SETS.length);
+  document.getElementById('stat-progress').textContent=Math.round(tp/SETS.length);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// TEACHER VIEW
-// ══════════════════════════════════════════════════════════════════
+// ── Teacher View ──────────────────────────────────────────────────
+function renderTeacherView(){
+  const yg=document.getElementById('sel-yg').value;
+  const set=document.getElementById('sel-set').value;
+  const tf=document.getElementById('sel-term').value;
+  const teacher=TEACHERS[set]||'—';
+  const sow=tf==='all'?Y7_SOW:Y7_SOW.filter(l=>l.term===tf);
+  const teachable=sow.filter(l=>['core','cse','assessment'].includes(l.type));
+  const done=teachable.filter(l=>getStatus(yg,set,l)==='Done').length;
+  const pct=teachable.length?Math.round(done/teachable.length*100):0;
 
-function renderTeacherView() {
-  const yg = document.getElementById('sel-yg').value;
-  const set = document.getElementById('sel-set').value;
-  const termFilter = document.getElementById('sel-term').value;
-  const teacher = TEACHERS[set] || '—';
+  const byWeek={};
+  sow.forEach(l=>{if(!byWeek[l.week])byWeek[l.week]=[];byWeek[l.week].push(l);});
+  const weekOrder=[...new Set(sow.map(l=>l.week))];
 
-  if (yg !== '7') {
-    document.getElementById('teacher-content').innerHTML = `
-      <div class="coming-soon-card">
-        <h3>Year ${yg} SoW coming soon</h3>
-        <p>Upload the Year ${yg} SoW to activate this view.</p>
-      </div>`;
-    return;
-  }
-
-  const sow = termFilter==='all' ? Y7_SOW : Y7_SOW.filter(l => l.term===termFilter);
-
-  // Group by week
-  const byWeek = {};
-  const weekOrder = [];
-  sow.forEach(l => {
-    if (!byWeek[l.week]) { byWeek[l.week] = []; weekOrder.push(l.week); }
-    byWeek[l.week].push(l);
-  });
-
-  // Count done for header
-  const teachable = sow.filter(l => ['core','cse','assessment'].includes(l.type));
-  const done = teachable.filter(l => getStatus('7',set,l)==='Done').length;
-  const pct = teachable.length ? Math.round(done/teachable.length*100) : 0;
-
-  let html = `<div class="card" style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  let html=`<div class="card" style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <div>
-      <div style="font-size:16px;font-weight:700;color:var(--navy);">${teacher} — ${set} &nbsp;·&nbsp; Year ${yg}</div>
-      <div class="done-label" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">${done} of ${teachable.length} lessons completed (${pct}%)</div>
+      <div style="font-size:16px;font-weight:700;color:var(--navy);">${teacher} — ${set} · Year ${yg}</div>
+      <div id="tv-done-label" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">${done} of ${teachable.length} lessons completed (${pct}%)</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <div class="progress-bar-wrap" style="width:200px;height:12px;">
-        <div class="progress-bar" style="width:${pct}%"></div>
-      </div>
-      <span class="pct-label" style="font-weight:700;color:var(--navy)">${pct}%</span>
+      <div class="progress-bar-wrap" style="width:200px;height:12px;"><div id="tv-bar" class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <span id="tv-pct" style="font-weight:700;color:var(--navy)">${pct}%</span>
     </div>
   </div>`;
 
-  const terms = [...new Set(sow.map(l=>l.term))];
-  terms.forEach(term => {
-    const termWeeks = [...new Set(sow.filter(l=>l.term===term).map(l=>l.week))];
-    const termTeachable = sow.filter(l=>l.term===term && ['core','cse','assessment'].includes(l.type));
-    const termDone = termTeachable.filter(l=>getStatus('7',set,l)==='Done').length;
-    const termPct = termTeachable.length ? Math.round(termDone/termTeachable.length*100) : 0;
-
-    html += `<div class="term-section">
-      <div class="term-header">
-        <span>${term} Term</span>
-        <span class="term-progress">${termDone}/${termTeachable.length} lessons done (${termPct}%)</span>
+  const terms=[...new Set(sow.map(l=>l.term))];
+  terms.forEach(term=>{
+    const tw=[...new Set(sow.filter(l=>l.term===term).map(l=>l.week))];
+    const tt=sow.filter(l=>l.term===term&&['core','cse','assessment'].includes(l.type));
+    const td2=tt.filter(l=>getStatus(yg,set,l)==='Done').length;
+    const tp2=tt.length?Math.round(td2/tt.length*100):0;
+    html+=`<div class="term-section"><div class="term-header"><span>${term} Term</span><span style="font-size:12px;opacity:0.8">${td2}/${tt.length} lessons done (${tp2}%)</span></div>`;
+    tw.forEach(week=>{
+      const lessons=byWeek[week]||[];
+      if(!lessons.length)return;
+      const wk=lessons[0];
+      const alertMsg=lessons.find(l=>l.alert);
+      html+=`<div class="week-block"><div class="week-header">
+        <span class="week-label">Week ${week}</span>
+        <span class="week-dates">${wk.dates} · Cycle ${wk.cycle}</span>
+        ${alertMsg?`<span class="week-alert">${alertMsg.alert}</span>`:''}
       </div>`;
-
-    termWeeks.forEach(week => {
-      const lessons = byWeek[week] || [];
-      if (!lessons.length) return;
-      const wk = lessons[0];
-      const alert = lessons.find(l=>l.alert);
-
-      html += `<div class="week-block">
-        <div class="week-header">
-          <span class="week-label">Week ${week}</span>
-          <span class="week-dates">${wk.dates} &nbsp;·&nbsp; Cycle ${wk.cycle}</span>
-          ${alert ? `<span class="week-alert">${alert.alert}</span>` : ''}
-        </div>`;
-
-      lessons.forEach((lesson, idx) => {
-        const isAssess = lesson.type==='assessment';
-        const isCse = lesson.type==='cse';
-        const isFlex = lesson.type==='flex';
-        const rowClass = isAssess?'assessment':isCse?'cse':isFlex?'flex-row':'';
-        const badgeClass = isAssess?'badge-assessment':isCse?'badge-cse':isFlex?'badge-flex':'badge-core';
-        const badgeText = isAssess?'ASSESSMENT':isCse?'CSE':isFlex?'FLEX':'CORE';
-        const nameClass = isAssess?'assessment-name':'';
-        const status = isFlex ? 'na' : getStatus('7',set,lesson);
-        const selClass = status==='Done'?'done':status==='In progress'?'in-progress':status==='N/A'?'na':'not-started';
-        const uid = `${week}_${idx}`;
-
-        html += `<div class="lesson-row ${rowClass}" id="row_${uid}">
+      lessons.forEach((lesson,idx)=>{
+        const isA=lesson.type==='assessment';
+        const isC=lesson.type==='cse';
+        const isF=lesson.type==='flex';
+        const rc=isA?'assessment':isC?'cse':isF?'flex-row':'';
+        const bc=isA?'badge-assessment':isC?'badge-cse':isF?'badge-flex':'badge-core';
+        const bt=isA?'ASSESSMENT':isC?'CSE':isF?'FLEX':'CORE';
+        const status=isF?'N/A':getStatus(yg,set,lesson);
+        const sc=status==='Done'?'done':status==='In progress'?'in-progress':status==='N/A'?'na':'not-started';
+        const uid=`${week}_${idx}`.replace(/[^a-zA-Z0-9_]/g,'_');
+        html+=`<div class="lesson-row ${rc}" id="row_${uid}">
           <div class="lesson-num">${lesson.lessonNo||'—'}</div>
-          <div>
-            <div class="lesson-name ${nameClass}">${lesson.lessonName}</div>
-            <div class="lesson-unit">${lesson.unitName}</div>
-          </div>
-          <span class="lesson-type-badge ${badgeClass}">${badgeText}</span>
-          ${isFlex ? '<span class="status-pill pill-na" style="min-width:120px;text-align:center">N/A</span>' :
-            `<select class="status-select ${selClass}" onchange="updateStatus('7','${set}',${JSON.stringify(lesson).replace(/'/g,"&#39;")},this.value,'${uid}')">
-              <option ${status==='Not started'?'selected':''}>Not started</option>
-              <option ${status==='In progress'?'selected':''}>In progress</option>
-              <option ${status==='Done'?'selected':''}>Done</option>
-              <option ${status==='N/A'?'selected':''}>N/A</option>
-            </select>`}
+          <div><div class="lesson-name${isA?' assessment-name':''}">${lesson.lessonName}</div>
+          <div class="lesson-unit">${lesson.unitName}</div></div>
+          <span class="lesson-type-badge ${bc}">${bt}</span>
+          ${isF?`<span style="background:var(--mid-gray);color:var(--dark-gray);padding:4px 12px;border-radius:5px;font-size:12px;">N/A</span>`:
+          `<select class="status-select ${sc}" id="sel_${uid}"
+            onchange="onStatusChange('${yg}','${set}',${JSON.stringify(lesson).replace(/'/g,"&#39;")},'${uid}',this.value)">
+            <option ${status==='Not started'?'selected':''}>Not started</option>
+            <option ${status==='In progress'?'selected':''}>In progress</option>
+            <option ${status==='Done'?'selected':''}>Done</option>
+            <option ${status==='N/A'?'selected':''}>N/A</option>
+          </select>`}
         </div>`;
       });
-
-      html += `</div>`;
+      html+=`</div>`;
     });
-
-    html += `</div>`;
+    html+=`</div>`;
   });
-
-  document.getElementById('teacher-content').innerHTML = html;
+  document.getElementById('teacher-content').innerHTML=html;
 }
 
-function updateStatus(yg, set, lesson, val, uid) {
-  setStatus(yg, set, lesson, val);
-  // Update color immediately without full re-render
-  const sel = document.querySelector(`#row_${uid} select`);
-  if (sel) {
-    sel.className = 'status-select ' + (val==='Done'?'done':val==='In progress'?'in-progress':val==='N/A'?'na':'not-started');
+function onStatusChange(yg,set,lesson,uid,val){
+  // Update cache and trigger save
+  setStatus(yg,set,lesson,val);
+  // Instantly update the dropdown color
+  const sel=document.getElementById('sel_'+uid);
+  if(sel){
+    sel.className='status-select '+(val==='Done'?'done':val==='In progress'?'in-progress':val==='N/A'?'na':'not-started');
   }
-  // Update progress bar and stats
-  updateProgressBar(yg, set);
+  // Update progress bar without re-rendering everything
+  const teachable=Y7_SOW.filter(l=>['core','cse','assessment'].includes(l.type));
+  const done=teachable.filter(l=>getStatus(yg,set,l)==='Done').length;
+  const pct=teachable.length?Math.round(done/teachable.length*100):0;
+  const bar=document.getElementById('tv-bar');
+  const pctEl=document.getElementById('tv-pct');
+  const lbl=document.getElementById('tv-done-label');
+  if(bar)bar.style.width=pct+'%';
+  if(pctEl)pctEl.textContent=pct+'%';
+  if(lbl)lbl.textContent=`${done} of ${teachable.length} lessons completed (${pct}%)`;
   updateStats();
 }
 
-function updateProgressBar(yg, set) {
-  const teachable = Y7_SOW.filter(l => ['core','cse','assessment'].includes(l.type));
-  const done = teachable.filter(l => getStatus(yg,set,l)==='Done').length;
-  const pct = teachable.length ? Math.round(done/teachable.length*100) : 0;
-  const bar = document.querySelector('.progress-bar');
-  const pctLabel = document.querySelector('.pct-label');
-  const doneLabel = document.querySelector('.done-label');
-  if (bar) bar.style.width = pct + '%';
-  if (pctLabel) pctLabel.textContent = pct + '%';
-  if (doneLabel) doneLabel.textContent = `${done} of ${teachable.length} lessons completed (${pct}%)`;
-}
-
-function resetProgress() {
-  if (!confirm('Reset all progress for this class? This cannot be undone.')) return;
-  const set = document.getElementById('sel-set').value;
-  Y7_SOW.forEach(l => {
-    localStorage.removeItem(getKey('7', set, l.week, l.lessonNo, l.lessonName));
+function resetProgress(){
+  if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
+  const set=document.getElementById('sel-set').value;
+  Y7_SOW.forEach(l=>{
+    const k=getKey('7',set,l.week,l.lessonNo,l.lessonName);
+    delete cache[k];
   });
+  saveToBin();
   renderTeacherView();
-  updateStats();
 }
 
-// ══════════════════════════════════════════════════════════════════
-// ASSESSMENTS
-// ══════════════════════════════════════════════════════════════════
+// ── Assessments ───────────────────────────────────────────────────
+const ASSESSMENTS_Y7=[
+  {name:'Unit 1 Assessment',sub:'Analysing & Displaying Data',week:'M4B',dates:'14–18 Sep 2026',term:'Michaelmas'},
+  {name:'Unit 2 Assessment',sub:'Number',week:'M7A',dates:'5–9 Oct 2026',term:'Michaelmas'},
+  {name:'Unit 3 Assessment',sub:'Equations, Functions & Formulae',week:'M10B',dates:'2–6 Nov 2026',term:'Michaelmas'},
+  {name:'Unit 4 Assessment ★ INTERIM',sub:'Fractions — Data Drop Units 1–4',week:'M13A',dates:'23–27 Nov 2026',term:'Michaelmas',interim:true},
+  {name:'Unit 5 Assessment',sub:'Angles & Shapes',week:'L3A',dates:'18–22 Jan 2027',term:'Lent'},
+  {name:'Unit 6 Assessment',sub:'Decimals & Percentages',week:'L6B',dates:'8–12 Feb 2027',term:'Lent'},
+  {name:'Unit 7 Assessment ★ INTERIM',sub:'Ratio & Proportion — Data Drop Units 5–7',week:'L10B',dates:'15–19 Mar 2027',term:'Lent',interim:true},
+  {name:'Unit 8 Assessment',sub:'Measures & Shapes',week:'L12B',dates:'29 Mar–2 Apr 2027',term:'Lent'},
+  {name:'Unit 9 Assessment',sub:'Sequences & Graphs',week:'S3A',dates:'3–7 May 2027',term:'Summer'},
+  {name:'Unit 10 Assessment',sub:'Transformations',week:'S6B',dates:'24–28 May 2027',term:'Summer'},
+  {name:'Unit 11 Assessment',sub:'Probability',week:'S7A',dates:'31 May–4 Jun 2027',term:'Summer'},
+  {name:'End of Year Examination',sub:'Full year — Units 1–11 (2 papers)',week:'S9A',dates:'14–18 Jun 2027',term:'Summer',eoy:true},
+];
 
-function renderAssessments() {
-  const terms = ['Michaelmas','Lent','Summer'];
-  let html = '';
-  terms.forEach(term => {
-    const termAssess = ASSESSMENTS_Y7.filter(a=>a.term===term);
-    if (!termAssess.length) return;
-    html += `<div style="margin-bottom:20px;">
-      <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
-        margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
+function renderAssessments(){
+  const terms=['Michaelmas','Lent','Summer'];
+  let html='';
+  terms.forEach(term=>{
+    const ta=ASSESSMENTS_Y7.filter(a=>a.term===term);
+    if(!ta.length)return;
+    html+=`<div style="margin-bottom:20px;"><div style="font-size:12px;font-weight:700;text-transform:uppercase;
+      color:var(--dark-gray);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
       <div class="assess-grid">`;
-    termAssess.forEach(a => {
-      const cls = a.eoy?'eoy':a.interim?'interim':'';
-      html += `<div class="assess-card ${cls}">
-        <div class="assess-card-term">${a.week}</div>
+    ta.forEach(a=>{
+      const cls=a.eoy?'eoy':a.interim?'interim':'';
+      html+=`<div class="assess-card ${cls}">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);margin-bottom:6px">${a.week}</div>
         <div class="assess-card-name">${a.name}</div>
-        <div class="assess-card-date" style="color:var(--dark-gray)">${a.subtitle}</div>
+        <div class="assess-card-date">${a.sub}</div>
         <div class="assess-card-date" style="margin-top:6px;font-weight:600;">📅 ${a.dates}</div>
         ${a.interim?'<div class="assess-card-note">★ INTERIM DATA DROP</div>':''}
         ${a.eoy?'<div class="assess-card-note" style="color:var(--navy);">Full year — 2 papers</div>':''}
       </div>`;
     });
-    html += `</div></div>`;
+    html+=`</div></div>`;
   });
-  document.getElementById('assess-grid').innerHTML = html;
+  document.getElementById('assess-grid').innerHTML=html;
 }
 
-// ══════════════════════════════════════════════════════════════════
-// CALENDAR
-// ══════════════════════════════════════════════════════════════════
-
-function renderCalendar() {
-  const terms = ['Michaelmas','Lent','Summer'];
-  const termDates = {
-    Michaelmas: 'Wed 26 Aug – Wed 16 Dec 2026',
-    Lent: 'Thu 7 Jan – Fri 2 Apr 2027',
-    Summer: 'Mon 19 Apr – Wed 30 Jun 2027',
-  };
-  const termColors = { Michaelmas:'#1F4E79', Lent:'#375623', Summer:'#7F3F00' };
-
-  let html = '';
-  terms.forEach(term => {
-    const events = CALENDAR_EVENTS.filter(e=>e.term===term);
-    html += `<div style="margin-bottom:24px;">
-      <div style="background:${termColors[term]};color:white;padding:10px 16px;border-radius:8px;
-        font-weight:600;margin-bottom:12px;">
-        ${term} Term &nbsp;·&nbsp; <span style="font-weight:400;font-size:13px;">${termDates[term]}</span>
-      </div>`;
-    if (!events.length) { html += `<p style="color:var(--dark-gray);font-size:13px;padding:0 4px;">No major disruptions.</p>`; }
-    events.forEach(e => {
-      const isAdventure = e.type==='adventure';
-      const isExam = e.type==='exams';
-      const bg = isAdventure||isExam ? '#FFF5F5' : e.type==='break'?'#EBF3FB':e.type==='inset'?'#FFF2CC':'#F8F8F8';
-      const border = isAdventure||isExam ? 'var(--red)' : e.type==='break'?'var(--blue)':e.type==='inset'?'var(--amber)':'var(--mid-gray)';
-      html += `<div style="background:${bg};border-left:4px solid ${border};
-        border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;">
+// ── Calendar ──────────────────────────────────────────────────────
+function renderCalendar(){
+  const events=[
+    {term:'Michaelmas',label:'Michaelmas Half Term',dates:'19–23 Oct 2026',type:'break'},
+    {term:'Michaelmas',label:'National Holiday',dates:'Tue 13 Oct 2026',type:'holiday',note:'Reduced lessons M8B'},
+    {term:'Michaelmas',label:'National Holidays',dates:'Mon 7 Dec + Thu 10 Dec 2026',type:'holiday',note:'Reduced lessons M15A'},
+    {term:'Michaelmas',label:'Term ends (12pm)',dates:'Wed 16 Dec 2026',type:'partial',note:'M16B partial week'},
+    {term:'Lent',label:'INSET Day',dates:'Wed 6 Jan 2027',type:'inset',note:'Teaching starts Thu 7 Jan'},
+    {term:'Lent',label:'Lent Half Term',dates:'15–19 Feb 2027',type:'break'},
+    {term:'Lent',label:'⚠️ Adventure Week (Y7–9)',dates:'22–26 Feb 2027',type:'adventure',note:'Full week lost — no Y7 teaching'},
+    {term:'Summer',label:'National Holidays',dates:'Thu 3 + Fri 4 Jun 2027',type:'holiday',note:'Reduced lessons S7A'},
+    {term:'Summer',label:'⚠️ Y7–9 Summer Exams',dates:'31 May–4 Jun 2027',type:'exams',note:'No curriculum teaching S7A'},
+    {term:'Summer',label:'Term ends (12pm)',dates:'Wed 30 Jun 2027',type:'partial',note:'S11A partial week'},
+  ];
+  const termColors={Michaelmas:'#1F4E79',Lent:'#375623',Summer:'#7F3F00'};
+  const termDates={Michaelmas:'Wed 26 Aug – Wed 16 Dec 2026',Lent:'Thu 7 Jan – Fri 2 Apr 2027',Summer:'Mon 19 Apr – Wed 30 Jun 2027'};
+  let html='';
+  ['Michaelmas','Lent','Summer'].forEach(term=>{
+    const te=events.filter(e=>e.term===term);
+    html+=`<div style="margin-bottom:24px;">
+      <div style="background:${termColors[term]};color:white;padding:10px 16px;border-radius:8px;font-weight:600;margin-bottom:12px;">
+        ${term} Term · <span style="font-weight:400;font-size:13px;">${termDates[term]}</span></div>`;
+    te.forEach(e=>{
+      const isAd=e.type==='adventure'||e.type==='exams';
+      const bg=isAd?'#FFF5F5':e.type==='break'?'#EBF3FB':e.type==='inset'?'#FFF2CC':'#F8F8F8';
+      const bd=isAd?'var(--red)':e.type==='break'?'var(--blue)':e.type==='inset'?'var(--amber)':'var(--mid-gray)';
+      html+=`<div style="background:${bg};border-left:4px solid ${bd};border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;">
         <div style="font-weight:600;font-size:13px;">${e.label}</div>
         <div style="font-size:12px;color:var(--dark-gray);margin-top:2px;">📅 ${e.dates}</div>
-        ${e.note?`<div style="font-size:12px;color:${isAdventure||isExam?'var(--red)':'var(--dark-gray)'};
-          margin-top:3px;font-weight:${isAdventure||isExam?'600':'400'}">${e.note}</div>`:''}
+        ${e.note?`<div style="font-size:12px;color:${isAd?'var(--red)':'var(--dark-gray)'};margin-top:3px;font-weight:${isAd?'600':'400'}">${e.note}</div>`:''}
       </div>`;
     });
-    html += `</div>`;
+    html+=`</div>`;
   });
-
-  html += `<div class="calendar-alert">
-    <h4>⚠️ Key impacts on Y7 curriculum capacity</h4>
-    <p>
-      <strong>Adventure Week (L7A, 22–26 Feb):</strong> Full week lost — no Y7 maths teaching.<br>
-      <strong>Y7–9 Summer Exams (S7A, 31 May–4 Jun):</strong> Mon–Wed exams + Thu/Fri national holidays — no curriculum lessons.<br>
-      <strong>National holidays:</strong> Tue 13 Oct, Mon 7 Dec, Thu 10 Dec, Tue 4 May, Thu–Fri 3–4 Jun reduce individual weeks by 1–2 lessons.<br>
-      <strong>Total curriculum lessons available: ~112</strong> vs 118 originally estimated.
-    </p>
-  </div>`;
-
-  document.getElementById('calendar-content').innerHTML = html;
+  document.getElementById('calendar-content').innerHTML=html;
 }
 
-// ══════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════
+// ── Y7 SoW Data ───────────────────────────────────────────────────
+const Y7_SOW=[
+  {week:'M1A',dates:'26–28 Aug',cycle:'A',unit:0,unitName:'Baseline',lessonNo:'',lessonName:'Baseline Assessment',type:'flex',term:'Michaelmas',alert:'Partial week (3 days) — Welcome Day Wed 26 Aug'},
+  {week:'M2B',dates:'31 Aug–4 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.1',lessonName:'Averages and range',type:'core',term:'Michaelmas'},
+  {week:'M2B',dates:'31 Aug–4 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.2',lessonName:'More averages and range',type:'core',term:'Michaelmas'},
+  {week:'M2B',dates:'31 Aug–4 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.3',lessonName:'Two-way tables and bar charts',type:'core',term:'Michaelmas'},
+  {week:'M3A',dates:'7–11 Sep',cycle:'A',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.4',lessonName:'More graphs and tables 1',type:'core',term:'Michaelmas'},
+  {week:'M3A',dates:'7–11 Sep',cycle:'A',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'1.5',lessonName:'More graphs and tables 2',type:'core',term:'Michaelmas'},
+  {week:'M3A',dates:'7–11 Sep',cycle:'A',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas'},
+  {week:'M4B',dates:'14–18 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
+  {week:'M4B',dates:'14–18 Sep',cycle:'B',unit:1,unitName:'Analysing & Displaying Data',lessonNo:'★',lessonName:'Unit 1 Assessment',type:'assessment',term:'Michaelmas'},
+  {week:'M5A',dates:'21–25 Sep',cycle:'A',unit:2,unitName:'Number',lessonNo:'2.1',lessonName:'Rules of divisibility',type:'core',term:'Michaelmas'},
+  {week:'M5A',dates:'21–25 Sep',cycle:'A',unit:2,unitName:'Number',lessonNo:'2.2',lessonName:'Factors, multiples and primes',type:'core',term:'Michaelmas'},
+  {week:'M5A',dates:'21–25 Sep',cycle:'A',unit:2,unitName:'Number',lessonNo:'2.3',lessonName:'Positive and negative numbers',type:'core',term:'Michaelmas'},
+  {week:'M6B',dates:'28 Sep–2 Oct',cycle:'B',unit:2,unitName:'Number',lessonNo:'2.4',lessonName:'Squares and square roots',type:'core',term:'Michaelmas'},
+  {week:'M6B',dates:'28 Sep–2 Oct',cycle:'B',unit:2,unitName:'Number',lessonNo:'2.5',lessonName:'More powers and roots',type:'core',term:'Michaelmas'},
+  {week:'M6B',dates:'28 Sep–2 Oct',cycle:'B',unit:2,unitName:'Number',lessonNo:'2.6',lessonName:'Calculations',type:'core',term:'Michaelmas'},
+  {week:'M7A',dates:'5–9 Oct',cycle:'A',unit:2,unitName:'Number',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas',alert:'Last week before half term'},
+  {week:'M7A',dates:'5–9 Oct',cycle:'A',unit:2,unitName:'Number',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
+  {week:'M7A',dates:'5–9 Oct',cycle:'A',unit:2,unitName:'Number',lessonNo:'★',lessonName:'Unit 2 Assessment',type:'assessment',term:'Michaelmas'},
+  {week:'M8B',dates:'12–16 Oct',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.1',lessonName:'Simplifying algebraic expressions',type:'core',term:'Michaelmas',alert:'⚠️ Tue 13 Oct national holiday'},
+  {week:'M8B',dates:'12–16 Oct',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.2',lessonName:'Writing algebraic expressions',type:'core',term:'Michaelmas'},
+  {week:'M8B',dates:'12–16 Oct',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.3',lessonName:'STEM: Using formulae',type:'core',term:'Michaelmas'},
+  {week:'M9A',dates:'26–30 Oct',cycle:'A',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.4',lessonName:'Writing formulae',type:'core',term:'Michaelmas',alert:'After half term'},
+  {week:'M9A',dates:'26–30 Oct',cycle:'A',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'3.5',lessonName:'Brackets and formulae',type:'core',term:'Michaelmas'},
+  {week:'M9A',dates:'26–30 Oct',cycle:'A',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas'},
+  {week:'M10B',dates:'2–6 Nov',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
+  {week:'M10B',dates:'2–6 Nov',cycle:'B',unit:3,unitName:'Equations, Functions & Formulae',lessonNo:'★',lessonName:'Unit 3 Assessment',type:'assessment',term:'Michaelmas'},
+  {week:'M10B',dates:'2–6 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'4.1',lessonName:'Working with fractions',type:'core',term:'Michaelmas'},
+  {week:'M11A',dates:'9–13 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'4.2',lessonName:'Adding and subtracting fractions',type:'core',term:'Michaelmas'},
+  {week:'M11A',dates:'9–13 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'4.3',lessonName:'Fractions, decimals and percentages',type:'core',term:'Michaelmas'},
+  {week:'M11A',dates:'9–13 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'4.4',lessonName:'Multiplying by a fraction',type:'core',term:'Michaelmas'},
+  {week:'M12B',dates:'16–20 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'4.5',lessonName:'Working with mixed numbers',type:'core',term:'Michaelmas'},
+  {week:'M12B',dates:'16–20 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Michaelmas'},
+  {week:'M12B',dates:'16–20 Nov',cycle:'B',unit:4,unitName:'Fractions',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Michaelmas'},
+  {week:'M13A',dates:'23–27 Nov',cycle:'A',unit:4,unitName:'Fractions',lessonNo:'★',lessonName:'Unit 4 Assessment — INTERIM DATA DROP',type:'assessment',term:'Michaelmas'},
+  {week:'M13A',dates:'23–27 Nov',cycle:'A',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
+  {week:'M14B',dates:'30 Nov–4 Dec',cycle:'B',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas'},
+  {week:'M15A',dates:'7–11 Dec',cycle:'A',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas',alert:'⚠️ Mon 7 + Thu 10 Dec national holidays'},
+  {week:'M16B',dates:'14–16 Dec',cycle:'B',unit:0,unitName:'Flex',lessonNo:'',lessonName:'Enrichment / Problem Solving',type:'flex',term:'Michaelmas',alert:'Partial week — term ends Wed 16 Dec'},
+  {week:'L1A',dates:'4–8 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'5.1',lessonName:'Working with angles',type:'core',term:'Lent',alert:'⚠️ INSET Wed 6 Jan — teaching starts Thu 7 Jan'},
+  {week:'L1A',dates:'4–8 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'5.2',lessonName:'Triangles',type:'core',term:'Lent'},
+  {week:'L2B',dates:'11–15 Jan',cycle:'B',unit:5,unitName:'Angles & Shapes',lessonNo:'5.3',lessonName:'Quadrilaterals',type:'core',term:'Lent'},
+  {week:'L2B',dates:'11–15 Jan',cycle:'B',unit:5,unitName:'Angles & Shapes',lessonNo:'5.4',lessonName:'Construction',type:'core',term:'Lent'},
+  {week:'L2B',dates:'11–15 Jan',cycle:'B',unit:5,unitName:'Angles & Shapes',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent'},
+  {week:'L3A',dates:'18–22 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
+  {week:'L3A',dates:'18–22 Jan',cycle:'A',unit:5,unitName:'Angles & Shapes',lessonNo:'★',lessonName:'Unit 5 Assessment',type:'assessment',term:'Lent'},
+  {week:'L3A',dates:'18–22 Jan',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.1',lessonName:'Place value and rounding',type:'core',term:'Lent'},
+  {week:'L4B',dates:'25–29 Jan',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.2',lessonName:'Ordering decimals',type:'core',term:'Lent'},
+  {week:'L4B',dates:'25–29 Jan',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.3',lessonName:'Adding and subtracting decimals',type:'core',term:'Lent'},
+  {week:'L4B',dates:'25–29 Jan',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.4',lessonName:'Multiplying decimals',type:'core',term:'Lent'},
+  {week:'L5A',dates:'1–5 Feb',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.5',lessonName:'Dividing decimals',type:'core',term:'Lent'},
+  {week:'L5A',dates:'1–5 Feb',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.6',lessonName:'Decimals, fractions and percentages',type:'core',term:'Lent'},
+  {week:'L5A',dates:'1–5 Feb',cycle:'A',unit:6,unitName:'Decimals & Percentages',lessonNo:'6.7',lessonName:'Calculating percentages',type:'core',term:'Lent'},
+  {week:'L6B',dates:'8–12 Feb',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent',alert:'Last week before half term'},
+  {week:'L6B',dates:'8–12 Feb',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
+  {week:'L6B',dates:'8–12 Feb',cycle:'B',unit:6,unitName:'Decimals & Percentages',lessonNo:'★',lessonName:'Unit 6 Assessment',type:'assessment',term:'Lent'},
+  {week:'L7A',dates:'22–26 Feb',cycle:'A',unit:0,unitName:'Adventure Week',lessonNo:'',lessonName:'Adventure Week — No Y7 teaching',type:'flex',term:'Lent',alert:'⚠️ ADVENTURE WEEK — Full week lost'},
+  {week:'L8B',dates:'1–5 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.1',lessonName:'Writing ratios',type:'core',term:'Lent',alert:'After Adventure Week'},
+  {week:'L8B',dates:'1–5 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.2',lessonName:'Sharing in a given ratio',type:'core',term:'Lent'},
+  {week:'L8B',dates:'1–5 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.3',lessonName:'Proportion',type:'core',term:'Lent'},
+  {week:'L9A',dates:'8–12 Mar',cycle:'A',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.4',lessonName:'Proportional reasoning',type:'core',term:'Lent'},
+  {week:'L9A',dates:'8–12 Mar',cycle:'A',unit:7,unitName:'Ratio & Proportion',lessonNo:'7.5',lessonName:'Using the unitary method',type:'core',term:'Lent'},
+  {week:'L9A',dates:'8–12 Mar',cycle:'A',unit:7,unitName:'Ratio & Proportion',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent'},
+  {week:'L10B',dates:'15–19 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
+  {week:'L10B',dates:'15–19 Mar',cycle:'B',unit:7,unitName:'Ratio & Proportion',lessonNo:'★',lessonName:'Unit 7 Assessment — INTERIM DATA DROP',type:'assessment',term:'Lent'},
+  {week:'L10B',dates:'15–19 Mar',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'8.1',lessonName:'STEM: Metric measures',type:'core',term:'Lent'},
+  {week:'L11A',dates:'22–26 Mar',cycle:'A',unit:8,unitName:'Measures & Shapes',lessonNo:'8.2',lessonName:'Perimeter',type:'core',term:'Lent'},
+  {week:'L11A',dates:'22–26 Mar',cycle:'A',unit:8,unitName:'Measures & Shapes',lessonNo:'8.3',lessonName:'Area',type:'core',term:'Lent'},
+  {week:'L11A',dates:'22–26 Mar',cycle:'A',unit:8,unitName:'Measures & Shapes',lessonNo:'8.4',lessonName:'3D solids',type:'core',term:'Lent'},
+  {week:'L12B',dates:'29 Mar–2 Apr',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Lent',alert:'Last week of Lent — ends Fri 2 Apr'},
+  {week:'L12B',dates:'29 Mar–2 Apr',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Lent'},
+  {week:'L12B',dates:'29 Mar–2 Apr',cycle:'B',unit:8,unitName:'Measures & Shapes',lessonNo:'★',lessonName:'Unit 8 Assessment',type:'assessment',term:'Lent'},
+  {week:'S1A',dates:'19–23 Apr',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.1',lessonName:'Sequences',type:'core',term:'Summer',alert:'First week of Summer term'},
+  {week:'S1A',dates:'19–23 Apr',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.2',lessonName:'The nth term',type:'core',term:'Summer'},
+  {week:'S1A',dates:'19–23 Apr',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.3',lessonName:'Pattern sequences',type:'core',term:'Summer'},
+  {week:'S2B',dates:'26–30 Apr',cycle:'B',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.4',lessonName:'Coordinates and line segments',type:'core',term:'Summer'},
+  {week:'S2B',dates:'26–30 Apr',cycle:'B',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.5',lessonName:'Graphs',type:'core',term:'Summer'},
+  {week:'S2B',dates:'26–30 Apr',cycle:'B',unit:9,unitName:'Sequences & Graphs',lessonNo:'9.6',lessonName:'Working with graphs',type:'core',term:'Summer'},
+  {week:'S3A',dates:'3–7 May',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Summer',alert:'⚠️ Tue 4 May national holiday'},
+  {week:'S3A',dates:'3–7 May',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Summer'},
+  {week:'S3A',dates:'3–7 May',cycle:'A',unit:9,unitName:'Sequences & Graphs',lessonNo:'★',lessonName:'Unit 9 Assessment',type:'assessment',term:'Summer'},
+  {week:'S4B',dates:'10–14 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'10.1',lessonName:'Congruency and enlargements',type:'core',term:'Summer'},
+  {week:'S4B',dates:'10–14 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'10.2',lessonName:'Reflection',type:'core',term:'Summer'},
+  {week:'S4B',dates:'10–14 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'10.3',lessonName:'Rotation',type:'core',term:'Summer'},
+  {week:'S5A',dates:'17–21 May',cycle:'A',unit:10,unitName:'Transformations',lessonNo:'10.4',lessonName:'Translations and combined transformations',type:'core',term:'Summer'},
+  {week:'S5A',dates:'17–21 May',cycle:'A',unit:10,unitName:'Transformations',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Summer'},
+  {week:'S5A',dates:'17–21 May',cycle:'A',unit:10,unitName:'Transformations',lessonNo:'CSE2',lessonName:'Check up, Strengthen & Extend (cont.)',type:'cse',term:'Summer'},
+  {week:'S6B',dates:'24–28 May',cycle:'B',unit:10,unitName:'Transformations',lessonNo:'★',lessonName:'Unit 10 Assessment',type:'assessment',term:'Summer'},
+  {week:'S6B',dates:'24–28 May',cycle:'B',unit:11,unitName:'Probability',lessonNo:'11.1',lessonName:'Comparing and calculating probabilities',type:'core',term:'Summer'},
+  {week:'S6B',dates:'24–28 May',cycle:'B',unit:11,unitName:'Probability',lessonNo:'11.2',lessonName:'More probability calculations',type:'core',term:'Summer'},
+  {week:'S7A',dates:'31 May–4 Jun',cycle:'A',unit:11,unitName:'Probability',lessonNo:'CSE',lessonName:'Check up, Strengthen & Extend',type:'cse',term:'Summer',alert:'⚠️ Y7–9 Summer Exams + Thu/Fri national holidays'},
+  {week:'S7A',dates:'31 May–4 Jun',cycle:'A',unit:11,unitName:'Probability',lessonNo:'★',lessonName:'Unit 11 Assessment',type:'assessment',term:'Summer'},
+  {week:'S8B',dates:'7–11 Jun',cycle:'B',unit:0,unitName:'Revision',lessonNo:'',lessonName:'Revision — Units 1 to 5',type:'flex',term:'Summer'},
+  {week:'S8B',dates:'7–11 Jun',cycle:'B',unit:0,unitName:'Revision',lessonNo:'',lessonName:'Revision — Units 6 to 11',type:'flex',term:'Summer'},
+  {week:'S8B',dates:'7–11 Jun',cycle:'B',unit:0,unitName:'Revision',lessonNo:'',lessonName:'Practice Paper',type:'flex',term:'Summer'},
+  {week:'S9A',dates:'14–18 Jun',cycle:'A',unit:0,unitName:'EoY Exam',lessonNo:'',lessonName:'End of Year Examination — Paper 1',type:'assessment',term:'Summer'},
+  {week:'S9A',dates:'14–18 Jun',cycle:'A',unit:0,unitName:'EoY Exam',lessonNo:'',lessonName:'End of Year Examination — Paper 2',type:'assessment',term:'Summer'},
+  {week:'S9A',dates:'14–18 Jun',cycle:'A',unit:0,unitName:'EoY Exam',lessonNo:'',lessonName:'Return and Review',type:'flex',term:'Summer'},
+  {week:'S10B',dates:'21–25 Jun',cycle:'B',unit:0,unitName:'PBL',lessonNo:'',lessonName:'PBL Activity',type:'flex',term:'Summer'},
+  {week:'S11A',dates:'28–30 Jun',cycle:'A',unit:0,unitName:'PBL',lessonNo:'',lessonName:'PBL Activity',type:'flex',term:'Summer',alert:'Partial week — term ends Wed 30 Jun 12pm'},
+];
 
-// Password protection
-const PASSWORD = 'wcib2027';
-
-function checkPassword() {
-  const stored = sessionStorage.getItem('wcib_auth');
-  if (stored === PASSWORD) return true;
-  const input = prompt('Enter department password to access the SoW app:');
-  if (input === PASSWORD) {
-    sessionStorage.setItem('wcib_auth', PASSWORD);
-    return true;
-  }
-  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Arial;flex-direction:column;gap:16px;"><h2 style="color:#1F4E79">Access denied</h2><p>Please reload and enter the correct password.</p></div>';
-  return false;
-}
-
-window.onload = async () => {
-  if (!checkPassword()) return;
-  
-  // Show loading state
-  document.getElementById('view-hod').innerHTML = '<div style="padding:40px;text-align:center;color:#666;"><p style="font-size:16px;">⏳ Loading progress data...</p></div>';
-  
-  await loadProgress();
+// ── Init ──────────────────────────────────────────────────────────
+window.onload=async()=>{
+  await loadFromBin();
   renderHOD('7');
   updateStats();
-  
-  // Auto-refresh HOD view every 30 seconds
-  setInterval(async () => {
-    await loadProgress();
-    const hodView = document.getElementById('view-hod');
-    if (hodView.classList.contains('active')) {
-      renderHOD('7');
-      updateStats();
+  renderAssessments();
+  renderCalendar();
+  // Auto-refresh HOD every 60 seconds
+  setInterval(async()=>{
+    await loadFromBin();
+    if(document.getElementById('view-hod').classList.contains('active')){
+      renderHOD('7');updateStats();
     }
-  }, 30000);
+  },60000);
 };
 </script>
 </body>

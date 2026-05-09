@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><title>Storage Test</title></head>
+<body>
+<h2>localStorage Test</h2>
+<button onclick="save()">Save test data</button>
+<button onclick="load()">Load & show</button>
+<button onclick="clear2()">Clear</button>
+<p id="out" style="margin-top:20px;font-family:monospace;font-size:16px;"></p>
+<script>
+function save(){
+  try{
+    localStorage.setItem('test_wcib','hello_'+Date.now());
+    document.getElementById('out').textContent='Saved: '+localStorage.getItem('test_wcib');
+  }catch(e){
+    document.getElementById('out').textContent='SAVE FAILED: '+e.message;
+  }
+}
+function load(){
+  const val=localStorage.getItem('test_wcib');
+  document.getElementById('out').textContent=val?'Found: '+val:'Nothing saved yet';
+}
+function clear2(){
+  localStorage.removeItem('test_wcib');
+  document.getElementById('out').textContent='Cleared';
+}
+window.onload=function(){ load(); }
+</script>
+</body>
+</html>

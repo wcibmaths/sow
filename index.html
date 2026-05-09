@@ -224,8 +224,8 @@ const SETS=['Ma1','Ma2','Ma3','Ma4'];
 // ── Storage: localStorage with cross-tab sync ────────────────────
 const STORE_KEY = 'wcib_sow_progress';
 
-function getKey(yg,set,week,no,name){
-  return [yg,set,week,String(no),name].join('||').replace(/\s/g,'_');
+function getKey(yg,set,lessonIdx){
+  return yg+'_'+set+'_'+lessonIdx;
 }
 
 function loadAll(){
@@ -244,13 +244,14 @@ function saveAll(data){
 }
 
 function getStatus(yg,set,lesson){
+  const idx = ALL_LESSONS.indexOf(lesson);
   const data = loadAll();
-  return data[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)] || 'Not started';
+  return data[getKey(yg,set,idx)] || 'Not started';
 }
 
-function setStatus(yg,set,lesson,val){
+function setStatus(yg,set,lessonIdx,val){
   const data = loadAll();
-  data[getKey(yg,set,lesson.week,lesson.lessonNo,lesson.lessonName)] = val;
+  data[getKey(yg,set,lessonIdx)] = val;
   saveAll(data);
   showSync(true);
   setTimeout(()=>showSync(false), 800);
@@ -412,9 +413,9 @@ function renderTeacherView(){
   document.getElementById('teacher-content').innerHTML=html;
 }
 
-function onStatusChange(yg,set,lesson,uid,val){
+function onStatusChange(yg,set,lessonIdx,uid,val){
   // Update cache and trigger save
-  setStatus(yg,set,lesson,val);
+  setStatus(yg,set,lessonIdx,val);
   // Instantly update the dropdown color
   const sel=document.getElementById('sel_'+uid);
   if(sel){
@@ -436,11 +437,11 @@ function onStatusChange(yg,set,lesson,uid,val){
 function resetProgress(){
   if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
   const set=document.getElementById('sel-set').value;
-  Y7_SOW.forEach(l=>{
-    const k=getKey('7',set,l.week,l.lessonNo,l.lessonName);
-    delete cache[k];
+  const data=loadAll();
+  Y7_SOW.forEach((l,idx)=>{
+    delete data[getKey('7',set,idx)];
   });
-  saveToBin();
+  saveAll(data);
   renderTeacherView();
 }
 

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WCIB Maths Department — Scheme of Work 2026/27</title>
+<style>
+  :root {
+    --navy:#1F4E79; --blue:#2E75B6; --light-blue:#BDD7EE;
+    --green:#70AD47; --light-green:#E2EFDA; --dark-green:#375623;
+    --amber:#FFD966; --dark-amber:#7F4F00; --light-amber:#FFF2CC;
+    --coral:#FCE4D6; --red:#C00000;
+    --gray:#F2F2F2; --mid-gray:#D6DCE4; --dark-gray:#595959;
+    --font:'Segoe UI',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:#f0f4f8;color:#222;font-size:14px;}
+  header{background:var(--navy);color:white;display:flex;align-items:stretch;
+    position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+  .brand{padding:12px 20px;display:flex;align-items:center;gap:12px;
+    border-right:1px solid rgba(255,255,255,0.15);}
+  .brand .logo{width:36px;height:36px;background:var(--amber);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:var(--navy);}
+  .brand h1{font-size:15px;font-weight:600;line-height:1.2;}
+  .brand p{font-size:11px;opacity:0.7;}
+  nav{display:flex;align-items:center;gap:4px;padding:0 16px;flex:1;}
+  .nav-btn{padding:8px 16px;border:none;background:transparent;color:rgba(255,255,255,0.75);
+    cursor:pointer;font-size:13px;font-family:var(--font);border-radius:6px;}
+  .nav-btn:hover{background:rgba(255,255,255,0.1);color:white;}
+  .nav-btn.active{background:rgba(255,255,255,0.2);color:white;font-weight:600;}
+  .badge{background:var(--amber);color:var(--navy);font-size:11px;font-weight:700;
+    padding:4px 10px;border-radius:12px;margin:0 16px;}
+  .view{display:none;padding:20px;max-width:1400px;margin:0 auto;}
+  .view.active{display:block;}
+  .card{background:white;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.1);
+    padding:20px;margin-bottom:16px;}
+  .card-title{font-size:13px;font-weight:600;color:var(--dark-gray);
+    text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;margin-bottom:20px;}
+  .stat{background:white;border-radius:10px;padding:16px 20px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.1);border-left:4px solid var(--blue);}
+  .stat.green{border-color:var(--green);}
+  .stat.amber{border-color:#E9A800;}
+  .stat.red{border-color:var(--red);}
+  .stat-num{font-size:32px;font-weight:700;color:var(--navy);line-height:1;}
+  .stat-label{font-size:12px;color:var(--dark-gray);margin-top:4px;}
+  .yg-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .yg-tab{padding:6px 14px;border:2px solid var(--mid-gray);background:white;
+    border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;color:var(--dark-gray);}
+  .yg-tab:hover:not(.disabled){border-color:var(--blue);color:var(--blue);}
+  .yg-tab.active{background:var(--blue);border-color:var(--blue);color:white;}
+  .yg-tab.disabled{opacity:0.45;cursor:not-allowed;}
+  .hod-table{width:100%;border-collapse:collapse;}
+  .hod-table th{background:var(--navy);color:white;padding:8px 12px;
+    text-align:left;font-size:12px;font-weight:600;}
+  .hod-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:13px;}
+  .hod-table tr:hover td{background:#f8faff;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--light-blue);
+    color:var(--navy);font-size:10px;font-weight:700;display:inline-flex;
+    align-items:center;justify-content:center;margin-right:8px;vertical-align:middle;}
+  .pill{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+  .pill.done{background:var(--light-green);color:var(--dark-green);}
+  .pill.prog{background:var(--light-amber);color:var(--dark-amber);}
+  .pill.not{background:var(--coral);color:var(--red);}
+  .bar-wrap{background:#eee;border-radius:4px;height:8px;width:120px;
+    overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px;}
+  .bar{height:100%;background:var(--green);border-radius:4px;transition:width 0.3s;}
+  .bar.amber{background:#E9A800;}
+  .bar.red{background:var(--red);}
+  .controls{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px;}
+  .ctrl{display:flex;flex-direction:column;gap:4px;}
+  .ctrl label{font-size:11px;font-weight:600;color:var(--dark-gray);text-transform:uppercase;}
+  .ctrl select{padding:8px 12px;border:1.5px solid #ddd;border-radius:6px;
+    font-size:13px;font-family:var(--font);background:white;cursor:pointer;min-width:160px;}
+  .reset-btn{padding:8px 14px;border:1.5px solid #ddd;background:white;
+    border-radius:6px;cursor:pointer;font-size:12px;color:var(--dark-gray);height:38px;}
+  .reset-btn:hover{background:#fafafa;border-color:#bbb;}
+  .tv-header{display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:12px;}
+  .tv-title{font-size:16px;font-weight:700;color:var(--navy);}
+  .tv-progress-wrap{display:flex;align-items:center;gap:10px;}
+  .tv-bar-wrap{background:#eee;border-radius:6px;height:12px;width:200px;overflow:hidden;}
+  .tv-bar{height:100%;background:var(--green);border-radius:6px;transition:width 0.3s;}
+  .term{margin-bottom:24px;}
+  .term-header{background:var(--navy);color:white;padding:10px 16px;
+    border-radius:8px 8px 0 0;font-weight:600;font-size:14px;
+    display:flex;justify-content:space-between;align-items:center;}
+  .term-progress{font-size:12px;opacity:0.85;}
+  .week{border:1px solid #e8e8e8;border-top:none;background:white;}
+  .week-header{padding:8px 16px;background:#f8faff;border-bottom:1px solid #e8e8e8;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .week-label{font-size:11px;font-weight:700;color:var(--blue);
+    text-transform:uppercase;min-width:60px;}
+  .week-dates{font-size:11px;color:var(--dark-gray);}
+  .week-alert{font-size:11px;color:var(--red);font-weight:600;margin-left:auto;}
+
+  /* Lesson rows — 5 columns with resources */
+  .lesson{display:grid;grid-template-columns:36px 1fr auto auto auto;align-items:center;
+    gap:10px;padding:8px 16px;border-bottom:1px solid #f5f5f5;}
+  .lesson:last-child{border-bottom:none;}
+  .lesson:hover{background:#fafcff;}
+  .lesson.assess{background:var(--light-amber);}
+  .lesson.cse{background:var(--light-green);}
+  .lesson.flex{background:var(--gray);}
+  .lesson-num{font-size:11px;font-weight:700;color:var(--dark-gray);text-align:center;}
+  .lesson-info{min-width:0;}
+  .lesson-name{font-size:13px;font-weight:500;}
+  .lesson-name.assess{font-weight:700;color:var(--dark-amber);}
+  .lesson-obj{font-size:11px;color:var(--dark-gray);margin-top:2px;line-height:1.4;}
+  .lesson-unit{font-size:11px;color:var(--dark-gray);}
+  .type-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;
+    white-space:nowrap;}
+  .type-badge.core{background:#EBF3FB;color:var(--blue);}
+  .type-badge.cse{background:var(--light-green);color:var(--dark-green);}
+  .type-badge.assess{background:var(--amber);color:var(--dark-amber);}
+  .type-badge.flex{background:var(--mid-gray);color:var(--dark-gray);}
+
+  /* Resource button */
+  .res-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;
+    border:1.5px solid #ddd;border-radius:5px;font-size:11px;font-weight:600;
+    color:var(--navy);background:white;cursor:pointer;text-decoration:none;
+    white-space:nowrap;transition:all 0.15s;}
+  .res-btn:hover{background:var(--light-blue);border-color:var(--blue);}
+  .res-btn.assess-btn{border-color:var(--amber);color:var(--dark-amber);background:white;}
+  .res-btn.assess-btn:hover{background:var(--light-amber);}
+
+  .status-sel{padding:5px 10px;border:1.5px solid #ddd;border-radius:5px;
+    font-size:12px;font-family:var(--font);cursor:pointer;min-width:130px;
+    background:white;color:#222;}
+  .status-sel.s-done{background:var(--light-green);border-color:var(--green);color:var(--dark-green);font-weight:600;}
+  .status-sel.s-prog{background:var(--light-amber);border-color:#E9A800;color:var(--dark-amber);font-weight:600;}
+  .status-sel.s-not{background:var(--coral);border-color:#E09080;color:var(--red);}
+  .status-sel.s-na{background:var(--mid-gray);border-color:#aaa;color:var(--dark-gray);}
+  .na-badge{background:var(--mid-gray);color:var(--dark-gray);padding:5px 12px;
+    border-radius:5px;font-size:12px;font-weight:600;text-align:center;min-width:130px;}
+
+  /* Assessment schedule */
+  .assess-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;}
+  .assess-card{border-radius:8px;padding:16px;border-left:5px solid var(--amber);
+    background:white;box-shadow:0 1px 4px rgba(0,0,0,0.08);
+    transition:box-shadow 0.15s;}
+  .assess-card:hover{box-shadow:0 3px 12px rgba(0,0,0,0.12);}
+  .assess-card.interim{border-color:var(--red);}
+  .assess-card.eoy{border-color:var(--navy);}
+  .assess-card a{text-decoration:none;}
+  .assess-week{font-size:10px;font-weight:700;text-transform:uppercase;
+    color:var(--dark-gray);margin-bottom:6px;}
+  .assess-name{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+  .assess-sub{font-size:12px;color:var(--dark-gray);}
+  .assess-date{font-size:12px;color:var(--dark-gray);margin-top:6px;font-weight:600;}
+  .assess-flag{font-size:11px;color:var(--red);font-weight:600;margin-top:4px;}
+  .assess-link{display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+    padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;
+    background:var(--light-amber);color:var(--dark-amber);border:1px solid var(--amber);
+    text-decoration:none;transition:background 0.15s;}
+  .assess-link:hover{background:var(--amber);}
+  .assess-card.interim .assess-link{background:#FEE;color:var(--red);border-color:#FFAAAA;}
+  .assess-card.interim .assess-link:hover{background:#FFCCCC;}
+  .assess-card.eoy .assess-link{background:var(--light-blue);color:var(--navy);border-color:var(--blue);}
+
+  .coming-soon{background:white;border-radius:10px;padding:40px;text-align:center;
+    color:var(--dark-gray);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+  .coming-soon h3{font-size:18px;margin-bottom:8px;color:var(--navy);}
+  .sync{position:fixed;bottom:16px;right:16px;background:var(--green);color:white;
+    padding:8px 14px;border-radius:20px;font-size:12px;opacity:0;
+    transition:opacity 0.3s;z-index:999;pointer-events:none;}
+  .sync.show{opacity:1;}
+  .banner{background:var(--light-amber);border:1px solid var(--amber);border-radius:8px;
+    padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+  .scroll{overflow-x:auto;}
+  @media(max-width:700px){
+    nav{display:none;}
+    .lesson{grid-template-columns:28px 1fr auto;}
+    .lesson .type-badge,.lesson .res-btn{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sync" id="sync">✓ Saved</div>
+
+<header>
+  <div class="brand">
+    <div class="logo">W</div>
+    <div><h1>WCIB Maths Department</h1><p>Scheme of Work 2026/27</p></div>
+  </div>
+  <nav>
+    <button class="nav-btn active" data-view="hod">HOD Dashboard</button>
+    <button class="nav-btn" data-view="teacher">Teacher View</button>
+    <button class="nav-btn" data-view="assessments">Assessment Schedule</button>
+    <button class="nav-btn" data-view="calendar">School Calendar</button>
+  </nav>
+  <span class="badge">2026/27</span>
+</header>
+
+<div id="view-hod" class="view active">
+  <div class="stats-grid">
+    <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Avg lessons Done (Y7)</div></div>
+    <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label">Avg lessons In Progress (Y7)</div></div>
+    <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Classes behind pace</div></div>
+    <div class="stat"><div class="stat-num">11</div><div class="stat-label">Assessments scheduled (Y7)</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Year Group</div>
+    <div class="yg-tabs" id="yg-tabs"></div>
+    <div id="hod-content"></div>
+  </div>
+</div>
+
+<div id="view-teacher" class="view">
+  <div class="controls">
+    <div class="ctrl"><label>Year Group</label>
+      <select id="sel-yg">
+        <option value="7">Year 7</option>
+        <option disabled>Year 8 (coming soon)</option>
+        <option disabled>Year 9 (coming soon)</option>
+        <option disabled>Year 10 (coming soon)</option>
+        <option disabled>Year 11 (coming soon)</option>
+        <option disabled>Year 12 (coming soon)</option>
+        <option disabled>Year 13 (coming soon)</option>
+      </select>
+    </div>
+    <div class="ctrl"><label>Class Set</label>
+      <select id="sel-set">
+        <option value="Ma1">Ma1 — MKM</option>
+        <option value="Ma2">Ma2 — HPA</option>
+        <option value="Ma3">Ma3 — ADE</option>
+        <option value="Ma4">Ma4 — FTA</option>
+      </select>
+    </div>
+    <div class="ctrl"><label>Term</label>
+      <select id="sel-term">
+        <option value="all">All Terms</option>
+        <option value="Michaelmas">Michaelmas</option>
+        <option value="Lent">Lent</option>
+        <option value="Summer">Summer</option>
+      </select>
+    </div>
+    <button class="reset-btn" id="btn-reset">Reset My Progress</button>
+  </div>
+  <div id="teacher-content"></div>
+</div>
+
+<div id="view-assessments" class="view">
+  <div class="card">
+    <div class="card-title">Year 7 — Assessment Schedule 2026/27</div>
+    <div class="banner">
+      <span style="font-size:20px">📋</span>
+      <div><strong>Fixed dates — same for all sets.</strong> Click any assessment card to open the unit folder with tests and mark schemes on SharePoint.</div>
+    </div>
+    <div id="assess-content"></div>
+  </div>
+</div>
+
+<div id="view-calendar" class="view">
+  <div class="card">
+    <div class="card-title">WCIB Academic Calendar 2026/27 — Key Dates</div>
+    <div id="calendar-content"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const TEACHERS = { Ma1:'MKM', Ma2:'HPA', Ma3:'ADE', Ma4:'FTA' };
+const SETS = ['Ma1','Ma2','Ma3','Ma4'];
+const STORE_KEY = 'wcib_sow_v1';
+const PING_KEY  = 'wcib_sow_ping';
+
+// ── Unit folder links (SharePoint) ────────────────────────────────
+const UNIT_FOLDERS = {
+  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%201%20Analysing%20and%20displaying%20data?csf=1&web=1&e=cdcm1j',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%202%20Number?csf=1&web=1&e=oGk6tq',
+  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%203%20Equations,%20functions%20and%20formulae?csf=1&web=1&e=cxyYRO',
+  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%204%20Fractions?csf=1&web=1&e=SS5qsI',
+  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%205%20Angles%20and%20shapes?csf=1&web=1&e=qCKznL',
+  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%206%20Decimals%20and%20percentages?csf=1&web=1&e=JeiUdd',
+  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%207%20Ratio%20and%20proportion?csf=1&web=1&e=0QodW5',
+  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%208%20Measures%20and%20shapes?csf=1&web=1&e=w536uP',
+  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%209%20Sequences%20and%20graphs?csf=1&web=1&e=EuB4HD',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%2010%20Transformations?csf=1&web=1&e=sEGRa4',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%207/Unit%2011%20Probability?csf=1&web=1&e=j96zOo',
+};
+
+// ── Assessment / Unit Test folder links (SharePoint) ──────────────
+const ASSESSMENT_FOLDERS = {
+  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%201%20Analysing%20and%20displaying%20data?csf=1&web=1&e=HgqaX6',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%202%20Number?csf=1&web=1&e=AVdUBQ',
+  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%203%20Equations,%20functions%20and%20formulae?csf=1&web=1&e=ULvJVd',
+  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%204%20Fractions?csf=1&web=1&e=TYfh2Z',
+  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%205%20Angles%20and%20shapes?csf=1&web=1&e=StldiT',
+  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%206%20Decimals%20and%20percentages?csf=1&web=1&e=LqBlVU',
+  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%207%20Ratio%20and%20proportion?csf=1&web=1&e=JIPHHe',
+  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%208%20Measures%20and%20shapes?csf=1&web=1&e=N6xr1A',
+  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%209%20Sequences%20and%20graphs?csf=1&web=1&e=n1b7C1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%2010%20Transformations?csf=1&web=1&e=HYHEIi',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%2011%20Probability?csf=1&web=1&e=QLtnhn',
+};
+
+// ── Y7 SoW Data ───────────────────────────────────────────────────
+// obj field = short lesson objective shown inline
+const Y7_SOW = [
+  {id:'y7_1',  week:'M1A', dates:'26–28 Aug',    cycle:'A', unit:0,  unitName:'Baseline',                       lessonNo:'',     lessonName:'Baseline Assessment',                       type:'flex',       term:'Michaelmas', alert:'Partial week (3 days) — Welcome Day Wed 26 Aug'},
+  {id:'y7_2',  week:'M2B', dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'1.1',  lessonName:'Averages and range',                        type:'core',       term:'Michaelmas', obj:'Find mode, median, range. Calculate and interpret the mean. Compare data sets.'},
+  {id:'y7_3',  week:'M2B', dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'1.2',  lessonName:'More averages and range',                   type:'core',       term:'Michaelmas', obj:'Group discrete and continuous data. Interpret grouped frequency diagrams.'},
+  {id:'y7_4',  week:'M2B', dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'1.3',  lessonName:'Two-way tables and bar charts',              type:'core',       term:'Michaelmas', obj:'Use two-way tables. Interpret and draw dual and compound bar charts.'},
+  {id:'y7_5',  week:'M3A', dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'1.4',  lessonName:'More graphs and tables 1',                  type:'core',       term:'Michaelmas', obj:'Interpret and draw line graphs. Recognise misleading graphs.'},
+  {id:'y7_6',  week:'M3A', dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'1.5',  lessonName:'More graphs and tables 2',                  type:'core',       term:'Michaelmas', obj:'Choose appropriate graphs. Interpret pie charts with simple fractions.'},
+  {id:'y7_7',  week:'M3A', dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Michaelmas', obj:'Consolidate all Unit 1 statistics content.'},
+  {id:'y7_8',  week:'M4B', dates:'14–18 Sep',    cycle:'B', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Michaelmas', obj:'Extension and problem-solving activities for Unit 1.'},
+  {id:'y7_9',  week:'M4B', dates:'14–18 Sep',    cycle:'B', unit:1,  unitName:'Analysing & Displaying Data',    lessonNo:'★',    lessonName:'Unit 1 Assessment',                         type:'assessment', term:'Michaelmas'},
+  {id:'y7_10', week:'M5A', dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'Number',                         lessonNo:'2.1',  lessonName:'Rules of divisibility',                     type:'core',       term:'Michaelmas', obj:'Apply divisibility tests for 2, 3, 4, 5, 6, 7, 8, 9, 10.'},
+  {id:'y7_11', week:'M5A', dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'Number',                         lessonNo:'2.2',  lessonName:'Factors, multiples and primes',             type:'core',       term:'Michaelmas', obj:'Find multiples, factors, primes, all factor pairs. Calculate HCF and LCM.'},
+  {id:'y7_12', week:'M5A', dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'Number',                         lessonNo:'2.3',  lessonName:'Positive and negative numbers',             type:'core',       term:'Michaelmas', obj:'Compare, order, add and subtract positive and negative numbers.'},
+  {id:'y7_13', week:'M6B', dates:'28 Sep–2 Oct', cycle:'B', unit:2,  unitName:'Number',                         lessonNo:'2.4',  lessonName:'Squares and square roots',                  type:'core',       term:'Michaelmas', obj:'Recognise square numbers. Use squaring and square rooting as inverse operations.'},
+  {id:'y7_14', week:'M6B', dates:'28 Sep–2 Oct', cycle:'B', unit:2,  unitName:'Number',                         lessonNo:'2.5',  lessonName:'More powers and roots',                     type:'core',       term:'Michaelmas', obj:'Work with squares, cubes, square roots, cube roots. Use index notation.'},
+  {id:'y7_15', week:'M6B', dates:'28 Sep–2 Oct', cycle:'B', unit:2,  unitName:'Number',                         lessonNo:'2.6',  lessonName:'Calculations',                              type:'core',       term:'Michaelmas', obj:'Estimate answers. Use BIDMAS and order of operations.'},
+  {id:'y7_16', week:'M7A', dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'Number',                         lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Michaelmas', obj:'Consolidate all Unit 2 number content.', alert:'Last week before half term'},
+  {id:'y7_17', week:'M7A', dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'Number',                         lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Michaelmas', obj:'Extension and problem-solving activities for Unit 2.'},
+  {id:'y7_18', week:'M7A', dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'Number',                         lessonNo:'★',    lessonName:'Unit 2 Assessment',                         type:'assessment', term:'Michaelmas'},
+  {id:'y7_19', week:'M8B', dates:'12–16 Oct',    cycle:'B', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'3.1',  lessonName:'Simplifying algebraic expressions',         type:'core',       term:'Michaelmas', obj:'Simplify expressions by collecting like terms, including negatives.', alert:'⚠️ Tue 13 Oct national holiday'},
+  {id:'y7_20', week:'M8B', dates:'12–16 Oct',    cycle:'B', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'3.2',  lessonName:'Writing algebraic expressions',             type:'core',       term:'Michaelmas', obj:'Write expressions using all four operations for real-life contexts.'},
+  {id:'y7_21', week:'M8B', dates:'12–16 Oct',    cycle:'B', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'3.3',  lessonName:'STEM: Using formulae',                      type:'core',       term:'Michaelmas', obj:'Substitute values into formulae including scientific contexts.'},
+  {id:'y7_22', week:'M9A', dates:'26–30 Oct',    cycle:'A', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'3.4',  lessonName:'Writing formulae',                          type:'core',       term:'Michaelmas', obj:'Write formulae from a description or word problem.', alert:'After half term'},
+  {id:'y7_23', week:'M9A', dates:'26–30 Oct',    cycle:'A', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'3.5',  lessonName:'Brackets and formulae',                     type:'core',       term:'Michaelmas', obj:'Expand expressions with single brackets. Link expansion to substitution.'},
+  {id:'y7_24', week:'M9A', dates:'26–30 Oct',    cycle:'A', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Michaelmas', obj:'Consolidate all Unit 3 algebra content.'},
+  {id:'y7_25', week:'M10B',dates:'2–6 Nov',      cycle:'B', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Michaelmas', obj:'Extension and problem-solving activities for Unit 3.'},
+  {id:'y7_26', week:'M10B',dates:'2–6 Nov',      cycle:'B', unit:3,  unitName:'Equations, Functions & Formulae',lessonNo:'★',    lessonName:'Unit 3 Assessment',                         type:'assessment', term:'Michaelmas'},
+  {id:'y7_27', week:'M10B',dates:'2–6 Nov',      cycle:'B', unit:4,  unitName:'Fractions',                      lessonNo:'4.1',  lessonName:'Working with fractions',                    type:'core',       term:'Michaelmas', obj:'Compare and simplify fractions. Find fractions of amounts.'},
+  {id:'y7_28', week:'M11A',dates:'9–13 Nov',     cycle:'A', unit:4,  unitName:'Fractions',                      lessonNo:'4.2',  lessonName:'Adding and subtracting fractions',          type:'core',       term:'Michaelmas', obj:'Convert between improper fractions and mixed numbers. Add and subtract unlike fractions.'},
+  {id:'y7_29', week:'M11A',dates:'9–13 Nov',     cycle:'A', unit:4,  unitName:'Fractions',                      lessonNo:'4.3',  lessonName:'Fractions, decimals and percentages',       type:'core',       term:'Michaelmas', obj:'Convert between equivalent fractions, decimals and percentages.'},
+  {id:'y7_30', week:'M11A',dates:'9–13 Nov',     cycle:'A', unit:4,  unitName:'Fractions',                      lessonNo:'4.4',  lessonName:'Multiplying by a fraction',                 type:'core',       term:'Michaelmas', obj:'Multiply a fraction by a whole number and by a fraction. Use area models.'},
+  {id:'y7_31', week:'M12B',dates:'16–20 Nov',    cycle:'B', unit:4,  unitName:'Fractions',                      lessonNo:'4.5',  lessonName:'Working with mixed numbers',                type:'core',       term:'Michaelmas', obj:'Add, subtract and multiply mixed numbers.'},
+  {id:'y7_32', week:'M12B',dates:'16–20 Nov',    cycle:'B', unit:4,  unitName:'Fractions',                      lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Michaelmas', obj:'Consolidate all Unit 4 fractions content.'},
+  {id:'y7_33', week:'M12B',dates:'16–20 Nov',    cycle:'B', unit:4,  unitName:'Fractions',                      lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Michaelmas', obj:'Extension and problem-solving activities for Unit 4.'},
+  {id:'y7_34', week:'M13A',dates:'23–27 Nov',    cycle:'A', unit:4,  unitName:'Fractions',                      lessonNo:'★',    lessonName:'Unit 4 Assessment — INTERIM DATA DROP',     type:'assessment', term:'Michaelmas'},
+  {id:'y7_35', week:'M13A',dates:'23–27 Nov',    cycle:'A', unit:0,  unitName:'Flex',                           lessonNo:'',     lessonName:'Enrichment / Problem Solving',              type:'flex',       term:'Michaelmas'},
+  {id:'y7_36', week:'M14B',dates:'30 Nov–4 Dec', cycle:'B', unit:0,  unitName:'Flex',                           lessonNo:'',     lessonName:'Enrichment / Problem Solving',              type:'flex',       term:'Michaelmas'},
+  {id:'y7_37', week:'M15A',dates:'7–11 Dec',     cycle:'A', unit:0,  unitName:'Flex',                           lessonNo:'',     lessonName:'Enrichment / Problem Solving',              type:'flex',       term:'Michaelmas', alert:'⚠️ Mon 7 + Thu 10 Dec national holidays'},
+  {id:'y7_38', week:'M16B',dates:'14–16 Dec',    cycle:'B', unit:0,  unitName:'Flex',                           lessonNo:'',     lessonName:'Enrichment / Problem Solving',              type:'flex',       term:'Michaelmas', alert:'Partial week — term ends Wed 16 Dec'},
+  // LENT
+  {id:'y7_39', week:'L1A', dates:'4–8 Jan',      cycle:'A', unit:5,  unitName:'Angles & Shapes',                lessonNo:'5.1',  lessonName:'Working with angles',                       type:'core',       term:'Lent', obj:'Use a protractor. Apply angle facts: straight line, full turn, vertically opposite.', alert:'⚠️ INSET Wed 6 Jan — teaching starts Thu 7 Jan'},
+  {id:'y7_40', week:'L1A', dates:'4–8 Jan',      cycle:'A', unit:5,  unitName:'Angles & Shapes',                lessonNo:'5.2',  lessonName:'Triangles',                                 type:'core',       term:'Lent', obj:'Properties and symmetry of triangles. Find unknown angles.'},
+  {id:'y7_41', week:'L2B', dates:'11–15 Jan',    cycle:'B', unit:5,  unitName:'Angles & Shapes',                lessonNo:'5.3',  lessonName:'Quadrilaterals',                            type:'core',       term:'Lent', obj:'Properties and symmetry of quadrilaterals. Prove angle sum = 360°.'},
+  {id:'y7_42', week:'L2B', dates:'11–15 Jan',    cycle:'B', unit:5,  unitName:'Angles & Shapes',                lessonNo:'5.4',  lessonName:'Construction',                              type:'core',       term:'Lent', obj:'Draw triangles accurately using ruler and protractor. Draw scale diagrams.'},
+  {id:'y7_43', week:'L2B', dates:'11–15 Jan',    cycle:'B', unit:5,  unitName:'Angles & Shapes',                lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Lent', obj:'Consolidate all Unit 5 geometry content.'},
+  {id:'y7_44', week:'L3A', dates:'18–22 Jan',    cycle:'A', unit:5,  unitName:'Angles & Shapes',                lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Lent', obj:'Extension and problem-solving activities for Unit 5.'},
+  {id:'y7_45', week:'L3A', dates:'18–22 Jan',    cycle:'A', unit:5,  unitName:'Angles & Shapes',                lessonNo:'★',    lessonName:'Unit 5 Assessment',                         type:'assessment', term:'Lent'},
+  {id:'y7_46', week:'L3A', dates:'18–22 Jan',    cycle:'A', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.1',  lessonName:'Place value and rounding',                  type:'core',       term:'Lent', obj:'Recognise place value in large numbers. Round decimals to 1 and 2 d.p.'},
+  {id:'y7_47', week:'L4B', dates:'25–29 Jan',    cycle:'B', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.2',  lessonName:'Ordering decimals',                         type:'core',       term:'Lent', obj:'Write decimals in ascending and descending order. Use a number line.'},
+  {id:'y7_48', week:'L4B', dates:'25–29 Jan',    cycle:'B', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.3',  lessonName:'Adding and subtracting decimals',           type:'core',       term:'Lent', obj:'Add and subtract decimals. Align decimal points correctly.'},
+  {id:'y7_49', week:'L4B', dates:'25–29 Jan',    cycle:'B', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.4',  lessonName:'Multiplying decimals',                      type:'core',       term:'Lent', obj:'Multiply a decimal by an integer. Use rounding to estimate.'},
+  {id:'y7_50', week:'L5A', dates:'1–5 Feb',      cycle:'A', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.5',  lessonName:'Dividing decimals',                         type:'core',       term:'Lent', obj:'Divide decimals by a whole number. Solve contextual problems.'},
+  {id:'y7_51', week:'L5A', dates:'1–5 Feb',      cycle:'A', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.6',  lessonName:'Decimals, fractions and percentages',       type:'core',       term:'Lent', obj:'Compare and convert between decimals, fractions and percentages.'},
+  {id:'y7_52', week:'L5A', dates:'1–5 Feb',      cycle:'A', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'6.7',  lessonName:'Calculating percentages',                   type:'core',       term:'Lent', obj:'Calculate percentages of amounts mentally. Use efficient percentage methods.'},
+  {id:'y7_53', week:'L6B', dates:'8–12 Feb',     cycle:'B', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Lent', obj:'Consolidate place value, decimal operations and percentages.', alert:'Last week before half term'},
+  {id:'y7_54', week:'L6B', dates:'8–12 Feb',     cycle:'B', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Lent', obj:'Extension and problem-solving activities for Unit 6.'},
+  {id:'y7_55', week:'L6B', dates:'8–12 Feb',     cycle:'B', unit:6,  unitName:'Decimals & Percentages',         lessonNo:'★',    lessonName:'Unit 6 Assessment',                         type:'assessment', term:'Lent'},
+  {id:'y7_56', week:'L7A', dates:'22–26 Feb',    cycle:'A', unit:0,  unitName:'Adventure Week',                 lessonNo:'',     lessonName:'Adventure Week — No Y7 teaching',           type:'flex',       term:'Lent', alert:'⚠️ ADVENTURE WEEK — Full week lost'},
+  {id:'y7_57', week:'L8B', dates:'1–5 Mar',      cycle:'B', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'7.1',  lessonName:'Writing ratios',                            type:'core',       term:'Lent', obj:'Write and understand ratios. Simplify ratios.', alert:'After Adventure Week'},
+  {id:'y7_58', week:'L8B', dates:'1–5 Mar',      cycle:'B', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'7.2',  lessonName:'Sharing in a given ratio',                  type:'core',       term:'Lent', obj:'Share a quantity in a given ratio with two or more parts.'},
+  {id:'y7_59', week:'L8B', dates:'1–5 Mar',      cycle:'B', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'7.3',  lessonName:'Proportion',                                type:'core',       term:'Lent', obj:'Understand the relationship between ratio and proportion.'},
+  {id:'y7_60', week:'L9A', dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'7.4',  lessonName:'Proportional reasoning',                    type:'core',       term:'Lent', obj:'Solve problems involving direct and inverse proportion.'},
+  {id:'y7_61', week:'L9A', dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'7.5',  lessonName:'Using the unitary method',                  type:'core',       term:'Lent', obj:'Solve best-buy and proportion problems using the unitary method.'},
+  {id:'y7_62', week:'L9A', dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Lent', obj:'Consolidate ratios, proportion and unitary method.'},
+  {id:'y7_63', week:'L10B',dates:'15–19 Mar',    cycle:'B', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Lent', obj:'Extension and problem-solving activities for Unit 7.'},
+  {id:'y7_64', week:'L10B',dates:'15–19 Mar',    cycle:'B', unit:7,  unitName:'Ratio & Proportion',             lessonNo:'★',    lessonName:'Unit 7 Assessment — INTERIM DATA DROP',     type:'assessment', term:'Lent'},
+  {id:'y7_65', week:'L10B',dates:'15–19 Mar',    cycle:'B', unit:8,  unitName:'Measures & Shapes',              lessonNo:'8.1',  lessonName:'STEM: Metric measures',                     type:'core',       term:'Lent', obj:'Convert between metric units of length, mass and capacity.'},
+  {id:'y7_66', week:'L11A',dates:'22–26 Mar',    cycle:'A', unit:8,  unitName:'Measures & Shapes',              lessonNo:'8.2',  lessonName:'Perimeter',                                 type:'core',       term:'Lent', obj:'Find the perimeter of regular and irregular polygons including compound shapes.'},
+  {id:'y7_67', week:'L11A',dates:'22–26 Mar',    cycle:'A', unit:8,  unitName:'Measures & Shapes',              lessonNo:'8.3',  lessonName:'Area',                                      type:'core',       term:'Lent', obj:'Calculate area of squares, rectangles and compound shapes.'},
+  {id:'y7_68', week:'L11A',dates:'22–26 Mar',    cycle:'A', unit:8,  unitName:'Measures & Shapes',              lessonNo:'8.4',  lessonName:'3D solids',                                 type:'core',       term:'Lent', obj:'Identify properties of 3D solids. Explore reflective symmetry in 3D.'},
+  {id:'y7_69', week:'L12B',dates:'29 Mar–2 Apr', cycle:'B', unit:8,  unitName:'Measures & Shapes',              lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Lent', obj:'Consolidate metric units, perimeter, area and 3D solids.', alert:'Last week of Lent — ends Fri 2 Apr'},
+  {id:'y7_70', week:'L12B',dates:'29 Mar–2 Apr', cycle:'B', unit:8,  unitName:'Measures & Shapes',              lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Lent', obj:'Extension and problem-solving activities for Unit 8.'},
+  {id:'y7_71', week:'L12B',dates:'29 Mar–2 Apr', cycle:'B', unit:8,  unitName:'Measures & Shapes',              lessonNo:'★',    lessonName:'Unit 8 Assessment',                         type:'assessment', term:'Lent'},
+  // SUMMER
+  {id:'y7_72', week:'S1A', dates:'19–23 Apr',    cycle:'A', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'9.1',  lessonName:'Sequences',                                 type:'core',       term:'Summer', obj:'Find and use term-to-term rules in arithmetic sequences.', alert:'First week of Summer term'},
+  {id:'y7_73', week:'S1A', dates:'19–23 Apr',    cycle:'A', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'9.2',  lessonName:'The nth term',                              type:'core',       term:'Summer', obj:'Work out and use nth term expressions for arithmetic sequences.'},
+  {id:'y7_74', week:'S1A', dates:'19–23 Apr',    cycle:'A', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'9.3',  lessonName:'Pattern sequences',                         type:'core',       term:'Summer', obj:'Generate sequences from patterns. Predict continuation of geometric sequences.'},
+  {id:'y7_75', week:'S2B', dates:'26–30 Apr',    cycle:'B', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'9.4',  lessonName:'Coordinates and line segments',             type:'core',       term:'Summer', obj:'Plot positive and negative coordinates. Find the midpoint of a line segment.'},
+  {id:'y7_76', week:'S2B', dates:'26–30 Apr',    cycle:'B', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'9.5',  lessonName:'Graphs',                                    type:'core',       term:'Summer', obj:'Draw straight-line graphs. Recognise y=x, y=−x and lines parallel to axes.'},
+  {id:'y7_77', week:'S2B', dates:'26–30 Apr',    cycle:'B', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'9.6',  lessonName:'Working with graphs',                       type:'core',       term:'Summer', obj:'Draw graphs representing relationships. Solve problems using straight-line graphs.'},
+  {id:'y7_78', week:'S3A', dates:'3–7 May',      cycle:'A', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Summer', obj:'Consolidate sequences, nth term and straight-line graphs.', alert:'⚠️ Tue 4 May national holiday'},
+  {id:'y7_79', week:'S3A', dates:'3–7 May',      cycle:'A', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Summer', obj:'Extension and problem-solving activities for Unit 9.'},
+  {id:'y7_80', week:'S3A', dates:'3–7 May',      cycle:'A', unit:9,  unitName:'Sequences & Graphs',             lessonNo:'★',    lessonName:'Unit 9 Assessment',                         type:'assessment', term:'Summer'},
+  {id:'y7_81', week:'S4B', dates:'10–14 May',    cycle:'B', unit:10, unitName:'Transformations',                lessonNo:'10.1', lessonName:'Congruency and enlargements',                type:'core',       term:'Summer', obj:'Identify congruent shapes. Enlarge using positive scale factors.'},
+  {id:'y7_82', week:'S4B', dates:'10–14 May',    cycle:'B', unit:10, unitName:'Transformations',                lessonNo:'10.2', lessonName:'Reflection',                                type:'core',       term:'Summer', obj:'Carry out and describe reflections on a coordinate grid.'},
+  {id:'y7_83', week:'S4B', dates:'10–14 May',    cycle:'B', unit:10, unitName:'Transformations',                lessonNo:'10.3', lessonName:'Rotation',                                  type:'core',       term:'Summer', obj:'Carry out and describe rotations on a coordinate grid.'},
+  {id:'y7_84', week:'S5A', dates:'17–21 May',    cycle:'A', unit:10, unitName:'Transformations',                lessonNo:'10.4', lessonName:'Translations and combined transformations',  type:'core',       term:'Summer', obj:'Translate 2D shapes using column vectors. Combine two or more transformations.'},
+  {id:'y7_85', week:'S5A', dates:'17–21 May',    cycle:'A', unit:10, unitName:'Transformations',                lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Summer', obj:'Consolidate congruency, enlargement and all four transformations.'},
+  {id:'y7_86', week:'S5A', dates:'17–21 May',    cycle:'A', unit:10, unitName:'Transformations',                lessonNo:'CSE2', lessonName:'Check up, Strengthen & Extend (cont.)',      type:'cse',        term:'Summer', obj:'Extension and problem-solving activities for Unit 10.'},
+  {id:'y7_87', week:'S6B', dates:'24–28 May',    cycle:'B', unit:10, unitName:'Transformations',                lessonNo:'★',    lessonName:'Unit 10 Assessment',                        type:'assessment', term:'Summer'},
+  {id:'y7_88', week:'S6B', dates:'24–28 May',    cycle:'B', unit:11, unitName:'Probability',                    lessonNo:'11.1', lessonName:'Comparing and calculating probabilities',    type:'core',       term:'Summer', obj:'Use probability scale 0–1. List outcomes systematically. Calculate P(event) as a fraction.'},
+  {id:'y7_89', week:'S6B', dates:'24–28 May',    cycle:'B', unit:11, unitName:'Probability',                    lessonNo:'11.2', lessonName:'More probability calculations',             type:'core',       term:'Summer', obj:'Identify complementary events. Compare experimental and theoretical probability.'},
+  {id:'y7_90', week:'S7A', dates:'31 May–4 Jun', cycle:'A', unit:11, unitName:'Probability',                    lessonNo:'CSE',  lessonName:'Check up, Strengthen & Extend',             type:'cse',        term:'Summer', obj:'Consolidate probability scale, outcomes and calculating probability.', alert:'⚠️ Y7–9 Summer Exams + Thu/Fri national holidays'},
+  {id:'y7_91', week:'S7A', dates:'31 May–4 Jun', cycle:'A', unit:11, unitName:'Probability',                    lessonNo:'★',    lessonName:'Unit 11 Assessment',                        type:'assessment', term:'Summer'},
+  {id:'y7_92', week:'S8B', dates:'7–11 Jun',     cycle:'B', unit:0,  unitName:'Revision',                       lessonNo:'',     lessonName:'Revision — Units 1 to 5',                   type:'flex',       term:'Summer'},
+  {id:'y7_93', week:'S8B', dates:'7–11 Jun',     cycle:'B', unit:0,  unitName:'Revision',                       lessonNo:'',     lessonName:'Revision — Units 6 to 11',                  type:'flex',       term:'Summer'},
+  {id:'y7_94', week:'S8B', dates:'7–11 Jun',     cycle:'B', unit:0,  unitName:'Revision',                       lessonNo:'',     lessonName:'Practice Paper',                            type:'flex',       term:'Summer'},
+  {id:'y7_95', week:'S9A', dates:'14–18 Jun',    cycle:'A', unit:0,  unitName:'EoY Exam',                       lessonNo:'',     lessonName:'End of Year Examination — Paper 1',         type:'assessment', term:'Summer'},
+  {id:'y7_96', week:'S9A', dates:'14–18 Jun',    cycle:'A', unit:0,  unitName:'EoY Exam',                       lessonNo:'',     lessonName:'End of Year Examination — Paper 2',         type:'assessment', term:'Summer'},
+  {id:'y7_97', week:'S9A', dates:'14–18 Jun',    cycle:'A', unit:0,  unitName:'EoY Exam',                       lessonNo:'',     lessonName:'Return and Review',                         type:'flex',       term:'Summer'},
+  {id:'y7_98', week:'S10B',dates:'21–25 Jun',    cycle:'B', unit:0,  unitName:'PBL',                            lessonNo:'',     lessonName:'PBL Activity',                              type:'flex',       term:'Summer'},
+  {id:'y7_99', week:'S11A',dates:'28–30 Jun',    cycle:'A', unit:0,  unitName:'PBL',                            lessonNo:'',     lessonName:'PBL Activity',                              type:'flex',       term:'Summer', alert:'Partial week — term ends Wed 30 Jun 12pm'},
+];
+
+const ASSESSMENTS = [
+  {name:'Unit 1 Assessment',      sub:'Analysing & Displaying Data',                  week:'M4B',  dates:'14–18 Sep 2026',    term:'Michaelmas', unit:1},
+  {name:'Unit 2 Assessment',      sub:'Number',                                       week:'M7A',  dates:'5–9 Oct 2026',      term:'Michaelmas', unit:2},
+  {name:'Unit 3 Assessment',      sub:'Equations, Functions & Formulae',              week:'M10B', dates:'2–6 Nov 2026',      term:'Michaelmas', unit:3},
+  {name:'Unit 4 Assessment ★ INTERIM', sub:'Fractions — Data Drop Units 1–4',        week:'M13A', dates:'23–27 Nov 2026',    term:'Michaelmas', unit:4, interim:true},
+  {name:'Unit 5 Assessment',      sub:'Angles & Shapes',                              week:'L3A',  dates:'18–22 Jan 2027',    term:'Lent',       unit:5},
+  {name:'Unit 6 Assessment',      sub:'Decimals & Percentages',                       week:'L6B',  dates:'8–12 Feb 2027',     term:'Lent',       unit:6},
+  {name:'Unit 7 Assessment ★ INTERIM', sub:'Ratio & Proportion — Data Drop Units 5–7',week:'L10B',dates:'15–19 Mar 2027',    term:'Lent',       unit:7, interim:true},
+  {name:'Unit 8 Assessment',      sub:'Measures & Shapes',                            week:'L12B', dates:'29 Mar–2 Apr 2027', term:'Lent',       unit:8},
+  {name:'Unit 9 Assessment',      sub:'Sequences & Graphs',                           week:'S3A',  dates:'3–7 May 2027',      term:'Summer',     unit:9},
+  {name:'Unit 10 Assessment',     sub:'Transformations',                               week:'S6B',  dates:'24–28 May 2027',    term:'Summer',     unit:10},
+  {name:'Unit 11 Assessment',     sub:'Probability',                                  week:'S7A',  dates:'31 May–4 Jun 2027', term:'Summer',     unit:11},
+  {name:'End of Year Examination',sub:'Full year — Units 1–11 (2 papers)',             week:'S9A',  dates:'14–18 Jun 2027',    term:'Summer',     unit:0, eoy:true},
+];
+
+const CALENDAR_EVENTS = [
+  {term:'Michaelmas', label:'Michaelmas Half Term',    dates:'19–23 Oct 2026',          type:'break'},
+  {term:'Michaelmas', label:'National Holiday',        dates:'Tue 13 Oct 2026',         type:'holiday', note:'Reduced lessons M8B'},
+  {term:'Michaelmas', label:'National Holidays',       dates:'Mon 7 + Thu 10 Dec 2026', type:'holiday', note:'Reduced lessons M15A'},
+  {term:'Michaelmas', label:'Term ends 12pm',          dates:'Wed 16 Dec 2026',         type:'partial', note:'M16B partial week'},
+  {term:'Lent',       label:'INSET Day',               dates:'Wed 6 Jan 2027',          type:'inset',   note:'Teaching starts Thu 7 Jan'},
+  {term:'Lent',       label:'Lent Half Term',          dates:'15–19 Feb 2027',          type:'break'},
+  {term:'Lent',       label:'⚠️ Adventure Week (Y7–9)',dates:'22–26 Feb 2027',          type:'adventure',note:'Full week lost — no Y7 teaching'},
+  {term:'Summer',     label:'National Holidays',       dates:'Thu 3 + Fri 4 Jun 2027',  type:'holiday', note:'Reduced lessons S7A'},
+  {term:'Summer',     label:'⚠️ Y7–9 Summer Exams',    dates:'31 May–4 Jun 2027',       type:'exams',   note:'No curriculum teaching S7A'},
+  {term:'Summer',     label:'Term ends 12pm',          dates:'Wed 30 Jun 2027',         type:'partial', note:'S11A partial week'},
+];
+
+// ════════════════════════════════════════════════════════════════════
+//  STORAGE
+// ════════════════════════════════════════════════════════════════════
+function loadAll(){
+  try{ const r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):{}; }
+  catch(e){ return {}; }
+}
+function saveAll(data){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    localStorage.setItem(PING_KEY, String(Date.now()));
+    flashSync();
+  }catch(e){ console.error('Save failed',e); }
+}
+function makeKey(lessonId,set){ return lessonId+'__'+set; }
+function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
+function setStatusValue(lessonId,set,val){ const d=loadAll(); d[makeKey(lessonId,set)]=val; saveAll(d); }
+
+let _flashT;
+function flashSync(){
+  const el=document.getElementById('sync');
+  if(!el)return;
+  el.classList.add('show');
+  clearTimeout(_flashT);
+  _flashT=setTimeout(()=>el.classList.remove('show'),1200);
+}
+
+window.addEventListener('storage',e=>{ if(e.key===PING_KEY) refreshActiveView(); });
+
+// ════════════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════════════
+function statusClass(s){
+  return s==='Done'?'s-done':s==='In progress'?'s-prog':s==='N/A'?'s-na':'s-not';
+}
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function getTeachable(){ return Y7_SOW.filter(l=>l.type==='core'||l.type==='cse'||l.type==='assessment'); }
+
+function getProgress(set){
+  const t=getTeachable(); let done=0,prog=0,ns=0;
+  t.forEach(l=>{const s=getStatus(l.id,set); if(s==='Done')done++; else if(s==='In progress')prog++; else ns++;});
+  return {done,prog,ns,pct:t.length?Math.round(done/t.length*100):0,total:t.length};
+}
+
+function folderBtn(unit){
+  if(!unit||!UNIT_FOLDERS[unit]) return '';
+  return `<a href="${UNIT_FOLDERS[unit]}" target="_blank" class="res-btn" title="Open lesson plan folder on SharePoint">📂 Resources</a>`;
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════════════════════
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelector(`.nav-btn[data-view="${name}"]`).classList.add('active');
+  refreshActiveView();
+}
+function refreshActiveView(){
+  const id=document.querySelector('.view.active').id;
+  if(id==='view-hod') renderHOD();
+  else if(id==='view-teacher') renderTeacher();
+  else if(id==='view-assessments') renderAssessments();
+  else if(id==='view-calendar') renderCalendar();
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  HOD
+// ════════════════════════════════════════════════════════════════════
+function renderYearTabs(){
+  const yrs=[{y:'7',on:true},{y:'8'},{y:'9'},{y:'10'},{y:'11'},{y:'12'},{y:'13'}];
+  document.getElementById('yg-tabs').innerHTML=yrs.map(yr=>
+    `<button class="yg-tab${yr.on?' active':''}${yr.on?'':' disabled'}" data-year="${yr.y}">Year ${yr.y}</button>`
+  ).join('');
+}
+
+function renderHOD(){
+  let td=0,tp=0,behind=0;
+  let html='<div class="scroll"><table class="hod-table"><thead><tr>'+
+    '<th>Teacher</th><th>Class</th><th>Done</th><th>In Progress</th><th>Not Started</th><th>Progress</th>'+
+    '</tr></thead><tbody>';
+  SETS.forEach(set=>{
+    const p=getProgress(set); td+=p.done; tp+=p.prog;
+    if(p.pct<40)behind++;
+    const bc=p.pct>=70?'':p.pct>=40?'amber':'red';
+    html+=`<tr>
+      <td><span class="avatar">${TEACHERS[set]}</span><strong>${TEACHERS[set]}</strong></td>
+      <td>${set}</td>
+      <td><span class="pill done">${p.done}</span></td>
+      <td><span class="pill prog">${p.prog}</span></td>
+      <td><span class="pill not">${p.ns}</span></td>
+      <td><div class="bar-wrap"><div class="bar ${bc}" style="width:${p.pct}%"></div></div>
+      <span style="font-size:11px;color:var(--dark-gray)">${p.pct}%</span></td>
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('hod-content').innerHTML=html;
+  document.getElementById('stat-done').textContent=Math.round(td/SETS.length);
+  document.getElementById('stat-prog').textContent=Math.round(tp/SETS.length);
+  document.getElementById('stat-behind').textContent=behind;
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  TEACHER VIEW
+// ════════════════════════════════════════════════════════════════════
+function renderTeacher(){
+  const yg=document.getElementById('sel-yg').value;
+  const set=document.getElementById('sel-set').value;
+  const tf=document.getElementById('sel-term').value;
+
+  if(yg!=='7'){
+    document.getElementById('teacher-content').innerHTML=
+      `<div class="coming-soon"><h3>Year ${yg} SoW coming soon</h3><p>Upload the Year ${yg} SoW to activate this view.</p></div>`;
+    return;
+  }
+
+  const lessons=tf==='all'?Y7_SOW:Y7_SOW.filter(l=>l.term===tf);
+  const p=getProgress(set);
+
+  let html=`<div class="card"><div class="tv-header">
+    <div>
+      <div class="tv-title">${TEACHERS[set]} — ${set} · Year ${yg}</div>
+      <div id="tv-lbl" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">
+        ${p.done} of ${p.total} lessons completed (${p.pct}%)</div>
+    </div>
+    <div class="tv-progress-wrap">
+      <div class="tv-bar-wrap"><div id="tv-bar" class="tv-bar" style="width:${p.pct}%"></div></div>
+      <span id="tv-pct" style="font-weight:700;color:var(--navy)">${p.pct}%</span>
+    </div>
+  </div></div>`;
+
+  const terms=[...new Set(lessons.map(l=>l.term))];
+  terms.forEach(term=>{
+    const tl=lessons.filter(l=>l.term===term);
+    const tt=tl.filter(l=>l.type!=='flex');
+    const td=tt.filter(l=>getStatus(l.id,set)==='Done').length;
+    const tp2=tt.length?Math.round(td/tt.length*100):0;
+    html+=`<div class="term"><div class="term-header">
+      <span>${term} Term</span>
+      <span class="term-progress">${td}/${tt.length} lessons done (${tp2}%)</span>
+    </div>`;
+
+    const weeks=[...new Set(tl.map(l=>l.week))];
+    weeks.forEach(wk=>{
+      const wkL=tl.filter(l=>l.week===wk);
+      const first=wkL[0];
+      const alertL=wkL.find(l=>l.alert);
+      html+=`<div class="week"><div class="week-header">
+        <span class="week-label">Week ${wk}</span>
+        <span class="week-dates">${first.dates} · Cycle ${first.cycle}</span>
+        ${alertL?`<span class="week-alert">${alertL.alert}</span>`:''}
+      </div>`;
+
+      wkL.forEach(lesson=>{
+        const isA=lesson.type==='assessment';
+        const isC=lesson.type==='cse';
+        const isF=lesson.type==='flex';
+        const rc=isA?'assess':isC?'cse':isF?'flex':'';
+        const bc=isA?'assess':isC?'cse':isF?'flex':'core';
+        const bt=isA?'ASSESSMENT':isC?'CSE':isF?'FLEX':'CORE';
+        const status=isF?'N/A':getStatus(lesson.id,set);
+        const sc=statusClass(status);
+
+        html+=`<div class="lesson ${rc}">
+          <div class="lesson-num">${esc(lesson.lessonNo)||'—'}</div>
+          <div class="lesson-info">
+            <div class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</div>
+            ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
+          </div>
+          <span class="type-badge ${bc}">${bt}</span>
+          ${lesson.unit?folderBtn(lesson.unit):'<span></span>'}
+          ${isF
+            ?`<div class="na-badge">N/A</div>`
+            :`<select class="status-sel ${sc}" data-lesson-id="${lesson.id}" data-set="${set}">
+                <option ${status==='Not started'?'selected':''}>Not started</option>
+                <option ${status==='In progress'?'selected':''}>In progress</option>
+                <option ${status==='Done'?'selected':''}>Done</option>
+                <option ${status==='N/A'?'selected':''}>N/A</option>
+              </select>`}
+        </div>`;
+      });
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+
+  document.getElementById('teacher-content').innerHTML=html;
+  document.querySelectorAll('.status-sel').forEach(sel=>sel.addEventListener('change',handleChange));
+}
+
+function handleChange(e){
+  const sel=e.target, id=sel.dataset.lessonId, set=sel.dataset.set, val=sel.value;
+  setStatusValue(id,set,val);
+  sel.className='status-sel '+statusClass(val);
+  // Update progress bar
+  const set2=document.getElementById('sel-set').value;
+  const p=getProgress(set2);
+  const bar=document.getElementById('tv-bar');
+  const pct=document.getElementById('tv-pct');
+  const lbl=document.getElementById('tv-lbl');
+  if(bar)bar.style.width=p.pct+'%';
+  if(pct)pct.textContent=p.pct+'%';
+  if(lbl)lbl.textContent=`${p.done} of ${p.total} lessons completed (${p.pct}%)`;
+}
+
+function resetProgress(){
+  if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
+  const set=document.getElementById('sel-set').value;
+  const d=loadAll();
+  Y7_SOW.forEach(l=>delete d[makeKey(l.id,set)]);
+  saveAll(d);
+  renderTeacher();
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  ASSESSMENTS
+// ════════════════════════════════════════════════════════════════════
+function renderAssessments(){
+  const terms=['Michaelmas','Lent','Summer'];
+  let html='';
+  terms.forEach(term=>{
+    const ta=ASSESSMENTS.filter(a=>a.term===term);
+    if(!ta.length)return;
+    html+=`<div style="margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
+        margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
+      <div class="assess-grid">`;
+    ta.forEach(a=>{
+      const cls=a.eoy?'eoy':a.interim?'interim':'';
+      const folderUrl=a.unit?ASSESSMENT_FOLDERS[a.unit]:'';
+      const linkText=a.eoy?'📂 Open EoY folder':'📋 Open unit test folder';
+      html+=`<div class="assess-card ${cls}">
+        <div class="assess-week">${a.week}</div>
+        <div class="assess-name">${esc(a.name)}</div>
+        <div class="assess-sub">${esc(a.sub)}</div>
+        <div class="assess-date">📅 ${a.dates}</div>
+        ${a.interim?'<div class="assess-flag">★ INTERIM DATA DROP</div>':''}
+        ${a.eoy?'<div class="assess-flag" style="color:var(--navy);">Full year — 2 papers</div>':''}
+        ${folderUrl?`<a href="${folderUrl}" target="_blank" class="assess-link">${linkText}</a>`:''}
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('assess-content').innerHTML=html;
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  CALENDAR
+// ════════════════════════════════════════════════════════════════════
+function renderCalendar(){
+  const tc={Michaelmas:'#1F4E79',Lent:'#375623',Summer:'#7F3F00'};
+  const td={'Michaelmas':'Wed 26 Aug – Wed 16 Dec 2026','Lent':'Thu 7 Jan – Fri 2 Apr 2027','Summer':'Mon 19 Apr – Wed 30 Jun 2027'};
+  let html='';
+  ['Michaelmas','Lent','Summer'].forEach(term=>{
+    const evs=CALENDAR_EVENTS.filter(e=>e.term===term);
+    html+=`<div style="margin-bottom:24px;">
+      <div style="background:${tc[term]};color:white;padding:10px 16px;border-radius:8px;font-weight:600;margin-bottom:12px;">
+        ${term} Term · <span style="font-weight:400;font-size:13px;">${td[term]}</span></div>`;
+    evs.forEach(e=>{
+      const isAd=e.type==='adventure'||e.type==='exams';
+      const bg=isAd?'#FFF5F5':e.type==='break'?'#EBF3FB':e.type==='inset'?'#FFF2CC':'#F8F8F8';
+      const bd=isAd?'var(--red)':e.type==='break'?'var(--blue)':e.type==='inset'?'var(--amber)':'var(--mid-gray)';
+      html+=`<div style="background:${bg};border-left:4px solid ${bd};border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;">
+        <div style="font-weight:600;font-size:13px;">${e.label}</div>
+        <div style="font-size:12px;color:var(--dark-gray);margin-top:2px;">📅 ${e.dates}</div>
+        ${e.note?`<div style="font-size:12px;color:${isAd?'var(--red)':'var(--dark-gray)'};margin-top:3px;font-weight:${isAd?'600':'400'}">${e.note}</div>`:''}
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('calendar-content').innerHTML=html;
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════════
+function init(){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+  document.getElementById('sel-yg').addEventListener('change',renderTeacher);
+  document.getElementById('sel-set').addEventListener('change',renderTeacher);
+  document.getElementById('sel-term').addEventListener('change',renderTeacher);
+  document.getElementById('btn-reset').addEventListener('click',resetProgress);
+  renderYearTabs();
+  renderHOD();
+}
+
+document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
+</script>
+</body>
+</html>

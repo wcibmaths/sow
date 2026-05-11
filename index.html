@@ -203,10 +203,10 @@
   .term-summary-bar.amber{background:#E9A800;}
   .term-summary-bar.red{background:var(--red);}
   .term-summary-pct{font-size:12px;font-weight:700;text-align:right;color:var(--dark-gray);}
-</style>
   .coming-soon{background:white;border-radius:10px;padding:40px;text-align:center;
     color:var(--dark-gray);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
   .coming-soon h3{font-size:18px;margin-bottom:8px;color:var(--navy);}
+  .sync{position:fixed;bottom:16px;right:16px;background:var(--green);color:white;
     padding:8px 14px;border-radius:20px;font-size:12px;opacity:0;
     transition:opacity 0.3s;z-index:999;pointer-events:none;}
   .sync.show{opacity:1;}
@@ -239,7 +239,6 @@
 </header>
 
 <div id="view-hod" class="view active">
-  <div class="stats-grid">
   <div class="stats-grid">
     <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Avg lessons Done (Y7)</div></div>
     <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label">Avg lessons In Progress (Y7)</div></div>

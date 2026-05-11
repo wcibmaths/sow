@@ -159,10 +159,54 @@
   .assess-card.interim .assess-link:hover{background:#FFCCCC;}
   .assess-card.eoy .assess-link{background:var(--light-blue);color:var(--navy);border-color:var(--blue);}
 
+  /* Dashboard improvements */
+  .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-bottom:20px;}
+  .teacher-card{background:white;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,0.1);
+    overflow:hidden;transition:box-shadow 0.2s;}
+  .teacher-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.13);}
+  .tc-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f0f0f0;}
+  .tc-avatar{width:44px;height:44px;border-radius:50%;background:var(--navy);color:white;
+    font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .tc-name{font-size:15px;font-weight:700;color:var(--navy);}
+  .tc-sub{font-size:12px;color:var(--dark-gray);}
+  .tc-body{padding:14px 18px;}
+  .tc-overall{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .tc-pct{font-size:26px;font-weight:800;color:var(--navy);min-width:52px;}
+  .tc-pct.amber{color:#B87800;}
+  .tc-pct.red{color:var(--red);}
+  .tc-year-bar-wrap{flex:1;background:#eee;border-radius:6px;height:10px;overflow:hidden;}
+  .tc-year-bar{height:100%;border-radius:6px;background:var(--green);transition:width 0.4s;}
+  .tc-year-bar.amber{background:#E9A800;}
+  .tc-year-bar.red{background:var(--red);}
+  .tc-terms{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+  .tc-term{background:#f8faff;border-radius:8px;padding:8px 10px;text-align:center;}
+  .tc-term-label{font-size:10px;font-weight:700;color:var(--dark-gray);text-transform:uppercase;margin-bottom:4px;}
+  .tc-term-pct{font-size:16px;font-weight:800;color:var(--navy);}
+  .tc-term-pct.done{color:var(--dark-green);}
+  .tc-term-pct.amber{color:#B87800;}
+  .tc-term-pct.red{color:var(--red);}
+  .tc-term-bar-wrap{background:#e0e0e0;border-radius:3px;height:4px;margin-top:4px;overflow:hidden;}
+  .tc-term-bar{height:100%;border-radius:3px;background:var(--green);}
+  .tc-term-bar.amber{background:#E9A800;}
+  .tc-term-bar.red{background:var(--red);}
+  .tc-pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+  .dash-summary{background:white;border-radius:12px;padding:16px 20px;
+    box-shadow:0 1px 6px rgba(0,0,0,0.1);margin-bottom:20px;}
+  .dash-summary-title{font-size:13px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
+    letter-spacing:0.05em;margin-bottom:12px;}
+  .term-summary-row{display:grid;grid-template-columns:120px 1fr 60px;align-items:center;
+    gap:12px;padding:6px 0;border-bottom:1px solid #f5f5f5;}
+  .term-summary-row:last-child{border-bottom:none;}
+  .term-summary-label{font-size:12px;font-weight:600;color:var(--navy);}
+  .term-summary-bar-wrap{background:#eee;border-radius:4px;height:8px;overflow:hidden;}
+  .term-summary-bar{height:100%;border-radius:4px;background:var(--green);transition:width 0.4s;}
+  .term-summary-bar.amber{background:#E9A800;}
+  .term-summary-bar.red{background:var(--red);}
+  .term-summary-pct{font-size:12px;font-weight:700;text-align:right;color:var(--dark-gray);}
+</style>
   .coming-soon{background:white;border-radius:10px;padding:40px;text-align:center;
     color:var(--dark-gray);box-shadow:0 1px 4px rgba(0,0,0,0.08);}
   .coming-soon h3{font-size:18px;margin-bottom:8px;color:var(--navy);}
-  .sync{position:fixed;bottom:16px;right:16px;background:var(--green);color:white;
     padding:8px 14px;border-radius:20px;font-size:12px;opacity:0;
     transition:opacity 0.3s;z-index:999;pointer-events:none;}
   .sync.show{opacity:1;}
@@ -186,7 +230,7 @@
     <div><h1>WCIB Maths Department</h1><p>Scheme of Work 2026/27</p></div>
   </div>
   <nav>
-    <button class="nav-btn active" data-view="hod">HOD Dashboard</button>
+    <button class="nav-btn active" data-view="hod">Dashboard</button>
     <button class="nav-btn" data-view="teacher">Teacher View</button>
     <button class="nav-btn" data-view="assessments">Assessment Schedule</button>
     <button class="nav-btn" data-view="calendar">School Calendar</button>
@@ -195,6 +239,7 @@
 </header>
 
 <div id="view-hod" class="view active">
+  <div class="stats-grid">
   <div class="stats-grid">
     <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Avg lessons Done (Y7)</div></div>
     <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label">Avg lessons In Progress (Y7)</div></div>
@@ -477,9 +522,50 @@ function getProgress(set){
   return {done,prog,ns,pct:t.length?Math.round(done/t.length*100):0,total:t.length};
 }
 
-function folderBtn(unit){
-  if(!unit||!UNIT_FOLDERS[unit]) return '';
-  return `<a href="${UNIT_FOLDERS[unit]}" target="_blank" class="res-btn" title="Open lesson plan folder on SharePoint">📂 Resources</a>`;
+function getTermProgress(set, term){
+  const t=getTeachable().filter(l=>l.term===term);
+  let done=0,prog=0,ns=0;
+  t.forEach(l=>{const s=getStatus(l.id,set); if(s==='Done')done++; else if(s==='In progress')prog++; else ns++;});
+  return {done,prog,ns,pct:t.length?Math.round(done/t.length*100):0,total:t.length};
+}
+
+// Build direct SharePoint file URL from the folder URL + filename
+// Pattern: intmathprogtt7_lp_u{UU}_{suffix}.docx
+// lessonNo '1.1' → suffix '1', 'CSE' → 'cse', 'CSE2' → 'cse', '★' → assessment (no file link)
+function lessonFileUrl(lesson){
+  if(!lesson.unit || !UNIT_FOLDERS[lesson.unit]) return '';
+  const folderUrl = UNIT_FOLDERS[lesson.unit];
+  const uu = String(lesson.unit).padStart(2,'0');
+  let suffix = '';
+  const no = lesson.lessonNo;
+  if(!no || no==='★' || no==='') return ''; // assessment rows & blanks: no direct file
+  if(no==='CSE' || no==='CSE2') suffix='cse';
+  else {
+    // e.g. '1.1' → '1', '10.4' → '4', '11.2' → '2'
+    const parts = no.split('.');
+    suffix = parts.length>1 ? parts[1] : parts[0];
+  }
+  const filename = `intmathprogtt7_lp_u${uu}_${suffix}.docx`;
+  // Build a SharePoint direct file URL by navigating into the folder
+  // We replace the folder share params and build a direct link
+  const base = folderUrl.split('?')[0];
+  return base + '/' + encodeURIComponent(filename);
+}
+
+function folderBtn(lesson){
+  // For core/cse lessons: link directly to the file. For assessment: link to folder.
+  if(!lesson.unit) return '';
+  if(lesson.type==='assessment' && ASSESSMENT_FOLDERS[lesson.unit]){
+    return `<a href="${ASSESSMENT_FOLDERS[lesson.unit]}" target="_blank" class="res-btn assess-btn" title="Open assessment folder">📋 Test</a>`;
+  }
+  const fileUrl = lessonFileUrl(lesson);
+  if(fileUrl){
+    return `<a href="${fileUrl}" target="_blank" class="res-btn" title="Open lesson plan">📄 Plan</a>`;
+  }
+  if(UNIT_FOLDERS[lesson.unit]){
+    return `<a href="${UNIT_FOLDERS[lesson.unit]}" target="_blank" class="res-btn" title="Open unit folder">📂 Folder</a>`;
+  }
+  return '';
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -501,7 +587,7 @@ function refreshActiveView(){
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  HOD
+//  HOD / DASHBOARD
 // ════════════════════════════════════════════════════════════════════
 function renderYearTabs(){
   const yrs=[{y:'7',on:true},{y:'8'},{y:'9'},{y:'10'},{y:'11'},{y:'12'},{y:'13'}];
@@ -510,27 +596,82 @@ function renderYearTabs(){
   ).join('');
 }
 
+function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
+function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
+
 function renderHOD(){
   let td=0,tp=0,behind=0;
-  let html='<div class="scroll"><table class="hod-table"><thead><tr>'+
-    '<th>Teacher</th><th>Class</th><th>Done</th><th>In Progress</th><th>Not Started</th><th>Progress</th>'+
-    '</tr></thead><tbody>';
+  const terms=['Michaelmas','Lent','Summer'];
+  const termShort={Michaelmas:'Mich.',Lent:'Lent',Summer:'Sum.'};
+
+  // ── Teacher cards ───────────────────────────────────────────────
+  let cardsHtml='<div class="dash-grid">';
   SETS.forEach(set=>{
     const p=getProgress(set); td+=p.done; tp+=p.prog;
-    if(p.pct<40)behind++;
-    const bc=p.pct>=70?'':p.pct>=40?'amber':'red';
-    html+=`<tr>
-      <td><span class="avatar">${TEACHERS[set]}</span><strong>${TEACHERS[set]}</strong></td>
-      <td>${set}</td>
-      <td><span class="pill done">${p.done}</span></td>
-      <td><span class="pill prog">${p.prog}</span></td>
-      <td><span class="pill not">${p.ns}</span></td>
-      <td><div class="bar-wrap"><div class="bar ${bc}" style="width:${p.pct}%"></div></div>
-      <span style="font-size:11px;color:var(--dark-gray)">${p.pct}%</span></td>
-    </tr>`;
+    if(p.pct<40) behind++;
+    const overallBc=barClass(p.pct);
+    const overallPcc=termPctClass(p.pct);
+
+    let termRows='';
+    terms.forEach(term=>{
+      const tp2=getTermProgress(set,term);
+      const tc2=termPctClass(tp2.pct);
+      const bc2=barClass(tp2.pct);
+      termRows+=`
+        <div class="tc-term">
+          <div class="tc-term-label">${termShort[term]}</div>
+          <div class="tc-term-pct ${tc2}">${tp2.pct}%</div>
+          <div class="tc-term-bar-wrap"><div class="tc-term-bar ${bc2}" style="width:${tp2.pct}%"></div></div>
+          <div style="font-size:10px;color:var(--dark-gray);margin-top:3px;">${tp2.done}/${tp2.total}</div>
+        </div>`;
+    });
+
+    cardsHtml+=`<div class="teacher-card">
+      <div class="tc-header">
+        <div class="tc-avatar">${TEACHERS[set]}</div>
+        <div>
+          <div class="tc-name">${TEACHERS[set]} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
+          <div class="tc-sub">Year 7 · ${p.done} of ${p.total} lessons done</div>
+        </div>
+        <div style="margin-left:auto;font-size:22px;font-weight:800;" class="${overallPcc==='done'?'':''}">
+          <span style="color:${p.pct>=70?'var(--green)':p.pct>=40?'#E9A800':'var(--red)'}">${p.pct}%</span>
+        </div>
+      </div>
+      <div class="tc-body">
+        <div style="font-size:11px;color:var(--dark-gray);font-weight:600;margin-bottom:5px;">OVERALL YEAR PROGRESS</div>
+        <div class="tc-year-bar-wrap" style="margin-bottom:14px;">
+          <div class="tc-year-bar ${overallBc}" style="width:${p.pct}%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--dark-gray);font-weight:600;margin-bottom:6px;">BY TERM</div>
+        <div class="tc-terms">${termRows}</div>
+        <div class="tc-pills" style="margin-top:10px;">
+          <span class="pill done">✓ ${p.done} done</span>
+          <span class="pill prog">⟳ ${p.prog} in progress</span>
+          <span class="pill not">✗ ${p.ns} not started</span>
+        </div>
+      </div>
+    </div>`;
   });
-  html+='</tbody></table></div>';
-  document.getElementById('hod-content').innerHTML=html;
+  cardsHtml+='</div>';
+
+  // ── Department term summary ──────────────────────────────────────
+  let summaryHtml=`<div class="dash-summary">
+    <div class="dash-summary-title">Department Average — Term Targets</div>`;
+  terms.forEach((term,i)=>{
+    const label=['Target 100% by Dec','Target 100% by Apr','Target 100% by Jul'][i];
+    let sumDone=0,sumTotal=0;
+    SETS.forEach(set=>{const tp2=getTermProgress(set,term);sumDone+=tp2.done;sumTotal+=tp2.total;});
+    const avgPct=sumTotal?Math.round(sumDone/sumTotal*100):0;
+    const bc=barClass(avgPct);
+    summaryHtml+=`<div class="term-summary-row">
+      <div class="term-summary-label">${term}<div style="font-size:10px;font-weight:400;color:var(--dark-gray)">${label}</div></div>
+      <div class="term-summary-bar-wrap"><div class="term-summary-bar ${bc}" style="width:${avgPct}%"></div></div>
+      <div class="term-summary-pct" style="color:${avgPct>=70?'var(--dark-green)':avgPct>=40?'#B87800':'var(--red)'}">${avgPct}%</div>
+    </div>`;
+  });
+  summaryHtml+='</div>';
+
+  document.getElementById('hod-content').innerHTML=summaryHtml+cardsHtml;
   document.getElementById('stat-done').textContent=Math.round(td/SETS.length);
   document.getElementById('stat-prog').textContent=Math.round(tp/SETS.length);
   document.getElementById('stat-behind').textContent=behind;
@@ -604,7 +745,7 @@ function renderTeacher(){
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>
           <span class="type-badge ${bc}">${bt}</span>
-          ${lesson.unit?folderBtn(lesson.unit):'<span></span>'}
+          ${lesson.unit?folderBtn(lesson):'<span></span>'}
           ${isF
             ?`<div class="na-badge">N/A</div>`
             :`<select class="status-sel ${sc}" data-lesson-id="${lesson.id}" data-set="${set}">
@@ -663,17 +804,24 @@ function renderAssessments(){
       <div class="assess-grid">`;
     ta.forEach(a=>{
       const cls=a.eoy?'eoy':a.interim?'interim':'';
-      const folderUrl=a.unit?ASSESSMENT_FOLDERS[a.unit]:'';
-      const linkText=a.eoy?'📂 Open EoY folder':'📋 Open unit test folder';
-      html+=`<div class="assess-card ${cls}">
+      const assessUrl=a.unit?ASSESSMENT_FOLDERS[a.unit]:'';
+      const lessonUrl=a.unit?UNIT_FOLDERS[a.unit]:'';
+      // Whole card is clickable to assessment folder if available
+      const cardOpen=assessUrl?`<a href="${assessUrl}" target="_blank" style="text-decoration:none;color:inherit;display:block;">` :'<div>';
+      const cardClose=assessUrl?'</a>':'</div>';
+      html+=`${cardOpen}<div class="assess-card ${cls}" style="${assessUrl?'cursor:pointer;':''}">
         <div class="assess-week">${a.week}</div>
         <div class="assess-name">${esc(a.name)}</div>
         <div class="assess-sub">${esc(a.sub)}</div>
         <div class="assess-date">📅 ${a.dates}</div>
         ${a.interim?'<div class="assess-flag">★ INTERIM DATA DROP</div>':''}
         ${a.eoy?'<div class="assess-flag" style="color:var(--navy);">Full year — 2 papers</div>':''}
-        ${folderUrl?`<a href="${folderUrl}" target="_blank" class="assess-link">${linkText}</a>`:''}
-      </div>`;
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
+          ${lessonUrl?`<span class="assess-link" style="background:var(--light-blue);color:var(--navy);border-color:var(--blue);pointer-events:none;">📂 Lesson Plans</span>`:''}
+          ${assessUrl?`<span class="assess-link">📋 Unit Test Folder</span>`:''}
+          ${a.eoy?`<span style="font-size:11px;color:var(--dark-gray);align-self:center;">Click any unit card above</span>`:''}
+        </div>
+      </div>${cardClose}`;
     });
     html+='</div></div>';
   });

@@ -6,15 +6,15 @@
 <title>WCIB Maths Department — Scheme of Work 2026/27</title>
 <style>
   :root {
-    --navy:#1F4E79; --blue:#2E75B6; --light-blue:#BDD7EE;
-    --green:#70AD47; --light-green:#E2EFDA; --dark-green:#375623;
-    --amber:#FFD966; --dark-amber:#7F4F00; --light-amber:#FFF2CC;
-    --coral:#FCE4D6; --red:#C00000;
+    --navy:#1A1A1A; --blue:#F27D00; --light-blue:#A6D6C9;
+    --green:#2CA889; --light-green:#E0F2EE; --dark-green:#1A6B57;
+    --amber:#F7D117; --dark-amber:#7A5C00; --light-amber:#FEFBE0;
+    --coral:#FDEBD6; --red:#C00000;
     --gray:#F2F2F2; --mid-gray:#D6DCE4; --dark-gray:#595959;
     --font:'Segoe UI',Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:var(--font);background:#f0f4f8;color:#222;font-size:14px;}
+  body{font-family:var(--font);background:#F5F5F5;color:#222;font-size:14px;}
   header{background:var(--navy);color:white;display:flex;align-items:stretch;
     position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
   .brand{padding:12px 20px;display:flex;align-items:center;gap:12px;
@@ -55,7 +55,7 @@
   .hod-table th{background:var(--navy);color:white;padding:8px 12px;
     text-align:left;font-size:12px;font-weight:600;}
   .hod-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:13px;}
-  .hod-table tr:hover td{background:#f8faff;}
+  .hod-table tr:hover td{background:#FDF4EC;}
   .avatar{width:28px;height:28px;border-radius:50%;background:var(--light-blue);
     color:var(--navy);font-size:10px;font-weight:700;display:inline-flex;
     align-items:center;justify-content:center;margin-right:8px;vertical-align:middle;}
@@ -88,18 +88,18 @@
     display:flex;justify-content:space-between;align-items:center;}
   .term-progress{font-size:12px;opacity:0.85;}
   .week{border:1px solid #e8e8e8;border-top:none;background:white;}
-  .week-header{padding:8px 16px;background:#f8faff;border-bottom:1px solid #e8e8e8;
+  .week-header{padding:8px 16px;background:#FAFAFA;border-bottom:1px solid #e8e8e8;
     display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .week-label{font-size:11px;font-weight:700;color:var(--blue);
     text-transform:uppercase;min-width:60px;}
   .week-dates{font-size:11px;color:var(--dark-gray);}
   .week-alert{font-size:11px;color:var(--red);font-weight:600;margin-left:auto;}
 
-  /* Lesson rows — 5 columns with resources */
-  .lesson{display:grid;grid-template-columns:36px 1fr auto auto auto;align-items:center;
+  /* Lesson rows — 4 columns with resources */
+  .lesson{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;
     gap:10px;padding:8px 16px;border-bottom:1px solid #f5f5f5;}
   .lesson:last-child{border-bottom:none;}
-  .lesson:hover{background:#fafcff;}
+  .lesson:hover{background:#FAF6F0;}
   .lesson.assess{background:var(--light-amber);}
   .lesson.cse{background:var(--light-green);}
   .lesson.flex{background:var(--gray);}
@@ -124,6 +124,13 @@
   .res-btn:hover{background:var(--light-blue);border-color:var(--blue);}
   .res-btn.assess-btn{border-color:var(--amber);color:var(--dark-amber);background:white;}
   .res-btn.assess-btn:hover{background:var(--light-amber);}
+
+  /* Teacher View search */
+  .tv-search-input{padding:8px 12px;border:1.5px solid #ddd;border-radius:6px;
+    font-size:13px;font-family:var(--font);min-width:220px;outline:none;background:white;}
+  .tv-search-input:focus{border-color:var(--blue);}
+  .tv-no-results{padding:32px;text-align:center;color:var(--dark-gray);font-size:14px;
+    background:white;border:1px solid #e8e8e8;border-top:none;border-radius:0 0 8px 8px;}
 
   .status-sel{padding:5px 10px;border:1.5px solid #ddd;border-radius:5px;
     font-size:12px;font-family:var(--font);cursor:pointer;min-width:130px;
@@ -179,7 +186,7 @@
   .tc-year-bar.amber{background:#E9A800;}
   .tc-year-bar.red{background:var(--red);}
   .tc-terms{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
-  .tc-term{background:#f8faff;border-radius:8px;padding:8px 10px;text-align:center;}
+  .tc-term{background:#F9F9F9;border-radius:8px;padding:8px 10px;text-align:center;}
   .tc-term-label{font-size:10px;font-weight:700;color:var(--dark-gray);text-transform:uppercase;margin-bottom:4px;}
   .tc-term-pct{font-size:16px;font-weight:800;color:var(--navy);}
   .tc-term-pct.done{color:var(--dark-green);}
@@ -280,6 +287,9 @@
         <option value="Lent">Lent</option>
         <option value="Summer">Summer</option>
       </select>
+    </div>
+    <div class="ctrl"><label>Search Lessons</label>
+      <input type="text" id="tv-search" class="tv-search-input" placeholder="Topic or lesson name…">
     </div>
     <button class="reset-btn" id="btn-reset">Reset My Progress</button>
   </div>
@@ -713,6 +723,7 @@ function renderTeacher(){
   const yg=document.getElementById('sel-yg').value;
   const set=document.getElementById('sel-set').value;
   const tf=document.getElementById('sel-term').value;
+  const q=(document.getElementById('tv-search').value||'').toLowerCase().trim();
 
   if(yg!=='7'){
     document.getElementById('teacher-content').innerHTML=
@@ -720,7 +731,12 @@ function renderTeacher(){
     return;
   }
 
-  const lessons=tf==='all'?Y7_SOW:Y7_SOW.filter(l=>l.term===tf);
+  const base=tf==='all'?Y7_SOW:Y7_SOW.filter(l=>l.term===tf);
+  const lessons=q?base.filter(l=>
+    l.lessonName.toLowerCase().includes(q)||
+    (l.obj&&l.obj.toLowerCase().includes(q))||
+    l.unitName.toLowerCase().includes(q)
+  ):base;
   const p=getProgress(set);
 
   let html=`<div class="card"><div class="tv-header">
@@ -749,6 +765,7 @@ function renderTeacher(){
     const weeks=[...new Set(tl.map(l=>l.week))];
     weeks.forEach(wk=>{
       const wkL=tl.filter(l=>l.week===wk);
+      if(!wkL.length)return;
       const first=wkL[0];
       const alertL=wkL.find(l=>l.alert);
       html+=`<div class="week"><div class="week-header">
@@ -866,7 +883,7 @@ function renderAssessments(){
 //  CALENDAR
 // ════════════════════════════════════════════════════════════════════
 function renderCalendar(){
-  const tc={Michaelmas:'#1F4E79',Lent:'#375623',Summer:'#7F3F00'};
+  const tc={Michaelmas:'#1A1A1A',Lent:'#1A6B57',Summer:'#C05F00'};
   const td={'Michaelmas':'Wed 26 Aug – Wed 16 Dec 2026','Lent':'Thu 7 Jan – Fri 2 Apr 2027','Summer':'Mon 19 Apr – Wed 30 Jun 2027'};
   let html='';
   ['Michaelmas','Lent','Summer'].forEach(term=>{
@@ -897,6 +914,7 @@ function init(){
   document.getElementById('sel-yg').addEventListener('change',renderTeacher);
   document.getElementById('sel-set').addEventListener('change',renderTeacher);
   document.getElementById('sel-term').addEventListener('change',renderTeacher);
+  document.getElementById('tv-search').addEventListener('input',renderTeacher);
   document.getElementById('sel-assess-yg').addEventListener('change',renderAssessments);
   document.getElementById('btn-reset').addEventListener('click',resetProgress);
   renderYearTabs();

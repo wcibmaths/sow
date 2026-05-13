@@ -1294,12 +1294,24 @@ function renderTeacher(){
     </div>
   </div></div>`;
 
-  // Pre-compute total lessons per unit across the full SoW
+  // Pre-compute total lessons per unit and sequential numbers (core + cse only)
   const unitCounts={};
+  const lessonSeqNo={}; // lesson.id → 'N/Total'
+  // First pass: count core+cse per unit in SoW order
+  const unitSeqIds={};
   sow.forEach(l=>{
     if(!unitCounts[l.unitName]) unitCounts[l.unitName]={total:0,tracked:0};
     unitCounts[l.unitName].total++;
     if(l.type!=='flex') unitCounts[l.unitName].tracked++;
+    if(l.type==='core'||l.type==='cse'){
+      if(!unitSeqIds[l.unitName]) unitSeqIds[l.unitName]=[];
+      unitSeqIds[l.unitName].push(l.id);
+    }
+  });
+  // Second pass: assign N/Total to each core+cse lesson
+  Object.entries(unitSeqIds).forEach(([uName,ids])=>{
+    const total=ids.length;
+    ids.forEach((id,i)=>{ lessonSeqNo[id]=`${i+1}/${total}`; });
   });
 
   let prevUnit=null; // tracks unit changes across week/term boundaries
@@ -1356,7 +1368,8 @@ function renderTeacher(){
         const bt=isA?'ASSESSMENT':isC?'CSE':isF?'FLEX':'CORE';
         const status=isF?'N/A':getStatus(lesson.id,set);
         const sc=statusClass(status);
-        const noLabel=lesson.lessonNo?`<span class="lesson-no">${esc(lesson.lessonNo)}</span>`:'';
+        const seqLabel=isA?'★':lessonSeqNo[lesson.id]||'';
+        const noLabel=seqLabel?`<span class="lesson-no">${esc(seqLabel)}</span>`:'';
 
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">

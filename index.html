@@ -116,6 +116,17 @@
   .lesson-name.assess{font-weight:700;color:var(--dark-amber);}
   .lesson-obj{font-size:11px;color:var(--dark-gray);margin-top:2px;line-height:1.4;}
   .lesson-unit{font-size:11px;color:var(--dark-gray);}
+  .unit-divider{display:flex;align-items:center;gap:8px;padding:7px 14px 7px 11px;
+    margin:10px 0 0;background:#EEF1F7;border-left:3px solid var(--navy);border-radius:0 4px 4px 0;}
+  .unit-divider.misc{background:#F4F4F4;border-left-color:var(--mid-gray);}
+  .unit-divider-name{font-size:11px;font-weight:700;text-transform:uppercase;
+    letter-spacing:0.05em;color:var(--navy);flex:1;}
+  .unit-divider.misc .unit-divider-name{color:var(--dark-gray);}
+  .unit-divider-count{font-size:11px;color:var(--dark-gray);white-space:nowrap;}
+  .lesson-no{display:inline-block;font-size:10px;font-weight:700;color:#555;
+    background:#E4E4E4;border-radius:3px;padding:1px 5px;margin-right:6px;
+    vertical-align:middle;flex-shrink:0;white-space:nowrap;}
+  .lesson-name-row{display:flex;align-items:baseline;}
   .type-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;
     white-space:nowrap;}
   .type-badge.core{background:#EBF3FB;color:var(--blue);}
@@ -1283,6 +1294,16 @@ function renderTeacher(){
     </div>
   </div></div>`;
 
+  // Pre-compute total lessons per unit across the full SoW
+  const unitCounts={};
+  sow.forEach(l=>{
+    if(!unitCounts[l.unitName]) unitCounts[l.unitName]={total:0,tracked:0};
+    unitCounts[l.unitName].total++;
+    if(l.type!=='flex') unitCounts[l.unitName].tracked++;
+  });
+
+  let prevUnit=null; // tracks unit changes across week/term boundaries
+
   const terms=[...new Set(lessons.map(l=>l.term))];
   terms.forEach(term=>{
     const tl=lessons.filter(l=>l.term===term);
@@ -1313,6 +1334,20 @@ function renderTeacher(){
       </div>`;
 
       wkL.forEach(lesson=>{
+        // Unit divider when unit name changes
+        if(lesson.unitName !== prevUnit){
+          const uc=unitCounts[lesson.unitName]||{total:0,tracked:0};
+          const isMisc=lesson.unit===0;
+          const countLabel=uc.total>0
+            ? `${uc.total} lesson${uc.total!==1?'s':''} · ${uc.tracked} tracked`
+            : '';
+          html+=`<div class="unit-divider${isMisc?' misc':''}">
+            <span class="unit-divider-name">${esc(lesson.unitName)}</span>
+            ${countLabel?`<span class="unit-divider-count">${countLabel}</span>`:''}
+          </div>`;
+          prevUnit=lesson.unitName;
+        }
+
         const isA=lesson.type==='assessment';
         const isC=lesson.type==='cse';
         const isF=lesson.type==='flex';
@@ -1321,10 +1356,13 @@ function renderTeacher(){
         const bt=isA?'ASSESSMENT':isC?'CSE':isF?'FLEX':'CORE';
         const status=isF?'N/A':getStatus(lesson.id,set);
         const sc=statusClass(status);
+        const noLabel=lesson.lessonNo?`<span class="lesson-no">${esc(lesson.lessonNo)}</span>`:'';
 
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">
-            <div class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</div>
+            <div class="lesson-name-row">
+              ${noLabel}<span class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</span>
+            </div>
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>
           <span class="type-badge ${bc}">${bt}</span>

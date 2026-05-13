@@ -85,8 +85,15 @@
   .term{margin-bottom:24px;}
   .term-header{background:var(--navy);color:white;padding:10px 16px;
     border-radius:8px 8px 0 0;font-weight:600;font-size:14px;
-    display:flex;justify-content:space-between;align-items:center;}
+    display:flex;justify-content:space-between;align-items:center;
+    cursor:pointer;user-select:none;}
+  .term-header:hover{background:#1a3a5c;}
   .term-progress{font-size:12px;opacity:0.85;}
+  .term-chevron{font-size:11px;opacity:0.75;margin-left:10px;
+    display:inline-block;transition:transform 0.2s;}
+  .term-header.collapsed .term-chevron{transform:rotate(-90deg);}
+  .term-body{overflow:hidden;transition:max-height 0.25s ease;}
+  .term-body.collapsed{display:none;}
   .week{border:1px solid #e8e8e8;border-top:none;background:white;}
   .week-header{padding:8px 16px;background:#FAFAFA;border-bottom:1px solid #e8e8e8;
     display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
@@ -1134,10 +1141,16 @@ function renderTeacher(){
     const tt=tl.filter(l=>l.type!=='flex');
     const td=tt.filter(l=>getStatus(l.id,set)==='Done').length;
     const tp2=tt.length?Math.round(td/tt.length*100):0;
-    html+=`<div class="term"><div class="term-header">
-      <span>${term} Term</span>
-      <span class="term-progress">${td}/${tt.length} lessons done (${tp2}%)</span>
-    </div>`;
+    const termId='term-'+term.replace(/\s+/g,'-');
+    html+=`<div class="term">
+      <div class="term-header" onclick="toggleTerm('${termId}')">
+        <span>${term} Term</span>
+        <span style="display:flex;align-items:center;gap:0;">
+          <span class="term-progress">${td}/${tt.length} lessons done (${tp2}%)</span>
+          <span class="term-chevron">▼</span>
+        </span>
+      </div>
+      <div class="term-body" id="${termId}">`;
 
     const weeks=[...new Set(tl.map(l=>l.week))];
     weeks.forEach(wk=>{
@@ -1180,11 +1193,19 @@ function renderTeacher(){
       });
       html+='</div>';
     });
-    html+='</div>';
+    html+='</div></div>';
   });
 
   document.getElementById('teacher-content').innerHTML=html;
   document.querySelectorAll('.status-sel').forEach(sel=>sel.addEventListener('change',handleChange));
+}
+
+function toggleTerm(termId){
+  const body=document.getElementById(termId);
+  const header=body?body.previousElementSibling:null;
+  if(!body||!header)return;
+  const collapsed=body.classList.toggle('collapsed');
+  header.classList.toggle('collapsed',collapsed);
 }
 
 function handleChange(e){

@@ -768,7 +768,6 @@ function renderTeacher(){
         const sc=statusClass(status);
 
         html+=`<div class="lesson ${rc}">
-          <div class="lesson-num">${esc(lesson.lessonNo)||'—'}</div>
           <div class="lesson-info">
             <div class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</div>
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}

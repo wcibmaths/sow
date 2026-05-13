@@ -247,10 +247,10 @@
 
 <div id="view-hod" class="view active">
   <div class="stats-grid">
-    <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Avg lessons Done (Y7)</div></div>
-    <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label">Avg lessons In Progress (Y7)</div></div>
+    <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label" id="stat-done-lbl">Avg lessons Done (Y7)</div></div>
+    <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label" id="stat-prog-lbl">Avg lessons In Progress (Y7)</div></div>
     <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Classes behind pace</div></div>
-    <div class="stat"><div class="stat-num">7</div><div class="stat-label">Assessments scheduled (Y7)</div></div>
+    <div class="stat"><div class="stat-num" id="stat-assess">7</div><div class="stat-label" id="stat-assess-lbl">Assessments scheduled (Y7)</div></div>
   </div>
   <div class="card">
     <div class="card-title">Year Group</div>
@@ -372,6 +372,39 @@ const ASSESSMENT_FOLDERS = {
   10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%2010%20Transformations?csf=1&web=1&e=HYHEIi',
   11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%207/Unit%2011%20Probability?csf=1&web=1&e=QLtnhn',
 };
+
+// ── Year 8 Unit folder links (SharePoint) ─────────────────────────
+const Y8_UNIT_FOLDERS = {
+  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%201%20Number?csf=1&web=1',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%202%20Equations%20and%20formulae?csf=1&web=1',
+  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%203%20Working%20with%20powers?csf=1&web=1',
+  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%204%202D%20shapes%20and%203D%20solids?csf=1&web=1',
+  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%205%20Graphs?csf=1&web=1',
+  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%206%20Fractions%2C%20decimals%2C%20ratio%20and%20proportion?csf=1&web=1',
+  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%207%20Probability?csf=1&web=1',
+  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%208%20Percentages%20and%20ratios?csf=1&web=1',
+  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%209%20Shapes%20and%20angles?csf=1&web=1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%2010%20Charts%20and%20diagrams?csf=1&web=1',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/2.%20Curriculum%20and%20Planning/C.%20Lesson%20Plans/KS3%20Lesson%20Plans/Year%208/Unit%2011%20Straight-line%20graphs?csf=1&web=1',
+};
+
+// ── Year 8 Assessment / Unit Test folder links (SharePoint) ───────
+const Y8_ASSESSMENT_FOLDERS = {
+  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%201%20Number?csf=1&web=1',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%202%20Equations%20and%20formulae?csf=1&web=1',
+  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%203%20Working%20with%20powers?csf=1&web=1',
+  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%204%202D%20shapes%20and%203D%20solids?csf=1&web=1',
+  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%205%20Graphs?csf=1&web=1',
+  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%206%20Fractions%2C%20decimals%2C%20ratio%20and%20proportion?csf=1&web=1',
+  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%207%20Probability?csf=1&web=1',
+  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%208%20Percentages%20and%20ratios?csf=1&web=1',
+  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%209%20Shapes%20and%20angles?csf=1&web=1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%2010%20Charts%20and%20diagrams?csf=1&web=1',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%2011%20Straight-line%20graphs?csf=1&web=1',
+};
+
+const UNIT_FOLDERS_BY_YG     = { 7: UNIT_FOLDERS,     8: Y8_UNIT_FOLDERS     };
+const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDERS };
 
 // ── Y7 SoW Data — v4 calendar checked ────────────────────────────
 const Y7_SOW = [
@@ -636,6 +669,20 @@ const ASSESSMENTS = {
     {name:'Unit 8 Assessment',               sub:'Measures & Shapes',                        week:'L10B', dates:'15–19 Mar 2027',    term:'Lent',       unit:8},
     {name:'End of Year Examination',         sub:'Full year — Units 1–11 (2 papers)',         week:'S7A',  dates:'31 May–4 Jun 2027', term:'Summer',     unit:0, eoy:true},
   ],
+  8: [
+    {name:'Unit 1 Assessment',    sub:'Number',                                       week:'M4B',  dates:'14–18 Sep 2026',    term:'Michaelmas', unit:1},
+    {name:'Unit 2 Assessment',    sub:'Equations and formulae',                       week:'M7A',  dates:'5–9 Oct 2026',      term:'Michaelmas', unit:2},
+    {name:'Unit 3 Assessment',    sub:'Working with powers',                          week:'M10B', dates:'2–6 Nov 2026',      term:'Michaelmas', unit:3},
+    {name:'Unit 4 Assessment',    sub:'2D shapes and 3D solids',                      week:'M16B', dates:'14–16 Dec 2026',    term:'Michaelmas', unit:4},
+    {name:'Unit 5 Assessment',    sub:'Graphs',                                       week:'L4B',  dates:'25–29 Jan 2027',    term:'Lent',       unit:5},
+    {name:'Unit 6 Assessment',    sub:'Fractions, decimals, ratio and proportion',    week:'L8B',  dates:'1–5 Mar 2027',      term:'Lent',       unit:6},
+    {name:'Unit 8 Assessment',    sub:'Percentages and ratios',                       week:'L11A', dates:'22–26 Mar 2027',    term:'Lent',       unit:8},
+    {name:'Unit 9 Assessment',    sub:'Shapes and angles',                            week:'S1A',  dates:'19–23 Apr 2027',    term:'Summer',     unit:9},
+    {name:'Unit 11 Assessment',   sub:'Straight-line graphs',                         week:'S4B',  dates:'10–14 May 2027',    term:'Summer',     unit:11},
+    {name:'Unit 7 Assessment',    sub:'Probability',                                  week:'S6B',  dates:'24–28 May 2027',    term:'Summer',     unit:7},
+    {name:'End of Year Examination', sub:'Full year — Units 1–11 (2 papers)',         week:'S7A',  dates:'31 May–4 Jun 2027', term:'Summer',     unit:0, eoy:true},
+    {name:'Unit 10 Assessment',   sub:'Charts and diagrams',                          week:'S11A', dates:'28–30 Jun 2027',    term:'Summer',     unit:10},
+  ],
 };
 
 const CALENDAR_EVENTS = [
@@ -704,40 +751,40 @@ function getTermProgress(set, term, sow){
 }
 
 // Build direct SharePoint file URL from the folder URL + filename
-// Pattern: intmathprogtt7_lp_u{UU}_{suffix}.docx
-// lessonNo '1.1' → suffix '1', 'CSE' → 'cse', 'CSE2' → 'cse', '★' → assessment (no file link)
-function lessonFileUrl(lesson){
-  if(!lesson.unit || !UNIT_FOLDERS[lesson.unit]) return '';
-  const folderUrl = UNIT_FOLDERS[lesson.unit];
+// Y7: intmathprogtt7_lp_u{UU}_{suffix}.docx  Y8: intmathprogtt8_lp_u{UU}_{suffix}.docx
+function lessonFileUrl(lesson, yg){
+  yg = yg || 7;
+  const folders = UNIT_FOLDERS_BY_YG[yg] || UNIT_FOLDERS;
+  if(!lesson.unit || !folders[lesson.unit]) return '';
+  const folderUrl = folders[lesson.unit];
   const uu = String(lesson.unit).padStart(2,'0');
-  let suffix = '';
   const no = lesson.lessonNo;
-  if(!no || no==='★' || no==='') return ''; // assessment rows & blanks: no direct file
+  if(!no || no==='★' || no==='') return '';
+  let suffix = '';
   if(no==='CSE' || no==='CSE2') suffix='cse';
   else {
-    // e.g. '1.1' → '1', '10.4' → '4', '11.2' → '2'
     const parts = no.split('.');
     suffix = parts.length>1 ? parts[1] : parts[0];
   }
-  const filename = `intmathprogtt7_lp_u${uu}_${suffix}.docx`;
-  // Build a SharePoint direct file URL by navigating into the folder
-  // We replace the folder share params and build a direct link
+  const filename = `intmathprogtt${yg}_lp_u${uu}_${suffix}.docx`;
   const base = folderUrl.split('?')[0];
   return base + '/' + encodeURIComponent(filename);
 }
 
-function folderBtn(lesson){
-  // For core/cse lessons: link directly to the file. For assessment: link to folder.
+function folderBtn(lesson, yg){
+  yg = yg || 7;
+  const unitFolders = UNIT_FOLDERS_BY_YG[yg] || UNIT_FOLDERS;
+  const assessFolders = ASSESSMENT_FOLDERS_BY_YG[yg] || ASSESSMENT_FOLDERS;
   if(!lesson.unit) return '';
-  if(lesson.type==='assessment' && ASSESSMENT_FOLDERS[lesson.unit]){
-    return `<a href="${ASSESSMENT_FOLDERS[lesson.unit]}" target="_blank" class="res-btn assess-btn" title="Open assessment folder">📋 Test</a>`;
+  if(lesson.type==='assessment' && assessFolders[lesson.unit]){
+    return `<a href="${assessFolders[lesson.unit]}" target="_blank" class="res-btn assess-btn" title="Open assessment folder">📋 Test</a>`;
   }
-  const fileUrl = lessonFileUrl(lesson);
+  const fileUrl = lessonFileUrl(lesson, yg);
   if(fileUrl){
     return `<a href="${fileUrl}" target="_blank" class="res-btn" title="Open lesson plan">📄 Plan</a>`;
   }
-  if(UNIT_FOLDERS[lesson.unit]){
-    return `<a href="${UNIT_FOLDERS[lesson.unit]}" target="_blank" class="res-btn" title="Open unit folder">📂 Folder</a>`;
+  if(unitFolders[lesson.unit]){
+    return `<a href="${unitFolders[lesson.unit]}" target="_blank" class="res-btn" title="Open unit folder">📂 Folder</a>`;
   }
   return '';
 }
@@ -763,32 +810,41 @@ function refreshActiveView(){
 // ════════════════════════════════════════════════════════════════════
 //  HOD / DASHBOARD
 // ════════════════════════════════════════════════════════════════════
+let hodYear = 7;
+
 function renderYearTabs(){
-  const yrs=[{y:'7',on:true},{y:'8'},{y:'9'},{y:'10'},{y:'11'},{y:'12'},{y:'13'}];
-  document.getElementById('yg-tabs').innerHTML=yrs.map(yr=>
-    `<button class="yg-tab${yr.on?' active':''}${yr.on?'':' disabled'}" data-year="${yr.y}">Year ${yr.y}</button>`
+  const yrs=['7','8','9','10','11','12','13'];
+  const available=new Set(['7','8']);
+  document.getElementById('yg-tabs').innerHTML=yrs.map(y=>
+    `<button class="yg-tab${String(hodYear)===y?' active':''}${available.has(y)?'':' disabled'}" data-year="${y}">Year ${y}</button>`
   ).join('');
+  document.querySelectorAll('#yg-tabs .yg-tab:not(.disabled)').forEach(btn=>
+    btn.addEventListener('click',()=>{hodYear=parseInt(btn.dataset.year);renderYearTabs();renderHOD();})
+  );
 }
 
 function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
 function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
 
 function renderHOD(){
+  const hodSets    = SETS_BY_YG[hodYear]     || SETS;
+  const hodTeachers= TEACHERS_BY_YG[hodYear] || TEACHERS;
+  const hodSow     = SOW_BY_YG[hodYear]      || Y7_SOW;
+
   let td=0,tp=0,behind=0;
   const terms=['Michaelmas','Lent','Summer'];
   const termShort={Michaelmas:'Mich.',Lent:'Lent',Summer:'Sum.'};
 
   // ── Teacher cards ───────────────────────────────────────────────
   let cardsHtml='<div class="dash-grid">';
-  SETS.forEach(set=>{
-    const p=getProgress(set); td+=p.done; tp+=p.prog;
+  hodSets.forEach(set=>{
+    const p=getProgress(set,hodSow); td+=p.done; tp+=p.prog;
     if(p.pct<40) behind++;
     const overallBc=barClass(p.pct);
-    const overallPcc=termPctClass(p.pct);
 
     let termRows='';
     terms.forEach(term=>{
-      const tp2=getTermProgress(set,term);
+      const tp2=getTermProgress(set,term,hodSow);
       const tc2=termPctClass(tp2.pct);
       const bc2=barClass(tp2.pct);
       termRows+=`
@@ -800,14 +856,15 @@ function renderHOD(){
         </div>`;
     });
 
+    const teacher=hodTeachers[set]||set;
     cardsHtml+=`<div class="teacher-card">
       <div class="tc-header">
-        <div class="tc-avatar">${TEACHERS[set]}</div>
+        <div class="tc-avatar">${teacher}</div>
         <div>
-          <div class="tc-name">${TEACHERS[set]} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
-          <div class="tc-sub">Year 7 · ${p.done} of ${p.total} lessons done</div>
+          <div class="tc-name">${teacher} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
+          <div class="tc-sub">Year ${hodYear} · ${p.done} of ${p.total} lessons done</div>
         </div>
-        <div style="margin-left:auto;font-size:22px;font-weight:800;" class="${overallPcc==='done'?'':''}">
+        <div style="margin-left:auto;font-size:22px;font-weight:800;">
           <span style="color:${p.pct>=70?'var(--green)':p.pct>=40?'#E9A800':'var(--red)'}">${p.pct}%</span>
         </div>
       </div>
@@ -834,7 +891,7 @@ function renderHOD(){
   terms.forEach((term,i)=>{
     const label=['Target 100% by Dec','Target 100% by Apr','Target 100% by Jul'][i];
     let sumDone=0,sumTotal=0;
-    SETS.forEach(set=>{const tp2=getTermProgress(set,term);sumDone+=tp2.done;sumTotal+=tp2.total;});
+    hodSets.forEach(set=>{const tp2=getTermProgress(set,term,hodSow);sumDone+=tp2.done;sumTotal+=tp2.total;});
     const avgPct=sumTotal?Math.round(sumDone/sumTotal*100):0;
     const bc=barClass(avgPct);
     summaryHtml+=`<div class="term-summary-row">
@@ -846,9 +903,14 @@ function renderHOD(){
   summaryHtml+='</div>';
 
   document.getElementById('hod-content').innerHTML=summaryHtml+cardsHtml;
-  document.getElementById('stat-done').textContent=Math.round(td/SETS.length);
-  document.getElementById('stat-prog').textContent=Math.round(tp/SETS.length);
+  document.getElementById('stat-done').textContent=Math.round(td/hodSets.length);
+  document.getElementById('stat-prog').textContent=Math.round(tp/hodSets.length);
   document.getElementById('stat-behind').textContent=behind;
+  const assessCount=(ASSESSMENTS[hodYear]||[]).length;
+  document.getElementById('stat-assess').textContent=assessCount;
+  document.getElementById('stat-done-lbl').textContent=`Avg lessons Done (Y${hodYear})`;
+  document.getElementById('stat-prog-lbl').textContent=`Avg lessons In Progress (Y${hodYear})`;
+  document.getElementById('stat-assess-lbl').textContent=`Assessments scheduled (Y${hodYear})`;
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -927,7 +989,7 @@ function renderTeacher(){
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>
           <span class="type-badge ${bc}">${bt}</span>
-          ${yg===7&&lesson.unit?folderBtn(lesson):'<span></span>'}
+          ${lesson.unit?folderBtn(lesson,yg):'<span></span>'}
           ${isF
             ?`<div class="na-badge">N/A</div>`
             :`<select class="status-sel ${sc}" data-lesson-id="${lesson.id}" data-set="${set}">
@@ -1000,7 +1062,8 @@ function renderAssessments(){
       <div class="assess-grid">`;
     ta.forEach(a=>{
       const cls=a.eoy?'eoy':a.interim?'interim':'';
-      const assessUrl=a.unit?ASSESSMENT_FOLDERS[a.unit]:'';
+      const ygFolders=ASSESSMENT_FOLDERS_BY_YG[parseInt(yg)]||ASSESSMENT_FOLDERS;
+      const assessUrl=a.unit?ygFolders[a.unit]:'';
       const cardOpen=assessUrl?`<a href="${assessUrl}" target="_blank" style="text-decoration:none;color:inherit;display:block;">`:'<div>';
       const cardClose=assessUrl?'</a>':'</div>';
       html+=`${cardOpen}<div class="assess-card ${cls}" style="${assessUrl?'cursor:pointer;':''}">

@@ -150,6 +150,11 @@
   .assess-card:hover{box-shadow:0 3px 12px rgba(0,0,0,0.12);}
   .assess-card.interim{border-color:var(--red);}
   .assess-card.eoy{border-color:var(--navy);}
+  .assess-tog-wrap{display:flex;gap:8px;align-items:center;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--mid-gray);}
+  .assess-tog-lbl{font-size:11px;font-weight:700;color:var(--dark-gray);text-transform:uppercase;letter-spacing:.05em;margin-right:4px;}
+  .assess-tog-btn{padding:5px 16px;border:2px solid var(--mid-gray);background:white;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--dark-gray);font-family:var(--font);}
+  .assess-tog-btn:hover{border-color:var(--blue);color:var(--blue);}
+  .assess-tog-btn.active{background:var(--blue);border-color:var(--blue);color:white;}
   .assess-card a{text-decoration:none;}
   .assess-week{font-size:10px;font-weight:700;text-transform:uppercase;
     color:var(--dark-gray);margin-bottom:6px;}
@@ -265,7 +270,7 @@
       <select id="sel-yg">
         <option value="7">Year 7</option>
         <option value="8">Year 8</option>
-        <option disabled>Year 9 (coming soon)</option>
+        <option value="9">Year 9</option>
         <option disabled>Year 10 (coming soon)</option>
         <option disabled>Year 11 (coming soon)</option>
         <option disabled>Year 12 (coming soon)</option>
@@ -302,7 +307,7 @@
       <select id="sel-assess-yg">
         <option value="7">Year 7</option>
         <option value="8">Year 8</option>
-        <option value="9" disabled>Year 9 (coming soon)</option>
+        <option value="9">Year 9</option>
         <option value="10" disabled>Year 10 (coming soon)</option>
         <option value="11" disabled>Year 11 (coming soon)</option>
         <option value="12" disabled>Year 12 (coming soon)</option>
@@ -332,10 +337,12 @@
 const TEACHERS_BY_YG = {
   7: { Ma1:'MKM', Ma2:'HPA', Ma3:'ADE', Ma4:'FTA' },
   8: { Ma1:'ADE', Ma2:'MKM', Ma3:'FTA', Ma4:'HPA' },
+  9: { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
 };
 const SETS_BY_YG = {
   7: ['Ma1','Ma2','Ma3','Ma4'],
   8: ['Ma1','Ma2','Ma3','Ma4'],
+  9: ['Ma1','Ma2','Ma3','Ma4'],
 };
 const SOW_BY_YG = {};  // populated after SOW arrays are defined
 const TEACHERS = TEACHERS_BY_YG[7];
@@ -403,8 +410,10 @@ const Y8_ASSESSMENT_FOLDERS = {
   11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%2011%20Straight-line%20graphs?csf=1&web=1',
 };
 
-const UNIT_FOLDERS_BY_YG     = { 7: UNIT_FOLDERS,     8: Y8_UNIT_FOLDERS     };
-const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDERS };
+const Y9_UNIT_FOLDERS        = {};
+const Y9_ASSESSMENT_FOLDERS  = {};
+const UNIT_FOLDERS_BY_YG     = { 7: UNIT_FOLDERS, 8: Y8_UNIT_FOLDERS, 9: Y9_UNIT_FOLDERS };
+const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDERS, 9: Y9_ASSESSMENT_FOLDERS };
 
 // ── Y7 SoW Data — v5 (2026-27) ───────────────────────────────────
 const Y7_SOW = [
@@ -656,9 +665,150 @@ const Y8_SOW = [
   {id:'y8_119', week:'S11A', dates:'28–30 Jun', cycle:'A', unit:10, unitName:'Charts and diagrams', lessonNo:'', lessonName:'Unit 10 assessment', type:'assessment', term:'Summer', obj:'End-of-unit assessment for 10. Charts and diagrams.'},
 ];
 
+// ── Y9 SoW Data — v2 (2026-27) Ma2–Ma4 ──────────────────────────
+const Y9_SOW = [
+  // ── MICHAELMAS ──────────────────────────────────────────────────
+  {id:'y9_1',   week:'M1A',  dates:'27–28 Aug',    cycle:'A', unit:0,  unitName:'Start of Year',                          lessonNo:'',     lessonName:'Getting to know the class and mathematical habits',          type:'flex',       term:'Michaelmas', obj:'Low-stakes activities to learn names, build group norms, check confidence, and introduce exercise book/OneNote expectations. No Pearson unit starts this week.', alert:'Welcome day Wed 26 Aug; first Y9 Maths lessons Thu–Fri.'},
+  {id:'y9_2',   week:'M1A',  dates:'27–28 Aug',    cycle:'A', unit:0,  unitName:'Start of Year',                          lessonNo:'',     lessonName:'Retrieval, routines and baseline problem-solving',             type:'flex',       term:'Michaelmas', obj:'Short Year 8 retrieval tasks and rich problems to observe arithmetic fluency, algebra readiness, reasoning and resilience. No formal grading.'},
+  // Unit 1: Significant figures, powers and standard form (M2B–M4B)
+  {id:'y9_3',   week:'M2B',  dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.1',  lessonName:'1.1 STEM: Powers of 10 (1/2)',                type:'core',       term:'Michaelmas', obj:'Use and understand powers of 10; prefixes associated with powers of 10; effect of multiplying and dividing by any integer power of 10.', alert:'Yr 7, 10 & 12 CAT4 testing Wed 2 Sep. Pearson teaching starts this week.'},
+  {id:'y9_4',   week:'M2B',  dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.1',  lessonName:'1.1 STEM: Powers of 10 (2/2)',                type:'core',       term:'Michaelmas', obj:'Use and understand powers of 10; prefixes associated with powers of 10; effect of multiplying and dividing by any integer power of 10.'},
+  {id:'y9_5',   week:'M2B',  dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.2',  lessonName:'1.2 Calculating and estimating (1/2)',        type:'core',       term:'Michaelmas', obj:'Calculate with powers. Round to a number of significant figures.'},
+  {id:'y9_6',   week:'M3A',  dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.2',  lessonName:'1.2 Calculating and estimating (2/2)',        type:'core',       term:'Michaelmas', obj:'Calculate with powers. Round to a number of significant figures.', alert:'Exeter 1 Thu 10 Sep.'},
+  {id:'y9_7',   week:'M3A',  dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.3',  lessonName:'1.3 Indices',                                 type:'core',       term:'Michaelmas', obj:'Work with integer indices.'},
+  {id:'y9_8',   week:'M3A',  dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.4',  lessonName:'1.4 Standard form',                           type:'core',       term:'Michaelmas', obj:'Write and interpret numbers in standard form.'},
+  {id:'y9_9',   week:'M3A',  dates:'7–11 Sep',     cycle:'A', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.5',  lessonName:'1.5 STEM: Calculating with standard form (1/2)', type:'core',   term:'Michaelmas', obj:'Calculate with numbers in standard form.'},
+  {id:'y9_10',  week:'M4B',  dates:'14–18 Sep',    cycle:'B', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'1.5',  lessonName:'1.5 STEM: Calculating with standard form (2/2)', type:'core',   term:'Michaelmas', obj:'Calculate with numbers in standard form.'},
+  {id:'y9_11',  week:'M4B',  dates:'14–18 Sep',    cycle:'B', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'CSE',  lessonName:'1 Check up, Strengthen and Extend',           type:'cse',        term:'Michaelmas', obj:'Pearson Check up, Strengthen and Extend for Unit 1 (condensed to 1 lesson).'},
+  {id:'y9_12',  week:'M4B',  dates:'14–18 Sep',    cycle:'B', unit:1,  unitName:'1. Significant Figures, Powers & Standard Form', lessonNo:'★',    lessonName:'Unit 1 Assessment',                           type:'assessment', term:'Michaelmas', obj:'End-of-unit assessment: Significant figures, powers and standard form.'},
+  // Unit 2: 2D Shapes & 3D Solids (M5A–M7A)
+  {id:'y9_13',  week:'M5A',  dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.1',  lessonName:'2.1 Surface area of prisms',                  type:'core',       term:'Michaelmas', obj:'Calculate the surface area of prisms.'},
+  {id:'y9_14',  week:'M5A',  dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.2',  lessonName:'2.2 Volume of prisms',                        type:'core',       term:'Michaelmas', obj:'Calculate the volume of prisms.'},
+  {id:'y9_15',  week:'M5A',  dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.3',  lessonName:'2.3 Circumference of a circle (1/2)',         type:'core',       term:'Michaelmas', obj:'Calculate the circumference of a circle.'},
+  {id:'y9_16',  week:'M5A',  dates:'21–25 Sep',    cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.3',  lessonName:'2.3 Circumference of a circle (2/2)',         type:'core',       term:'Michaelmas', obj:'Calculate the circumference of a circle.'},
+  {id:'y9_17',  week:'M6B',  dates:'28 Sep–2 Oct', cycle:'B', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.4',  lessonName:'2.4 Area of a circle (1/2)',                  type:'core',       term:'Michaelmas', obj:'Calculate the area of a circle and parts of circles.'},
+  {id:'y9_18',  week:'M6B',  dates:'28 Sep–2 Oct', cycle:'B', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.4',  lessonName:'2.4 Area of a circle (2/2)',                  type:'core',       term:'Michaelmas', obj:'Calculate the area of a circle and parts of circles.'},
+  {id:'y9_19',  week:'M6B',  dates:'28 Sep–2 Oct', cycle:'B', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.5',  lessonName:'2.5 Cylinders',                               type:'core',       term:'Michaelmas', obj:'Calculate the surface area and volume of cylinders.'},
+  {id:'y9_20',  week:'M7A',  dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.6',  lessonName:"2.6 Pythagoras' theorem (1/2)",               type:'core',       term:'Michaelmas', obj:"Apply Pythagoras' theorem in right-angled triangles."},
+  {id:'y9_21',  week:'M7A',  dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'2.6',  lessonName:"2.6 Pythagoras' theorem (2/2)",               type:'core',       term:'Michaelmas', obj:"Apply Pythagoras' theorem in right-angled triangles."},
+  {id:'y9_22',  week:'M7A',  dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'CSE',  lessonName:'2 Check up, Strengthen and Extend',           type:'cse',        term:'Michaelmas', obj:'Pearson Check up, Strengthen and Extend for Unit 2 (condensed to 1 lesson).'},
+  {id:'y9_23',  week:'M7A',  dates:'5–9 Oct',      cycle:'A', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'★',    lessonName:'Unit 2 Assessment',                           type:'assessment', term:'Michaelmas', obj:'End-of-unit assessment: 2D shapes and 3D solids.'},
+  // M8B: correction + pre-half-term consolidation (no new unit)
+  {id:'y9_24',  week:'M8B',  dates:'12–16 Oct',    cycle:'B', unit:2,  unitName:'2. 2D Shapes & 3D Solids',               lessonNo:'',     lessonName:'Unit 2 assessment correction and misconception review', type:'flex',  term:'Michaelmas', obj:'Return and review Unit 2 assessments; address common misconceptions in geometry.'},
+  {id:'y9_25',  week:'M8B',  dates:'12–16 Oct',    cycle:'B', unit:0,  unitName:'Consolidation',                          lessonNo:'',     lessonName:'Pre-half-term cumulative geometry problem-solving',       type:'flex',  term:'Michaelmas', obj:'No new Pearson unit starts this week. Cumulative geometry retrieval and problem-solving before Michaelmas half-term.'},
+  // Unit 11: Trigonometry (M9A–M11A)
+  {id:'y9_26',  week:'M9A',  dates:'26–30 Oct',    cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.1', lessonName:'11.1 The tangent ratio (1/2)',                type:'core',       term:'Michaelmas', obj:'Use the tangent ratio to find missing sides and angles in right-angled triangles.'},
+  {id:'y9_27',  week:'M9A',  dates:'26–30 Oct',    cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.1', lessonName:'11.1 The tangent ratio (2/2)',                type:'core',       term:'Michaelmas', obj:'Use the tangent ratio to find missing sides and angles in right-angled triangles.'},
+  {id:'y9_28',  week:'M9A',  dates:'26–30 Oct',    cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.2', lessonName:'11.2 The sine ratio (1/2)',                   type:'core',       term:'Michaelmas', obj:'Use the sine ratio to find missing sides and angles.'},
+  {id:'y9_29',  week:'M9A',  dates:'26–30 Oct',    cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.2', lessonName:'11.2 The sine ratio (2/2)',                   type:'core',       term:'Michaelmas', obj:'Use the sine ratio to find missing sides and angles.'},
+  {id:'y9_30',  week:'M10B', dates:'2–6 Nov',      cycle:'B', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.3', lessonName:'11.3 The cosine ratio (1/2)',                 type:'core',       term:'Michaelmas', obj:'Use the cosine ratio to find missing sides and angles.'},
+  {id:'y9_31',  week:'M10B', dates:'2–6 Nov',      cycle:'B', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.3', lessonName:'11.3 The cosine ratio (2/2)',                 type:'core',       term:'Michaelmas', obj:'Use the cosine ratio to find missing sides and angles.'},
+  {id:'y9_32',  week:'M10B', dates:'2–6 Nov',      cycle:'B', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.4', lessonName:'11.4 Use trigonometry to find angles (1/2)', type:'core',       term:'Michaelmas', obj:'Use trigonometric ratios to find missing angles.'},
+  {id:'y9_33',  week:'M11A', dates:'9–13 Nov',     cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.4', lessonName:'11.4 Use trigonometry to find angles (2/2)', type:'core',       term:'Michaelmas', obj:'Use trigonometric ratios to find missing angles.'},
+  {id:'y9_34',  week:'M11A', dates:'9–13 Nov',     cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'11.5', lessonName:'11.5 Solving problems using trigonometry',   type:'core',       term:'Michaelmas', obj:'Solve multi-step problems using trigonometry.'},
+  {id:'y9_35',  week:'M11A', dates:'9–13 Nov',     cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'CSE',  lessonName:'11 Check up, Strengthen and Extend',          type:'cse',        term:'Michaelmas', obj:'Pearson Check up, Strengthen and Extend for Unit 11 (condensed to 1 lesson).'},
+  {id:'y9_36',  week:'M11A', dates:'9–13 Nov',     cycle:'A', unit:11, unitName:'11. Trigonometry',                       lessonNo:'★',    lessonName:'Unit 11 Assessment',                          type:'assessment', term:'Michaelmas', obj:'End-of-unit assessment: Trigonometry.'},
+  // Unit 5: Inequalities, equations and formulae (M12B–M15A)
+  {id:'y9_37',  week:'M12B', dates:'16–20 Nov',    cycle:'B', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.1',  lessonName:'5.1 Substitution (1/2)',                      type:'core',       term:'Michaelmas', obj:'Substitute values into formulae and expressions.'},
+  {id:'y9_38',  week:'M12B', dates:'16–20 Nov',    cycle:'B', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.1',  lessonName:'5.1 Substitution (2/2)',                      type:'core',       term:'Michaelmas', obj:'Substitute values into formulae and expressions.'},
+  {id:'y9_39',  week:'M12B', dates:'16–20 Nov',    cycle:'B', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.2',  lessonName:'5.2 Inequalities (1/2)',                      type:'core',       term:'Michaelmas', obj:'Solve and represent linear inequalities on a number line.'},
+  {id:'y9_40',  week:'M13A', dates:'23–27 Nov',    cycle:'A', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.2',  lessonName:'5.2 Inequalities (2/2)',                      type:'core',       term:'Michaelmas', obj:'Solve and represent linear inequalities on a number line.'},
+  {id:'y9_41',  week:'M13A', dates:'23–27 Nov',    cycle:'A', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.3',  lessonName:'5.3 Using index laws',                        type:'core',       term:'Michaelmas', obj:'Apply laws of indices to simplify expressions.'},
+  {id:'y9_42',  week:'M13A', dates:'23–27 Nov',    cycle:'A', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.4',  lessonName:'5.4 Expressions, equations, identities and formulae', type:'core', term:'Michaelmas', obj:'Distinguish between and work with expressions, equations, identities and formulae.'},
+  {id:'y9_43',  week:'M13A', dates:'23–27 Nov',    cycle:'A', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.5',  lessonName:'5.5 Solving equations (1/2)',                 type:'core',       term:'Michaelmas', obj:'Solve linear equations including those with unknowns on both sides.'},
+  {id:'y9_44',  week:'M14B', dates:'30 Nov–4 Dec', cycle:'B', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.5',  lessonName:'5.5 Solving equations (2/2)',                 type:'core',       term:'Michaelmas', obj:'Solve linear equations including those with unknowns on both sides.'},
+  {id:'y9_45',  week:'M14B', dates:'30 Nov–4 Dec', cycle:'B', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.6',  lessonName:'5.6 Changing the subject (1/2)',              type:'core',       term:'Michaelmas', obj:'Change the subject of a formula.'},
+  {id:'y9_46',  week:'M14B', dates:'30 Nov–4 Dec', cycle:'B', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'5.6',  lessonName:'5.6 Changing the subject (2/2)',              type:'core',       term:'Michaelmas', obj:'Change the subject of a formula.'},
+  {id:'y9_47',  week:'M15A', dates:'7–11 Dec',     cycle:'A', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'CSE',  lessonName:'5 Check up, Strengthen and Extend',           type:'cse',        term:'Michaelmas', obj:'Pearson Check up, Strengthen and Extend for Unit 5 (condensed to 1 lesson).'},
+  {id:'y9_48',  week:'M15A', dates:'7–11 Dec',     cycle:'A', unit:5,  unitName:'5. Inequalities, Equations & Formulae',  lessonNo:'★',    lessonName:'Unit 5 Assessment',                           type:'assessment', term:'Michaelmas', obj:'End-of-unit assessment: Inequalities, equations and formulae.'},
+  // M16B: pre-Christmas consolidation (no new unit)
+  {id:'y9_49',  week:'M16B', dates:'14–16 Dec',    cycle:'B', unit:0,  unitName:'Consolidation',                          lessonNo:'',     lessonName:'Pre-Christmas cumulative retrieval and fluency',   type:'flex',  term:'Michaelmas', obj:'No new Pearson unit starts. Pre-Christmas cumulative retrieval and fluency review.'},
+  {id:'y9_50',  week:'M16B', dates:'14–16 Dec',    cycle:'B', unit:0,  unitName:'Consolidation',                          lessonNo:'',     lessonName:'Pre-Christmas problem-solving and target setting',  type:'flex',  term:'Michaelmas', obj:'Problem-solving, Harkness discussion, and Michaelmas target setting.'},
+  // ── LENT ────────────────────────────────────────────────────────
+  // Unit 10: Graphical solutions (L1A–L5A)
+  {id:'y9_51',  week:'L1A',  dates:'7–8 Jan',      cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.1', lessonName:'10.1 Drawing straight-line graphs',           type:'core',       term:'Lent', obj:'Draw and interpret straight-line graphs.'},
+  {id:'y9_52',  week:'L1A',  dates:'7–8 Jan',      cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.2', lessonName:'10.2 Graphs of quadratic functions (1/2)',    type:'core',       term:'Lent', obj:'Draw and interpret graphs of quadratic functions.'},
+  {id:'y9_53',  week:'L2B',  dates:'11–15 Jan',    cycle:'B', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.2', lessonName:'10.2 Graphs of quadratic functions (2/2)',    type:'core',       term:'Lent', obj:'Draw and interpret graphs of quadratic functions.'},
+  {id:'y9_54',  week:'L2B',  dates:'11–15 Jan',    cycle:'B', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.3', lessonName:'10.3 Simultaneous equations (1/2)',           type:'core',       term:'Lent', obj:'Solve simultaneous equations algebraically.'},
+  {id:'y9_55',  week:'L2B',  dates:'11–15 Jan',    cycle:'B', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.3', lessonName:'10.3 Simultaneous equations (2/2)',           type:'core',       term:'Lent', obj:'Solve simultaneous equations algebraically.'},
+  {id:'y9_56',  week:'L3A',  dates:'18–22 Jan',    cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.4', lessonName:'10.4 Using y = mx + c (1/2)',                 type:'core',       term:'Lent', obj:'Understand and use the equation of a straight line y = mx + c.'},
+  {id:'y9_57',  week:'L3A',  dates:'18–22 Jan',    cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.4', lessonName:'10.4 Using y = mx + c (2/2)',                 type:'core',       term:'Lent', obj:'Understand and use the equation of a straight line y = mx + c.'},
+  {id:'y9_58',  week:'L3A',  dates:'18–22 Jan',    cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.5', lessonName:'10.5 More simultaneous equations (1/2)',      type:'core',       term:'Lent', obj:'Solve simultaneous equations using graphs.'},
+  {id:'y9_59',  week:'L3A',  dates:'18–22 Jan',    cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.5', lessonName:'10.5 More simultaneous equations (2/2)',      type:'core',       term:'Lent', obj:'Solve simultaneous equations using graphs.'},
+  {id:'y9_60',  week:'L4B',  dates:'25–29 Jan',    cycle:'B', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.6', lessonName:'10.6 Graphs and simultaneous equations (1/2)', type:'core',     term:'Lent', obj:'Use graphs to solve simultaneous equations.'},
+  {id:'y9_61',  week:'L4B',  dates:'25–29 Jan',    cycle:'B', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'10.6', lessonName:'10.6 Graphs and simultaneous equations (2/2)', type:'core',     term:'Lent', obj:'Use graphs to solve simultaneous equations.'},
+  {id:'y9_62',  week:'L4B',  dates:'25–29 Jan',    cycle:'B', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'CSE',  lessonName:'10 Check up, Strengthen and Extend',          type:'cse',        term:'Lent', obj:'Pearson Check up, Strengthen and Extend for Unit 10 (condensed to 1 lesson).'},
+  {id:'y9_63',  week:'L5A',  dates:'1–5 Feb',      cycle:'A', unit:10, unitName:'10. Graphical Solutions',                lessonNo:'★',    lessonName:'Unit 10 Assessment',                          type:'assessment', term:'Lent', obj:'End-of-unit assessment: Graphical solutions.'},
+  // Unit 3: Quadratics (L5A–L6B)
+  {id:'y9_64',  week:'L5A',  dates:'1–5 Feb',      cycle:'A', unit:3,  unitName:'3. Quadratics',                          lessonNo:'3.1',  lessonName:'3.1 Arithmetic and quadratic sequences',      type:'core',       term:'Lent', obj:'Generate and describe arithmetic and quadratic sequences.'},
+  {id:'y9_65',  week:'L5A',  dates:'1–5 Feb',      cycle:'A', unit:3,  unitName:'3. Quadratics',                          lessonNo:'3.2',  lessonName:'3.2 Geometric sequences',                     type:'core',       term:'Lent', obj:'Generate and describe geometric sequences.'},
+  {id:'y9_66',  week:'L5A',  dates:'1–5 Feb',      cycle:'A', unit:3,  unitName:'3. Quadratics',                          lessonNo:'3.3',  lessonName:'3.3 Expanding',                               type:'core',       term:'Lent', obj:'Expand double brackets and simplify expressions.'},
+  {id:'y9_67',  week:'L6B',  dates:'8–12 Feb',     cycle:'B', unit:3,  unitName:'3. Quadratics',                          lessonNo:'3.4',  lessonName:'3.4 Factorising',                             type:'core',       term:'Lent', obj:'Factorise quadratic expressions.'},
+  {id:'y9_68',  week:'L6B',  dates:'8–12 Feb',     cycle:'B', unit:3,  unitName:'3. Quadratics',                          lessonNo:'3.5',  lessonName:'3.5 Solving quadratic equations',             type:'core',       term:'Lent', obj:'Solve quadratic equations by factorising.'},
+  {id:'y9_69',  week:'L6B',  dates:'8–12 Feb',     cycle:'B', unit:3,  unitName:'3. Quadratics',                          lessonNo:'CSE',  lessonName:'3 Check up, Strengthen and Extend',           type:'cse',        term:'Lent', obj:'Pearson Check up, Strengthen and Extend for Unit 3 (condensed to 1 lesson).'},
+  // L8B: Unit 3 Assessment + correction (after Lent half-term)
+  {id:'y9_70',  week:'L8B',  dates:'1–5 Mar',      cycle:'B', unit:3,  unitName:'3. Quadratics',                          lessonNo:'★',    lessonName:'Unit 3 Assessment',                           type:'assessment', term:'Lent', obj:'End-of-unit assessment: Quadratics.'},
+  {id:'y9_71',  week:'L8B',  dates:'1–5 Mar',      cycle:'B', unit:3,  unitName:'3. Quadratics',                          lessonNo:'',     lessonName:'Unit 3 assessment correction and algebra misconception review', type:'flex', term:'Lent', obj:'Return and review Unit 3 assessments; address algebra misconceptions.'},
+  // Unit 7: Multiplicative reasoning (L8B–L11A)
+  {id:'y9_72',  week:'L8B',  dates:'1–5 Mar',      cycle:'B', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.1',  lessonName:'7.1 Direct proportion',                       type:'core',       term:'Lent', obj:'Understand and use direct proportion.'},
+  {id:'y9_73',  week:'L9A',  dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.2',  lessonName:'7.2 Solving problems using direct proportion (1/2)', type:'core',  term:'Lent', obj:'Solve problems involving direct proportion.'},
+  {id:'y9_74',  week:'L9A',  dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.2',  lessonName:'7.2 Solving problems using direct proportion (2/2)', type:'core',  term:'Lent', obj:'Solve problems involving direct proportion.'},
+  {id:'y9_75',  week:'L9A',  dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.3',  lessonName:'7.3 Translations and enlargements (1/2)',     type:'core',       term:'Lent', obj:'Perform and describe translations and enlargements.'},
+  {id:'y9_76',  week:'L9A',  dates:'8–12 Mar',     cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.3',  lessonName:'7.3 Translations and enlargements (2/2)',     type:'core',       term:'Lent', obj:'Perform and describe translations and enlargements.'},
+  {id:'y9_77',  week:'L10B', dates:'15–19 Mar',    cycle:'B', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.4',  lessonName:'7.4 Negative and fractional scale factors (1/2)', type:'core',   term:'Lent', obj:'Apply negative and fractional scale factors in enlargements.'},
+  {id:'y9_78',  week:'L10B', dates:'15–19 Mar',    cycle:'B', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.4',  lessonName:'7.4 Negative and fractional scale factors (2/2)', type:'core',   term:'Lent', obj:'Apply negative and fractional scale factors in enlargements.'},
+  {id:'y9_79',  week:'L10B', dates:'15–19 Mar',    cycle:'B', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.5',  lessonName:'7.5 Percentage change (1/2)',                  type:'core',       term:'Lent', obj:'Calculate and apply percentage change, including reverse percentage.'},
+  {id:'y9_80',  week:'L11A', dates:'22–26 Mar',    cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'7.5',  lessonName:'7.5 Percentage change (2/2)',                  type:'core',       term:'Lent', obj:'Calculate and apply percentage change, including reverse percentage.'},
+  {id:'y9_81',  week:'L11A', dates:'22–26 Mar',    cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'CSE',  lessonName:'7 Check up, Strengthen and Extend',           type:'cse',        term:'Lent', obj:'Pearson Check up, Strengthen and Extend for Unit 7 (condensed to 1 lesson).'},
+  {id:'y9_82',  week:'L11A', dates:'22–26 Mar',    cycle:'A', unit:7,  unitName:'7. Multiplicative Reasoning',            lessonNo:'★',    lessonName:'Unit 7 Assessment',                           type:'assessment', term:'Lent', obj:'End-of-unit assessment: Multiplicative reasoning.'},
+  // Unit 8: Scale drawings and measures (L11A–S2B)
+  {id:'y9_83',  week:'L11A', dates:'22–26 Mar',    cycle:'A', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.1',  lessonName:'8.1 Maps and scales',                         type:'core',       term:'Lent', obj:'Use and interpret maps and scale drawings.'},
+  {id:'y9_84',  week:'L12B', dates:'29 Mar–2 Apr', cycle:'B', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.2',  lessonName:'8.2 Bearings',                                type:'core',       term:'Lent', obj:'Measure and calculate bearings.'},
+  {id:'y9_85',  week:'L12B', dates:'29 Mar–2 Apr', cycle:'B', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.3',  lessonName:'8.3 Scales and ratios',                       type:'core',       term:'Lent', obj:'Use scales and ratios in context.'},
+  // ── SUMMER ──────────────────────────────────────────────────────
+  {id:'y9_86',  week:'S1A',  dates:'19–23 Apr',    cycle:'A', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.4',  lessonName:'8.4 Congruent and similar shapes (1/2)',      type:'core',       term:'Summer', obj:'Identify and work with congruent and similar shapes.'},
+  {id:'y9_87',  week:'S1A',  dates:'19–23 Apr',    cycle:'A', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.4',  lessonName:'8.4 Congruent and similar shapes (2/2)',      type:'core',       term:'Summer', obj:'Identify and work with congruent and similar shapes.'},
+  {id:'y9_88',  week:'S1A',  dates:'19–23 Apr',    cycle:'A', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.5',  lessonName:'8.5 Solving geometrical problems (1/2)',      type:'core',       term:'Summer', obj:'Solve geometrical problems using scale drawings and measures.'},
+  {id:'y9_89',  week:'S1A',  dates:'19–23 Apr',    cycle:'A', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'8.5',  lessonName:'8.5 Solving geometrical problems (2/2)',      type:'core',       term:'Summer', obj:'Solve geometrical problems using scale drawings and measures.'},
+  {id:'y9_90',  week:'S2B',  dates:'26–30 Apr',    cycle:'B', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'CSE',  lessonName:'8 Check up, Strengthen and Extend',           type:'cse',        term:'Summer', obj:'Pearson Check up, Strengthen and Extend for Unit 8 (condensed to 1 lesson).'},
+  {id:'y9_91',  week:'S2B',  dates:'26–30 Apr',    cycle:'B', unit:8,  unitName:'8. Scale Drawings & Measures',           lessonNo:'★',    lessonName:'Unit 8 Assessment',                           type:'assessment', term:'Summer', obj:'End-of-unit assessment: Scale drawings and measures.'},
+  // Unit 9: Accuracy and measures (S2B–S4B)
+  {id:'y9_92',  week:'S2B',  dates:'26–30 Apr',    cycle:'B', unit:9,  unitName:'9. Accuracy & Measures',                 lessonNo:'9.1',  lessonName:'9.1 Rates of change',                         type:'core',       term:'Summer', obj:'Interpret and calculate rates of change from graphs and in context.'},
+  {id:'y9_93',  week:'S3A',  dates:'3–7 May',      cycle:'A', unit:9,  unitName:'9. Accuracy & Measures',                 lessonNo:'9.2',  lessonName:'9.2 Density and pressure (1/2)',               type:'core',       term:'Summer', obj:'Calculate density and pressure using appropriate formulae.'},
+  {id:'y9_94',  week:'S3A',  dates:'3–7 May',      cycle:'A', unit:9,  unitName:'9. Accuracy & Measures',                 lessonNo:'9.2',  lessonName:'9.2 Density and pressure (2/2)',               type:'core',       term:'Summer', obj:'Calculate density and pressure using appropriate formulae.'},
+  {id:'y9_95',  week:'S3A',  dates:'3–7 May',      cycle:'A', unit:9,  unitName:'9. Accuracy & Measures',                 lessonNo:'9.3',  lessonName:'9.3 Upper and lower bounds',                  type:'core',       term:'Summer', obj:'Find upper and lower bounds of measurements and use them in calculations.'},
+  {id:'y9_96',  week:'S4B',  dates:'10–14 May',    cycle:'B', unit:9,  unitName:'9. Accuracy & Measures',                 lessonNo:'★',    lessonName:'Unit 9 Assessment',                           type:'assessment', term:'Summer', obj:'End-of-unit assessment: Accuracy and measures.'},
+  // Unit 12: Probability (S4B–S6B)
+  {id:'y9_97',  week:'S4B',  dates:'10–14 May',    cycle:'B', unit:12, unitName:'12. Probability',                        lessonNo:'12.1', lessonName:'12.1 Set notation and Venn diagrams',         type:'core',       term:'Summer', obj:'Use set notation and Venn diagrams to organise and interpret data.'},
+  {id:'y9_98',  week:'S4B',  dates:'10–14 May',    cycle:'B', unit:12, unitName:'12. Probability',                        lessonNo:'12.2', lessonName:'12.2 Probability diagrams (1/2)',              type:'core',       term:'Summer', obj:'Draw and use probability diagrams including sample spaces.'},
+  {id:'y9_99',  week:'S5A',  dates:'17–21 May',    cycle:'A', unit:12, unitName:'12. Probability',                        lessonNo:'12.2', lessonName:'12.2 Probability diagrams (2/2)',              type:'core',       term:'Summer', obj:'Draw and use probability diagrams including sample spaces.'},
+  {id:'y9_100', week:'S5A',  dates:'17–21 May',    cycle:'A', unit:12, unitName:'12. Probability',                        lessonNo:'12.3', lessonName:'12.3 Tree diagrams (1/2)',                     type:'core',       term:'Summer', obj:'Draw and use tree diagrams to calculate probabilities.'},
+  {id:'y9_101', week:'S5A',  dates:'17–21 May',    cycle:'A', unit:12, unitName:'12. Probability',                        lessonNo:'12.3', lessonName:'12.3 Tree diagrams (2/2)',                     type:'core',       term:'Summer', obj:'Draw and use tree diagrams to calculate probabilities.'},
+  {id:'y9_102', week:'S5A',  dates:'17–21 May',    cycle:'A', unit:12, unitName:'12. Probability',                        lessonNo:'12.4', lessonName:'12.4 Experimental and theoretical probabilities', type:'core',  term:'Summer', obj:'Compare experimental and theoretical probabilities; use relative frequency.'},
+  {id:'y9_103', week:'S6B',  dates:'24–28 May',    cycle:'B', unit:12, unitName:'12. Probability',                        lessonNo:'★',    lessonName:'Unit 12 Assessment',                          type:'assessment', term:'Summer', obj:'End-of-unit assessment: Probability.'},
+  // Pre-EoY revision + EoY Exam (S6B–S7A)
+  {id:'y9_104', week:'S6B',  dates:'24–28 May',    cycle:'B', unit:0,  unitName:'Pre-exam revision',                      lessonNo:'',     lessonName:'EoY revision lesson 1',                       type:'flex',       term:'Summer', obj:'Focused revision of key topics from Units 1, 2, 11, 5, 10, 3, 7, 8, 9 and 12.'},
+  {id:'y9_105', week:'S6B',  dates:'24–28 May',    cycle:'B', unit:0,  unitName:'Pre-exam revision',                      lessonNo:'',     lessonName:'EoY revision lesson 2',                       type:'flex',       term:'Summer', obj:'Focused revision of key topics from Units 1, 2, 11, 5, 10, 3, 7, 8, 9 and 12.'},
+  {id:'y9_106', week:'S7A',  dates:'31 May–4 Jun', cycle:'A', unit:0,  unitName:'End-of-Year Examination',                lessonNo:'',     lessonName:'End-of-Year Examination — Paper 1',           type:'flex',       term:'Summer', obj:'EoY covers Units 1, 2, 11, 5, 10, 3, 7, 8, 9 and 12.', alert:'Year 7–9 Summer Exams 31 May–4 Jun. National holidays Thu 3 + Fri 4 Jun.'},
+  {id:'y9_107', week:'S7A',  dates:'31 May–4 Jun', cycle:'A', unit:0,  unitName:'End-of-Year Examination',                lessonNo:'',     lessonName:'End-of-Year Examination — Paper 2',           type:'flex',       term:'Summer', obj:'EoY covers Units 1, 2, 11, 5, 10, 3, 7, 8, 9 and 12.'},
+  // Unit 6: Collecting & Analysing Data (S8B–S9A) — post-EoY
+  {id:'y9_108', week:'S8B',  dates:'7–11 Jun',     cycle:'B', unit:6,  unitName:'6. Collecting & Analysing Data',         lessonNo:'6.1',  lessonName:'6.1/6.2 Planning and collecting data',        type:'core',       term:'Summer', obj:'Plan and collect data; understand types of data and sources.'},
+  {id:'y9_109', week:'S8B',  dates:'7–11 Jun',     cycle:'B', unit:6,  unitName:'6. Collecting & Analysing Data',         lessonNo:'6.3',  lessonName:'6.3 Calculating averages and range',          type:'core',       term:'Summer', obj:'Calculate mean, median, mode and range from grouped and ungrouped data.'},
+  {id:'y9_110', week:'S8B',  dates:'7–11 Jun',     cycle:'B', unit:6,  unitName:'6. Collecting & Analysing Data',         lessonNo:'6.4',  lessonName:'6.4 Displaying and analysing data (1/2)',     type:'core',       term:'Summer', obj:'Choose and construct appropriate statistical diagrams; compare data sets.'},
+  {id:'y9_111', week:'S9A',  dates:'14–18 Jun',    cycle:'A', unit:6,  unitName:'6. Collecting & Analysing Data',         lessonNo:'6.4',  lessonName:'6.4 Displaying and analysing data (2/2)',     type:'core',       term:'Summer', obj:'Choose and construct appropriate statistical diagrams; compare data sets.'},
+  {id:'y9_112', week:'S9A',  dates:'14–18 Jun',    cycle:'A', unit:6,  unitName:'6. Collecting & Analysing Data',         lessonNo:'★',    lessonName:'Unit 6 Assessment',                           type:'assessment', term:'Summer', obj:'End-of-unit assessment: Collecting and analysing data.'},
+  // Unit 4: Constructions (S9A–S10B) — post-EoY
+  {id:'y9_113', week:'S9A',  dates:'14–18 Jun',    cycle:'A', unit:4,  unitName:'4. Constructions',                       lessonNo:'4.1',  lessonName:'4.1 Constructing shapes',                     type:'core',       term:'Summer', obj:'Construct triangles and other shapes accurately using ruler and compasses.'},
+  {id:'y9_114', week:'S9A',  dates:'14–18 Jun',    cycle:'A', unit:4,  unitName:'4. Constructions',                       lessonNo:'4.2',  lessonName:'4.2 Constructions 1',                         type:'core',       term:'Summer', obj:'Construct perpendicular bisectors, angle bisectors and perpendiculars from a point.'},
+  {id:'y9_115', week:'S10B', dates:'21–25 Jun',    cycle:'B', unit:4,  unitName:'4. Constructions',                       lessonNo:'4.3',  lessonName:'4.3 Constructions 2',                         type:'core',       term:'Summer', obj:'Construct loci and use constructions to solve geometrical problems.'},
+  {id:'y9_116', week:'S10B', dates:'21–25 Jun',    cycle:'B', unit:4,  unitName:'4. Constructions',                       lessonNo:'★',    lessonName:'Unit 4 Assessment',                           type:'assessment', term:'Summer', obj:'End-of-unit assessment: Constructions.'},
+  {id:'y9_117', week:'S10B', dates:'21–25 Jun',    cycle:'B', unit:0,  unitName:'Year 10 readiness',                      lessonNo:'',     lessonName:'Year 10 readiness and end-of-year consolidation', type:'flex',   term:'Summer', obj:'Optional Year 10 readiness lesson. Can be lost to events without breaking the SoW.'},
+];
+
 // Populate SOW lookup after arrays are defined
 SOW_BY_YG[7] = Y7_SOW;
 SOW_BY_YG[8] = Y8_SOW;
+SOW_BY_YG[9] = Y9_SOW;
 
 const ASSESSMENTS = {
   7: [
@@ -688,6 +838,21 @@ const ASSESSMENTS = {
     {name:'Unit 7 Assessment',    sub:'Probability',                                  week:'S6B',  dates:'24–28 May 2027',    term:'Summer',     unit:7},
     {name:'End of Year Examination', sub:'Full year — Units 1–11 (2 papers)',         week:'S7A',  dates:'31 May–4 Jun 2027', term:'Summer',     unit:0, eoy:true},
     {name:'Unit 10 Assessment',   sub:'Charts and diagrams',                          week:'S11A', dates:'28–30 Jun 2027',    term:'Summer',     unit:10},
+  ],
+  9: [
+    {name:'Unit 1 Assessment',    sub:'Significant figures, powers & standard form',  week:'M4B',  dates:'14–18 Sep 2026',    term:'Michaelmas', unit:1},
+    {name:'Unit 2 Assessment',    sub:'2D shapes & 3D solids',                        week:'M7A',  dates:'5–9 Oct 2026',      term:'Michaelmas', unit:2},
+    {name:'Unit 11 Assessment',   sub:'Trigonometry',                                 week:'M11A', dates:'9–13 Nov 2026',     term:'Michaelmas', unit:11},
+    {name:'Unit 5 Assessment',    sub:'Inequalities, equations & formulae',           week:'M15A', dates:'7–11 Dec 2026',     term:'Michaelmas', unit:5},
+    {name:'Unit 10 Assessment',   sub:'Graphical solutions',                          week:'L5A',  dates:'1–5 Feb 2027',      term:'Lent',       unit:10},
+    {name:'Unit 3 Assessment',    sub:'Quadratics',                                   week:'L8B',  dates:'1–5 Mar 2027',      term:'Lent',       unit:3},
+    {name:'Unit 7 Assessment',    sub:'Multiplicative reasoning',                     week:'L11A', dates:'22–26 Mar 2027',    term:'Lent',       unit:7},
+    {name:'Unit 8 Assessment',    sub:'Scale drawings & measures',                    week:'S2B',  dates:'26–30 Apr 2027',    term:'Summer',     unit:8},
+    {name:'Unit 9 Assessment',    sub:'Accuracy & measures',                          week:'S4B',  dates:'10–14 May 2027',    term:'Summer',     unit:9},
+    {name:'Unit 12 Assessment',   sub:'Probability',                                  week:'S6B',  dates:'24–28 May 2027',    term:'Summer',     unit:12},
+    {name:'End of Year Examination', sub:'Units 1, 2, 11, 5, 10, 3, 7, 8, 9 & 12 (2 papers)', week:'S7A', dates:'31 May–4 Jun 2027', term:'Summer', unit:0, eoy:true},
+    {name:'Unit 6 Assessment',    sub:'Collecting & analysing data (post-EoY)',       week:'S9A',  dates:'14–18 Jun 2027',    term:'Summer',     unit:6},
+    {name:'Unit 4 Assessment',    sub:'Constructions (post-EoY)',                     week:'S10B', dates:'21–25 Jun 2027',    term:'Summer',     unit:4},
   ],
 };
 
@@ -820,7 +985,7 @@ let hodYear = 7;
 
 function renderYearTabs(){
   const yrs=['7','8','9','10','11','12','13'];
-  const available=new Set(['7','8']);
+  const available=new Set(['7','8','9']);
   document.getElementById('yg-tabs').innerHTML=yrs.map(y=>
     `<button class="yg-tab${String(hodYear)===y?' active':''}${available.has(y)?'':' disabled'}" data-year="${y}">Year ${y}</button>`
   ).join('');
@@ -935,6 +1100,13 @@ function renderTeacher(){
     return;
   }
 
+  // Y9 Ma1 uses a different SoW — placeholder until it is added
+  if(yg===9 && set==='Ma1'){
+    document.getElementById('teacher-content').innerHTML=
+      `<div class="coming-soon"><h3>Year 9 Ma1 — SSW</h3><p>Ma1 follows a different scheme of work. The teacher view for this class will be available once the Ma1 SoW has been added.</p></div>`;
+    return;
+  }
+
   const teachers=TEACHERS_BY_YG[yg]||{};
   const base=tf==='all'?sow:sow.filter(l=>l.term===tf);
   const lessons=q?base.filter(l=>
@@ -1045,20 +1217,50 @@ function resetProgress(){
 // ════════════════════════════════════════════════════════════════════
 //  ASSESSMENTS
 // ════════════════════════════════════════════════════════════════════
+let assessY9Filter = 'ma24';
+
+function setAssessFilter(f){
+  assessY9Filter = f;
+  renderAssessments();
+}
+
 function renderAssessments(){
   const yg = document.getElementById('sel-assess-yg').value;
+  const ygInt = parseInt(yg);
   const title = document.getElementById('assess-card-title');
   if(title) title.textContent = `Year ${yg} — Assessment Schedule 2026/27`;
 
-  const data = ASSESSMENTS[parseInt(yg)];
+  const contentEl = document.getElementById('assess-content');
+
+  // Y9 toggle header
+  let toggleHtml = '';
+  if(ygInt === 9){
+    toggleHtml = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">Schedule for:</span>
+      <button class="assess-tog-btn${assessY9Filter==='ma24'?' active':''}" onclick="setAssessFilter('ma24')">Ma2–Ma4 (FTA / HPA / MKM)</button>
+      <button class="assess-tog-btn${assessY9Filter==='ma1'?' active':''}" onclick="setAssessFilter('ma1')">Ma1 — SSW</button>
+    </div>`;
+  }
+
+  // Ma1 coming soon
+  if(ygInt === 9 && assessY9Filter === 'ma1'){
+    contentEl.innerHTML = toggleHtml +
+      `<div class="coming-soon" style="margin-top:8px;">
+        <h3>Ma1 (SSW) — Assessment Schedule</h3>
+        <p>Year 9 Ma1 follows a different scheme of work. The assessment schedule for this class will be added here soon.</p>
+      </div>`;
+    return;
+  }
+
+  const data = ASSESSMENTS[ygInt];
   if(!data){
-    document.getElementById('assess-content').innerHTML=
+    contentEl.innerHTML = toggleHtml +
       `<div class="coming-soon"><h3>Year ${yg} assessments coming soon</h3><p>Assessment data for Year ${yg} will appear here once added.</p></div>`;
     return;
   }
 
   const terms=['Michaelmas','Lent','Summer'];
-  let html='';
+  let html = toggleHtml;
   terms.forEach(term=>{
     const ta=data.filter(a=>a.term===term);
     if(!ta.length)return;
@@ -1068,7 +1270,7 @@ function renderAssessments(){
       <div class="assess-grid">`;
     ta.forEach(a=>{
       const cls=a.eoy?'eoy':a.interim?'interim':'';
-      const ygFolders=ASSESSMENT_FOLDERS_BY_YG[parseInt(yg)]||ASSESSMENT_FOLDERS;
+      const ygFolders=ASSESSMENT_FOLDERS_BY_YG[ygInt]||ASSESSMENT_FOLDERS;
       const assessUrl=a.unit?ygFolders[a.unit]:'';
       const cardOpen=assessUrl?`<a href="${assessUrl}" target="_blank" style="text-decoration:none;color:inherit;display:block;">`:'<div>';
       const cardClose=assessUrl?'</a>':'</div>';
@@ -1085,7 +1287,7 @@ function renderAssessments(){
     });
     html+='</div></div>';
   });
-  document.getElementById('assess-content').innerHTML=html;
+  contentEl.innerHTML=html;
 }
 
 // ════════════════════════════════════════════════════════════════════

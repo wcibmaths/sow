@@ -438,7 +438,7 @@ const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDE
 // ── Y7 SoW Data — v5 (2026-27) ───────────────────────────────────
 const Y7_SOW = [
   // ── MICHAELMAS ──────────────────────────────────────────────────
-  {id:'y7_1',  week:'M1A',  dates:'27–28 Aug',    cycle:'A', unit:0,  unitName:'Start of Year',            lessonNo:'',    lessonName:'Get-to-know, routines and mathematical identity',  type:'flex',       term:'Michaelmas', obj:'Establish routines, books, equipment, expectations. No Pearson unit starts this week.', alert:'Welcome day Wed 26 Aug; teaching starts Thu 27 Aug.'},
+  {id:'y7_1',  week:'M1A',  dates:'27–28 Aug',    cycle:'A', unit:0,  unitName:'Start of Year',            lessonNo:'',    lessonName:'Get-to-know, routines and mathematical identity',  type:'flex',       term:'Michaelmas', obj:'Establish routines, books, equipment, expectations. No Pearson unit starts this week.', alert:'Welcome day Wed 26 Aug; teaching starts Thu 27 Aug.', planUrl:'https://shakirasuwan-source.github.io/wcib-maths-sow/lessons/year7/y7-u1-l1.html'},
   {id:'y7_2',  week:'M1A',  dates:'27–28 Aug',    cycle:'A', unit:0,  unitName:'Start of Year',            lessonNo:'',    lessonName:'Baseline / diagnostic and reflection',               type:'flex',       term:'Michaelmas', obj:'Assess prior knowledge diagnostically; no formal grading.'},
   {id:'y7_3',  week:'M2B',  dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'Analysing & Displaying Data', lessonNo:'1.1', lessonName:'1.1 Averages and range (1/2)',                  type:'core',       term:'Michaelmas', obj:'Find mode, median and range; calculate the mean from raw data.', alert:'Yr 7, 10 and 12 CAT4 testing Wed 2 Sep.'},
   {id:'y7_4',  week:'M2B',  dates:'31 Aug–4 Sep', cycle:'B', unit:1,  unitName:'Analysing & Displaying Data', lessonNo:'1.1', lessonName:'1.1 Averages and range (2/2)',                  type:'core',       term:'Michaelmas', obj:'Interpret the mean; compare data sets using averages and range.'},
@@ -1276,6 +1276,9 @@ function folderBtn(lesson, yg){
   yg = yg || 7;
   const unitFolders = UNIT_FOLDERS_BY_YG[yg] || UNIT_FOLDERS;
   const assessFolders = ASSESSMENT_FOLDERS_BY_YG[yg] || ASSESSMENT_FOLDERS;
+  if(lesson.planUrl){
+    return `<a href="${lesson.planUrl}" target="_blank" class="res-btn" title="Open lesson plan">📄 Plan</a>`;
+  }
   if(!lesson.unit) return '';
   if(lesson.type==='assessment' && assessFolders[lesson.unit]){
     return `<a href="${assessFolders[lesson.unit]}" target="_blank" class="res-btn assess-btn" title="Open assessment folder">📋 Test</a>`;

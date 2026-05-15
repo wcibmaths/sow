@@ -1276,9 +1276,7 @@ function folderBtn(lesson, yg){
   yg = yg || 7;
   const unitFolders = UNIT_FOLDERS_BY_YG[yg] || UNIT_FOLDERS;
   const assessFolders = ASSESSMENT_FOLDERS_BY_YG[yg] || ASSESSMENT_FOLDERS;
-  if(lesson.planUrl){
-    return `<a href="${lesson.planUrl}" target="_blank" class="res-btn" title="Open lesson plan">📄 Plan</a>`;
-  }
+  if(lesson.planUrl) return '';
   if(!lesson.unit) return '';
   if(lesson.type==='assessment' && assessFolders[lesson.unit]){
     return `<a href="${assessFolders[lesson.unit]}" target="_blank" class="res-btn assess-btn" title="Open assessment folder">📋 Test</a>`;
@@ -1560,7 +1558,10 @@ function renderTeacher(){
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">
             <div class="lesson-name-row">
-              ${noLabel}<span class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</span>
+              ${noLabel}${lesson.planUrl
+                ? `<a href="${lesson.planUrl}" target="_blank" class="lesson-name${isA?' assess':''}" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">${esc(lesson.lessonName)}</a>`
+                : `<span class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</span>`
+              }
             </div>
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>

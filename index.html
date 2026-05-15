@@ -1850,36 +1850,29 @@ function init(){
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 
 // ════════════════════════════════════════════════════════════════════
-//  LESSON NOTES / COMMENTS
+//  LESSON NOTES / COMMENTS  (uses same store + sync as statuses)
 // ════════════════════════════════════════════════════════════════════
-const COMMENTS_KEY = 'wcib_sow_notes';
-
-function loadAllComments(){
-  try{ const r=localStorage.getItem(COMMENTS_KEY); return r?JSON.parse(r):{}; }
-  catch(e){ return {}; }
-}
-
-function saveAllComments(data){
-  localStorage.setItem(COMMENTS_KEY, JSON.stringify(data));
-}
+function noteKey(id){ return '__note__'+id; }
 
 function getCommentsForLesson(id){
-  return loadAllComments()[id]||[];
+  return loadAll()[noteKey(id)]||[];
 }
 
 function addCommentToLesson(id, text, yg, set){
-  const data=loadAllComments();
-  if(!data[id]) data[id]=[];
-  data[id].push({text:text.trim(), date:new Date().toISOString(), yg:yg, set:set});
-  saveAllComments(data);
+  const data=loadAll();
+  const k=noteKey(id);
+  if(!data[k]) data[k]=[];
+  data[k].push({text:text.trim(), date:new Date().toISOString(), yg:yg, set:set});
+  saveAll(data);
 }
 
 function deleteCommentFromLesson(id, idx){
-  const data=loadAllComments();
-  if(!data[id]) return;
-  data[id].splice(idx,1);
-  if(!data[id].length) delete data[id];
-  saveAllComments(data);
+  const data=loadAll();
+  const k=noteKey(id);
+  if(!data[k]) return;
+  data[k].splice(idx,1);
+  if(!data[k].length) delete data[k];
+  saveAll(data);
 }
 
 // Modal state

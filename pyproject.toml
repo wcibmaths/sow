@@ -1,6 +1,9 @@
 [project]
 name = "repl-nix-workspace"
 version = "0.1.0"
-description = "Add your description here"
+description = "WCIB Maths Department Scheme of Work"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+  "flask>=3.0",
+  "gunicorn>=21.0",
+]

@@ -37,5 +37,4 @@ externalPort = 80
 [deployment]
 deploymentTarget = "autoscale"
 publicDir = "."
-run = [".venv/bin/gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "--workers=1", "server:app"]
-build = ["bash", "-c", "rm -rf .venv && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt"]
+run = [".pythonlibs/bin/gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "--workers=1", "server:app"]

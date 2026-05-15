@@ -1524,7 +1524,7 @@ function renderTeacher(){
       const alertL=wkL.find(l=>l.alert);
       html+=`<div class="week"><div class="week-header">
         <span class="week-label">Week ${wk}</span>
-        <span class="week-dates">${first.dates} · Cycle ${first.cycle}</span>
+        <span class="week-dates">${first.dates} · Cycle ${first.cycle||first.week.slice(-1)}</span>
         ${alertL?`<span class="week-alert">${alertL.alert}</span>`:''}
       </div>`;
 

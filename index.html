@@ -249,54 +249,10 @@
   @media(max-width:700px){
     nav{display:none;}
     .lesson{grid-template-columns:28px 1fr auto;}
-    .lesson .type-badge,.lesson .res-btn,.comment-btn{display:none;}
+    .lesson .type-badge,.lesson .res-btn{display:none;}
   }
 
-  /* ── Comment button ─────────────────────────────── */
-  .comment-btn{position:relative;background:none;border:none;cursor:pointer;
-    padding:4px;border-radius:6px;color:var(--mid-gray);display:flex;
-    align-items:center;justify-content:center;transition:color .15s,background .15s;}
-  .comment-btn:hover{color:var(--navy);background:var(--light-blue);}
-  .comment-btn.has-comments{color:var(--navy);}
-  .comment-badge{position:absolute;top:-4px;right:-4px;background:var(--amber);
-    color:#fff;font-size:9px;font-weight:700;border-radius:99px;
-    min-width:14px;height:14px;display:flex;align-items:center;justify-content:center;
-    padding:0 3px;line-height:1;}
 
-  /* ── Comment modal ──────────────────────────────── */
-  .cm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;
-    display:flex;align-items:center;justify-content:center;padding:16px;}
-  .cm-overlay.hidden{display:none;}
-  .cm-box{background:#fff;border-radius:12px;width:100%;max-width:520px;
-    max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.2);}
-  .cm-head{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;
-    border-bottom:1px solid #eee;}
-  .cm-title{flex:1;font-size:14px;font-weight:700;color:var(--navy);line-height:1.4;}
-  .cm-meta{font-size:11px;font-weight:400;color:var(--dark-gray);display:block;margin-top:2px;}
-  .cm-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--dark-gray);
-    padding:0 4px;line-height:1;flex-shrink:0;}
-  .cm-close:hover{color:var(--navy);}
-  .cm-body{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;}
-  .cm-empty{text-align:center;color:var(--dark-gray);font-size:13px;padding:24px 0;}
-  .cm-note{background:#F8F9FA;border-radius:8px;padding:10px 12px;position:relative;}
-  .cm-note-text{font-size:13px;color:#222;white-space:pre-wrap;word-break:break-word;
-    padding-right:28px;}
-  .cm-note-meta{font-size:11px;color:var(--dark-gray);margin-top:5px;}
-  .cm-note-del{position:absolute;top:8px;right:8px;background:none;border:none;
-    cursor:pointer;font-size:14px;color:var(--mid-gray);padding:2px 4px;border-radius:4px;}
-  .cm-note-del:hover{background:#fee;color:var(--red);}
-  .cm-foot{padding:14px 20px;border-top:1px solid #eee;display:flex;flex-direction:column;gap:8px;}
-  .cm-textarea{width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 12px;
-    font-size:13px;font-family:inherit;resize:vertical;min-height:72px;
-    box-sizing:border-box;outline:none;}
-  .cm-textarea:focus{border-color:var(--navy);}
-  .cm-foot-row{display:flex;justify-content:flex-end;gap:8px;}
-  .cm-btn-add{background:var(--navy);color:#fff;border:none;border-radius:7px;
-    padding:7px 18px;font-size:13px;font-weight:600;cursor:pointer;}
-  .cm-btn-add:hover{opacity:.88;}
-  .cm-btn-cancel{background:none;border:1px solid #ddd;border-radius:7px;
-    padding:7px 14px;font-size:13px;cursor:pointer;color:var(--dark-gray);}
-  .cm-btn-cancel:hover{background:#f5f5f5;}
 </style>
 </head>
 <body>
@@ -1653,7 +1609,6 @@ function renderTeacher(){
         const seqLabel=isA?'★':lessonSeqNo[lesson.id]||'';
         const noLabel=seqLabel?`<span class="lesson-no">${esc(seqLabel)}</span>`:'';
 
-        const cCount=getCommentsForLesson(lesson.id).length;
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">
             <div class="lesson-name-row">
@@ -1674,15 +1629,6 @@ function renderTeacher(){
                 <option ${status==='Done'?'selected':''}>Done</option>
                 <option ${status==='N/A'?'selected':''}>N/A</option>
               </select>`}
-          <button class="comment-btn${cCount>0?' has-comments':''}"
-            onclick="openCommentModal('${lesson.id}',this)"
-            title="${cCount>0?cCount+' note'+(cCount!==1?'s':''):'Add note'}"
-            data-lesson-id="${lesson.id}"
-            data-lesson-name="${esc(lesson.lessonName).replace(/"/g,'&quot;')}"
-            data-yg="${yg}" data-set="${set}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            ${cCount>0?`<span class="comment-badge">${cCount}</span>`:''}
-          </button>
         </div>`;
       });
       html+='</div>';
@@ -1899,129 +1845,7 @@ async function init(){
 
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 
-// ════════════════════════════════════════════════════════════════════
-//  LESSON NOTES / COMMENTS  (uses same store + sync as statuses)
-// ════════════════════════════════════════════════════════════════════
-function noteKey(id){ return '__note__'+id; }
-
-function getCommentsForLesson(id){
-  return loadAll()[noteKey(id)]||[];
-}
-
-function addCommentToLesson(id, text, yg, set){
-  const data=loadAll();
-  const k=noteKey(id);
-  if(!data[k]) data[k]=[];
-  data[k].push({text:text.trim(), date:new Date().toISOString(), yg:yg, set:set});
-  saveAll(data);
-}
-
-function deleteCommentFromLesson(id, idx){
-  const data=loadAll();
-  const k=noteKey(id);
-  if(!data[k]) return;
-  data[k].splice(idx,1);
-  if(!data[k].length) delete data[k];
-  saveAll(data);
-}
-
-// Modal state
-let _cmLessonId=null, _cmBtn=null;
-
-function openCommentModal(lessonId, btn){
-  _cmLessonId=lessonId;
-  _cmBtn=btn;
-  const lessonName=btn.dataset.lessonName||lessonId;
-  const yg=btn.dataset.yg||'';
-  const set=btn.dataset.set||'';
-  document.getElementById('cm-lesson-title').textContent=lessonName;
-  document.getElementById('cm-lesson-meta').textContent=
-    [yg?'Year '+yg:'', set].filter(Boolean).join(' · ');
-  document.getElementById('cm-textarea').value='';
-  renderCmNotes();
-  document.getElementById('cm-overlay').classList.remove('hidden');
-  document.getElementById('cm-textarea').focus();
-}
-
-function closeCm(){
-  document.getElementById('cm-overlay').classList.add('hidden');
-  _cmLessonId=null; _cmBtn=null;
-}
-
-function renderCmNotes(){
-  const notes=getCommentsForLesson(_cmLessonId);
-  const body=document.getElementById('cm-notes-body');
-  if(!notes.length){
-    body.innerHTML='<div class="cm-empty">No notes yet — add the first one below.</div>';
-    return;
-  }
-  body.innerHTML=notes.map((n,i)=>{
-    const d=new Date(n.date);
-    const dateStr=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
-      +' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    const meta=[n.set?'Set '+n.set:'', n.yg?'Y'+n.yg:'', dateStr].filter(Boolean).join(' · ');
-    return `<div class="cm-note">
-      <div class="cm-note-text">${esc(n.text)}</div>
-      <div class="cm-note-meta">${meta}</div>
-      <button class="cm-note-del" onclick="deleteCmNote(${i})" title="Delete note">✕</button>
-    </div>`;
-  }).join('');
-}
-
-function deleteCmNote(idx){
-  deleteCommentFromLesson(_cmLessonId, idx);
-  renderCmNotes();
-  refreshCmBtn();
-}
-
-function submitCmNote(){
-  const ta=document.getElementById('cm-textarea');
-  const text=ta.value.trim();
-  if(!text) return;
-  const yg=_cmBtn?_cmBtn.dataset.yg:'';
-  const set=_cmBtn?_cmBtn.dataset.set:'';
-  addCommentToLesson(_cmLessonId, text, yg, set);
-  ta.value='';
-  renderCmNotes();
-  refreshCmBtn();
-}
-
-function refreshCmBtn(){
-  if(!_cmBtn) return;
-  const count=getCommentsForLesson(_cmLessonId).length;
-  _cmBtn.classList.toggle('has-comments', count>0);
-  _cmBtn.title=count>0?count+' note'+(count!==1?'s':''):'Add note';
-  let badge=_cmBtn.querySelector('.comment-badge');
-  if(count>0){
-    if(!badge){ badge=document.createElement('span'); badge.className='comment-badge'; _cmBtn.appendChild(badge); }
-    badge.textContent=count;
-  } else {
-    if(badge) badge.remove();
-  }
-}
 </script>
 
-<!-- ── Comment / Notes modal ─────────────────────────────────── -->
-<div id="cm-overlay" class="cm-overlay hidden" onclick="if(event.target===this)closeCm()">
-  <div class="cm-box">
-    <div class="cm-head">
-      <div style="flex:1">
-        <div id="cm-lesson-title" class="cm-title"></div>
-        <span id="cm-lesson-meta" class="cm-meta"></span>
-      </div>
-      <button class="cm-close" onclick="closeCm()" title="Close">✕</button>
-    </div>
-    <div id="cm-notes-body" class="cm-body"></div>
-    <div class="cm-foot">
-      <textarea id="cm-textarea" class="cm-textarea"
-        placeholder="Note a mistake, timing issue, resource gap or any improvement idea…"
-        onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))submitCmNote()"></textarea>
-      <div class="cm-foot-row">
-        <button class="cm-btn-cancel" onclick="closeCm()">Cancel</button>
-        <button class="cm-btn-add" onclick="submitCmNote()">Add note</button>
-      </div>
-    </div>
-  </div>
-</div>
 </body>
 </html>

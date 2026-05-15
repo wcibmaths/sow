@@ -289,7 +289,7 @@
         <option value="7">Year 7</option>
         <option value="8">Year 8</option>
         <option value="9">Year 9</option>
-        <option disabled>Year 10 (coming soon)</option>
+        <option value="10">Year 10</option>
         <option disabled>Year 11 (coming soon)</option>
         <option disabled>Year 12 (coming soon)</option>
         <option disabled>Year 13 (coming soon)</option>
@@ -326,7 +326,7 @@
         <option value="7">Year 7</option>
         <option value="8">Year 8</option>
         <option value="9">Year 9</option>
-        <option value="10" disabled>Year 10 (coming soon)</option>
+        <option value="10">Year 10</option>
         <option value="11" disabled>Year 11 (coming soon)</option>
         <option value="12" disabled>Year 12 (coming soon)</option>
       </select>
@@ -353,14 +353,16 @@
 'use strict';
 
 const TEACHERS_BY_YG = {
-  7: { Ma1:'MKM', Ma2:'HPA', Ma3:'ADE', Ma4:'FTA' },
-  8: { Ma1:'ADE', Ma2:'MKM', Ma3:'FTA', Ma4:'HPA' },
-  9: { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
+  7:  { Ma1:'MKM', Ma2:'HPA', Ma3:'ADE', Ma4:'FTA' },
+  8:  { Ma1:'ADE', Ma2:'MKM', Ma3:'FTA', Ma4:'HPA' },
+  9:  { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
+  10: { Ma1:'SSW', Ma2:'ADE', Ma3:'HPA', Ma4:'FTA' },
 };
 const SETS_BY_YG = {
-  7: ['Ma1','Ma2','Ma3','Ma4'],
-  8: ['Ma1','Ma2','Ma3','Ma4'],
-  9: ['Ma1','Ma2','Ma3','Ma4'],
+  7:  ['Ma1','Ma2','Ma3','Ma4'],
+  8:  ['Ma1','Ma2','Ma3','Ma4'],
+  9:  ['Ma1','Ma2','Ma3','Ma4'],
+  10: ['Ma1','Ma2','Ma3','Ma4'],
 };
 const SOW_BY_YG = {};  // populated after SOW arrays are defined
 const TEACHERS = TEACHERS_BY_YG[7];
@@ -978,9 +980,152 @@ const ASSESSMENTS_MA1 = {
 };
 
 // Populate SOW lookup after arrays are defined
+// ── Year 10 KS4 Normal SoW (Ma2 ADE · Ma3 HPA) — 124 lessons ──────
+const Y10_SOW = [
+  // Start of Year (M1A)
+  {id:'y10_001',lessonName:'Induction, routines, expectations and baseline diagnostic (1/2)',unit:0,unitName:'Start of Year',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',obj:'Induction, routines, expectations and baseline diagnostic',alert:'INSET Mon; Family Orientation Tue; Welcome Day Wed. First Year 10 Maths lessons Thu–Fri.'},
+  {id:'y10_002',lessonName:'Induction, routines, expectations and baseline diagnostic (2/2)',unit:0,unitName:'Start of Year',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',obj:'Induction, routines, expectations and baseline diagnostic'},
+  // Unit 1 — Number (M2B–M5A)
+  {id:'y10_003',lessonName:'Fractions — all operations (1/2)',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',obj:'Working with fractions',alert:'CAT4 testing this week (Yr 7, 10 & 12).'},
+  {id:'y10_004',lessonName:'Fractions — all operations (2/2)',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',obj:'Working with fractions'},
+  {id:'y10_005',lessonName:'BIDMAS and order of operations (1/2)',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',obj:'Order of operations'},
+  {id:'y10_006',lessonName:'BIDMAS and order of operations (2/2)',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Order of operations',alert:'Exeter 1.'},
+  {id:'y10_007',lessonName:'Significant figures, decimal places and estimation',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Rounding and estimating'},
+  {id:'y10_008',lessonName:'Standard form',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Standard form calculations'},
+  {id:'y10_009',lessonName:'Percentages — basic, increase/decrease and multiplier',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Percentage change'},
+  {id:'y10_010',lessonName:'Compound interest, depreciation and reverse percentages',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',obj:'Compound and inverse percentages'},
+  {id:'y10_011',lessonName:'Prime factors, HCF, LCM and ratio',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',obj:'Prime factor decomposition, HCF/LCM and ratio'},
+  {id:'y10_012',lessonName:'Recurring decimals and advanced calculator use',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',obj:'Recurring decimals to fractions'},
+  {id:'y10_013',lessonName:'Bounds and error intervals',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Upper/lower bounds and intervals',alert:'Year 10 progress check (IR0) opens — internal use only.'},
+  {id:'y10_014',lessonName:'Applied number — costs, tax, salaries and currency',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Real-life number applications'},
+  {id:'y10_015',lessonName:'Number consolidation and mixed practice',unit:1,unitName:'1. Number',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Mixed number exam-style practice'},
+  {id:'y10_016',lessonName:'Unit 1 assessment',unit:1,unitName:'1. Number',type:'assessment',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Demonstrate secure understanding of unit objectives'},
+  // Unit 2 — Ratio, Proportion & Measures (M6B–M7A)
+  {id:'y10_017',lessonName:'Compound measures and unit conversions (1/2)',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',obj:'Speed, density, pressure; metric unit conversion',alert:'Exeter 2.'},
+  {id:'y10_018',lessonName:'Compound measures and unit conversions (2/2)',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',obj:'Speed, density, pressure; metric unit conversion'},
+  {id:'y10_019',lessonName:'Distance-time and speed-time graphs',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',obj:'Gradient and area interpretations'},
+  {id:'y10_020',lessonName:'Fractional and negative indices',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'Indices bridge into algebra',alert:'Year 10 PTC Thu 8 Oct. IR0 closes.'},
+  {id:'y10_021',lessonName:'Direct proportion — numerical, algebraic and graphical',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'y = kx'},
+  {id:'y10_022',lessonName:'Inverse proportion — numerical, algebraic and graphical',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'y = k/x'},
+  {id:'y10_023',lessonName:'Unit 2 assessment',unit:2,unitName:'2. Ratio, Proportion & Measures',type:'assessment',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'Demonstrate secure understanding of unit objectives'},
+  // Pre-half-term flex (M8B)
+  {id:'y10_024',lessonName:'Pre-half-term consolidation / retrieval / catch-up (1/3)',unit:0,unitName:'Pre-Half-Term Buffer',type:'flex',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',obj:'Pre-half-term consolidation, retrieval and catch-up',alert:'Tue 13 Oct national holiday. Final week before half-term — no new unit starts.'},
+  {id:'y10_025',lessonName:'Pre-half-term consolidation / retrieval / catch-up (2/3)',unit:0,unitName:'Pre-Half-Term Buffer',type:'flex',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',obj:'Pre-half-term consolidation, retrieval and catch-up'},
+  {id:'y10_026',lessonName:'Pre-half-term consolidation / retrieval / catch-up (3/3)',unit:0,unitName:'Pre-Half-Term Buffer',type:'flex',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',obj:'Pre-half-term consolidation, retrieval and catch-up'},
+  // Unit 3 — Linear Algebra & Straight-Line Graphs (M9A–M11A)
+  {id:'y10_027',lessonName:'Expressions, formulae and index laws (1/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',obj:'Simplify, expand, substitute and use index laws',alert:'Exeter 3.'},
+  {id:'y10_028',lessonName:'Expressions, formulae and index laws (2/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',obj:'Simplify, expand, substitute and use index laws'},
+  {id:'y10_029',lessonName:'Linear equations to straight-line graphs (1/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',obj:'Solve equations, plot y=mx+c and interpret gradient/intercept'},
+  {id:'y10_030',lessonName:'Linear equations to straight-line graphs (2/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',obj:'Solve equations, plot y=mx+c and interpret gradient/intercept'},
+  {id:'y10_031',lessonName:'Midpoints and perpendicular lines (1/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',obj:'Midpoint and perpendicular gradients',alert:'IR1 opens Wed 4 Nov (Yr 7–11 & 13).'},
+  {id:'y10_032',lessonName:'Midpoints and perpendicular lines (2/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',obj:'Midpoint and perpendicular gradients'},
+  {id:'y10_033',lessonName:'Simultaneous equations — algebraic and graphical (1/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',obj:'Elimination, substitution and intersection'},
+  {id:'y10_034',lessonName:'Simultaneous equations — algebraic and graphical (2/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Elimination, substitution and intersection'},
+  {id:'y10_035',lessonName:'Linear inequalities — algebraic and graphical regions (1/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Solve inequalities and shade regions'},
+  {id:'y10_036',lessonName:'Linear inequalities — algebraic and graphical regions (2/2)',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Solve inequalities and shade regions'},
+  {id:'y10_037',lessonName:'Unit 3 assessment',unit:3,unitName:'3. Linear Algebra & Straight-Line Graphs',type:'assessment',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Demonstrate secure understanding of unit objectives'},
+  // Unit 4 — Sequences (M12B–M15A)
+  {id:'y10_038',lessonName:'Sequences — term-to-term and formulae (1/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',obj:'Generate sequences and use nth-term notation',alert:'IR1 closes Tue 17 Nov.'},
+  {id:'y10_039',lessonName:'Sequences — term-to-term and formulae (2/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',obj:'Generate sequences and use nth-term notation'},
+  {id:'y10_040',lessonName:'Sequences — term-to-term and formulae (3/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',obj:'Generate sequences and use nth-term notation'},
+  {id:'y10_041',lessonName:'Difference method (1/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'First and second differences'},
+  {id:'y10_042',lessonName:'Difference method (2/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'First and second differences'},
+  {id:'y10_043',lessonName:'Difference method (3/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'First and second differences'},
+  {id:'y10_044',lessonName:'Arithmetic sequences — nth term (1/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'a+(n−1)d'},
+  {id:'y10_045',lessonName:'Arithmetic sequences — nth term (2/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',obj:'a+(n−1)d',alert:'IR1 published Thu 3 Dec.'},
+  {id:'y10_046',lessonName:'Arithmetic sequences — nth term (3/3)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',obj:'a+(n−1)d'},
+  {id:'y10_047',lessonName:'Quadratic sequences (1/2)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',obj:'Find nth term using constant second difference'},
+  {id:'y10_048',lessonName:'Quadratic sequences (2/2)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Find nth term using constant second difference',alert:'National holidays Mon 7 Dec and Thu 10 Dec — reduced lessons this week.'},
+  {id:'y10_049',lessonName:'Sum of an arithmetic series (1/2)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Sn formula and applications'},
+  {id:'y10_050',lessonName:'Sum of an arithmetic series (2/2)',unit:4,unitName:'4. Sequences',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Sn formula and applications'},
+  {id:'y10_051',lessonName:'Unit 4 assessment',unit:4,unitName:'4. Sequences',type:'assessment',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Demonstrate secure understanding of unit objectives'},
+  // End-of-Michaelmas flex (M16B)
+  {id:'y10_052',lessonName:'End-of-Michaelmas consolidation / assessment reflection (1/3)',unit:0,unitName:'End-of-Michaelmas Buffer',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',obj:'End-of-Michaelmas consolidation and assessment reflection',alert:'Final week before Christmas — no new unit starts.'},
+  {id:'y10_053',lessonName:'End-of-Michaelmas consolidation / assessment reflection (2/3)',unit:0,unitName:'End-of-Michaelmas Buffer',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',obj:'End-of-Michaelmas consolidation and assessment reflection'},
+  {id:'y10_054',lessonName:'End-of-Michaelmas consolidation / assessment reflection (3/3)',unit:0,unitName:'End-of-Michaelmas Buffer',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',obj:'End-of-Michaelmas consolidation and assessment reflection'},
+  // Unit 5 — Quadratics & Formulae (L1A–L5A)
+  {id:'y10_055',lessonName:'Expanding double brackets and factorising (a=1) (1/3)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L1A',dates:'4–8 Jan 2027',obj:'Expand and factorise quadratics',alert:'INSET Wed 6 Jan; teaching starts Thu 7 Jan.'},
+  {id:'y10_056',lessonName:'Expanding double brackets and factorising (a=1) (2/3)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L1A',dates:'4–8 Jan 2027',obj:'Expand and factorise quadratics'},
+  {id:'y10_057',lessonName:'Expanding double brackets and factorising (a=1) (3/3)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',obj:'Expand and factorise quadratics',alert:'Year 12 & 13 mock week.'},
+  {id:'y10_058',lessonName:'Factorising (a>1), difference of two squares and grouping (1/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',obj:'All factorising types'},
+  {id:'y10_059',lessonName:'Factorising (a>1), difference of two squares and grouping (2/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',obj:'All factorising types'},
+  {id:'y10_060',lessonName:'Solving quadratics by factorisation to graphical roots (1/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:'Roots as x-intercepts',alert:'IR2 opens Mon 18 Jan (Yr 7–11). Year 9 PTC Thu 21 Jan.'},
+  {id:'y10_061',lessonName:'Solving quadratics by factorisation to graphical roots (2/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:'Roots as x-intercepts'},
+  {id:'y10_062',lessonName:'Quadratic graph features and real-life problems (1/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:'Vertex, symmetry, roots and contexts'},
+  {id:'y10_063',lessonName:'Quadratic graph features and real-life problems (2/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:'Vertex, symmetry, roots and contexts'},
+  {id:'y10_064',lessonName:'Rearranging formulae — subject appears once (1/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',obj:'Change the subject',alert:'IR2 closes Thu 28 Jan. Exeter 5.'},
+  {id:'y10_065',lessonName:'Rearranging formulae — subject appears once (2/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',obj:'Change the subject'},
+  {id:'y10_066',lessonName:'Rearranging formulae — subject twice or under a power (1/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',obj:'Factorise out the subject; roots and powers'},
+  {id:'y10_067',lessonName:'Rearranging formulae — subject twice or under a power (2/2)',unit:5,unitName:'5. Quadratics & Formulae',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Factorise out the subject; roots and powers',alert:'HoD/HoF checking IR2 Mon 1 Feb.'},
+  {id:'y10_068',lessonName:'Unit 5 assessment',unit:5,unitName:'5. Quadratics & Formulae',type:'assessment',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Demonstrate secure understanding of unit objectives'},
+  // Unit 6 — Algebraic Fractions (L5A–L7A)
+  {id:'y10_069',lessonName:'Simplify algebraic fractions — simple and harder (1/2)',unit:6,unitName:'6. Algebraic Fractions',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Factorise and cancel'},
+  {id:'y10_070',lessonName:'Simplify algebraic fractions — simple and harder (2/2)',unit:6,unitName:'6. Algebraic Fractions',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Factorise and cancel'},
+  {id:'y10_071',lessonName:'Add and subtract algebraic fractions (1/2)',unit:6,unitName:'6. Algebraic Fractions',type:'core',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',obj:'Common denominators'},
+  {id:'y10_072',lessonName:'Add and subtract algebraic fractions (2/2)',unit:6,unitName:'6. Algebraic Fractions',type:'core',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',obj:'Common denominators'},
+  {id:'y10_073',lessonName:'Multiply and divide algebraic fractions',unit:6,unitName:'6. Algebraic Fractions',type:'core',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',obj:'Products, quotients and simplification'},
+  {id:'y10_074',lessonName:'Solve equations with algebraic fractions',unit:6,unitName:'6. Algebraic Fractions',type:'core',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',obj:'Solve and check excluded values',alert:'Year 11 mock week. Adventure Week Y7–9 only — Year 10 continues normally.'},
+  {id:'y10_075',lessonName:'Unit 6 assessment',unit:6,unitName:'6. Algebraic Fractions',type:'assessment',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',obj:'Demonstrate secure understanding of unit objectives'},
+  // Unit 7 — 2D Geometry & Constructions (L7A–L10B)
+  {id:'y10_076',lessonName:'Angle properties — parallel lines and polygons (1/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',obj:'Angles in parallel lines; polygons'},
+  {id:'y10_077',lessonName:'Angle properties — parallel lines and polygons (2/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',obj:'Angles in parallel lines; polygons'},
+  {id:'y10_078',lessonName:'Quadrilaterals and geometric reasoning (1/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',obj:'Properties and proof-style explanation',alert:'IR3 opens Mon 1 Mar (Yr 7–10 & 12).'},
+  {id:'y10_079',lessonName:'Quadrilaterals and geometric reasoning (2/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',obj:'Properties and proof-style explanation'},
+  {id:'y10_080',lessonName:'Constructions and loci (1/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',obj:'Bisectors, triangles and loci'},
+  {id:'y10_081',lessonName:'Constructions and loci (2/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Bisectors, triangles and loci',alert:'IR3 closes Tue 9 Mar.'},
+  {id:'y10_082',lessonName:'Similar triangles (1/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Missing sides and scale factors'},
+  {id:'y10_083',lessonName:'Similar triangles (2/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Missing sides and scale factors'},
+  {id:'y10_084',lessonName:'Area, perimeter and circles (1/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Circumference, area, arcs and sectors'},
+  {id:'y10_085',lessonName:'Area, perimeter and circles (2/2)',unit:7,unitName:'7. 2D Geometry & Constructions',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',obj:'Circumference, area, arcs and sectors',alert:'Exeter 7.'},
+  {id:'y10_086',lessonName:'Unit 7 assessment',unit:7,unitName:'7. 2D Geometry & Constructions',type:'assessment',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',obj:'Demonstrate secure understanding of unit objectives'},
+  // Unit 8 — Pythagoras & Trigonometry 2D (L10B–S1A)
+  {id:'y10_087',lessonName:"Pythagoras' theorem (1/2)",unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',obj:'Hypotenuse and shorter sides'},
+  {id:'y10_088',lessonName:"Pythagoras' theorem (2/2)",unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Hypotenuse and shorter sides'},
+  {id:'y10_089',lessonName:'Pythagoras in context (1/2)',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Multi-step 2D problems'},
+  {id:'y10_090',lessonName:'Pythagoras in context (2/2)',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Multi-step 2D problems'},
+  {id:'y10_091',lessonName:'SOHCAHTOA — missing sides (1/2)',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Sine, cosine and tangent ratios'},
+  {id:'y10_092',lessonName:'SOHCAHTOA — missing sides (2/2)',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',obj:'Sine, cosine and tangent ratios'},
+  {id:'y10_093',lessonName:'SOHCAHTOA — missing angles (1/2)',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',obj:'Inverse trigonometric functions'},
+  {id:'y10_094',lessonName:'SOHCAHTOA — missing angles (2/2)',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',obj:'Inverse trigonometric functions'},
+  {id:'y10_095',lessonName:'Exact trig values',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'30°, 45°, 60° values',alert:'Summer term starts Mon 19 Apr.'},
+  {id:'y10_096',lessonName:'Trigonometry in context — mixed questions',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'core',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'Elevation, depression and bearings'},
+  {id:'y10_097',lessonName:'Unit 8 assessment',unit:8,unitName:'8. Pythagoras & Trigonometry (2D)',type:'assessment',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'Demonstrate secure understanding of unit objectives'},
+  // Year 10 Summer Exam Revision (S1A–S2B)
+  {id:'y10_098',lessonName:'Year 10 summer exam revision (1/3)',unit:0,unitName:'Y10 Summer Exam Revision',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'Year 10 summer exam revision'},
+  {id:'y10_099',lessonName:'Year 10 summer exam revision (2/3)',unit:0,unitName:'Y10 Summer Exam Revision',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',obj:'Year 10 summer exam revision',alert:'Exeter 8. Final full teaching week before Year 10 summer exams.'},
+  {id:'y10_100',lessonName:'Year 10 summer exam revision (3/3)',unit:0,unitName:'Y10 Summer Exam Revision',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',obj:'Year 10 summer exam revision'},
+  {id:'y10_101',lessonName:'Exam readiness, equipment check and targeted intervention',unit:0,unitName:'Y10 Summer Exam Revision',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',obj:'Exam readiness, equipment check and targeted intervention'},
+  // Unit 9 — 3D Geometry & Similarity (S4B–S7A)
+  {id:'y10_102',lessonName:'Volume and surface area of 3D solids (1/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S4B',dates:'10–14 May 2027',obj:'Prisms, cylinders, pyramids, plans and elevations',alert:'Year 10 summer exams Mon–Tue; normal teaching resumes Wed. Full Report 4 opens Wed 12 May.'},
+  {id:'y10_103',lessonName:'Volume and surface area of 3D solids (2/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S4B',dates:'10–14 May 2027',obj:'Prisms, cylinders, pyramids, plans and elevations'},
+  {id:'y10_104',lessonName:'Sphere, cone and similarity — scale factor (1/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',obj:'SA/volume formulae; linear scale factor',alert:'Exeter 9.'},
+  {id:'y10_105',lessonName:'Sphere, cone and similarity — scale factor (2/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',obj:'SA/volume formulae; linear scale factor'},
+  {id:'y10_106',lessonName:'Similarity — area ratio (k²) (1/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',obj:'Area ratio and missing areas'},
+  {id:'y10_107',lessonName:'Similarity — area ratio (k²) (2/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',obj:'Area ratio and missing areas'},
+  {id:'y10_108',lessonName:'Similarity — volume ratio (k³) (1/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S6B',dates:'24–28 May 2027',obj:'Volume ratio and missing volumes',alert:'Full Report 4 closes Tue 25 May; HoD/HoF checking Fri 28 May.'},
+  {id:'y10_109',lessonName:'Similarity — volume ratio (k³) (2/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S6B',dates:'24–28 May 2027',obj:'Volume ratio and missing volumes'},
+  {id:'y10_110',lessonName:'3D geometry and similarity consolidation (1/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S6B',dates:'24–28 May 2027',obj:'Mixed exam-style questions'},
+  {id:'y10_111',lessonName:'3D geometry and similarity consolidation (2/2)',unit:9,unitName:'9. 3D Geometry & Similarity',type:'core',term:'Summer',week:'S7A',dates:'31 May–4 Jun 2027',obj:'Mixed exam-style questions',alert:'Thu 3 & Fri 4 Jun national holidays. Year 10 continues (Y7–9 exams only).'},
+  {id:'y10_112',lessonName:'Unit 9 assessment',unit:9,unitName:'9. 3D Geometry & Similarity',type:'assessment',term:'Summer',week:'S7A',dates:'31 May–4 Jun 2027',obj:'Demonstrate secure understanding of unit objectives'},
+  // Unit 10 — Statistics (S7A–S10B)
+  {id:'y10_113',lessonName:'Data representation (1/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S7A',dates:'31 May–4 Jun 2027',obj:'Bar charts, pie charts, frequency polygons, stem and leaf'},
+  {id:'y10_114',lessonName:'Data representation (2/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S7A',dates:'31 May–4 Jun 2027',obj:'Bar charts, pie charts, frequency polygons, stem and leaf'},
+  {id:'y10_115',lessonName:'Frequency tables and grouped data (1/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S8B',dates:'7–11 Jun 2027',obj:'Discrete and continuous data',alert:'Full Report 4 published Wed 9 Jun. Exeter 10.'},
+  {id:'y10_116',lessonName:'Frequency tables and grouped data (2/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S8B',dates:'7–11 Jun 2027',obj:'Discrete and continuous data'},
+  {id:'y10_117',lessonName:'Statistical measures (1/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S8B',dates:'7–11 Jun 2027',obj:'Mean, estimated mean, median, mode and range'},
+  {id:'y10_118',lessonName:'Statistical measures (2/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',obj:'Mean, estimated mean, median, mode and range'},
+  {id:'y10_119',lessonName:'Measures of spread and comparison (1/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',obj:'IQR, quartiles and comparing distributions'},
+  {id:'y10_120',lessonName:'Measures of spread and comparison (2/2)',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',obj:'IQR, quartiles and comparing distributions'},
+  {id:'y10_121',lessonName:'Scatter graphs and correlation',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',obj:'Correlation and line of best fit'},
+  {id:'y10_122',lessonName:'Histograms',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S10B',dates:'21–25 Jun 2027',obj:'Frequency density and unequal class widths',alert:'Final regular teaching week before off-timetable final week.'},
+  {id:'y10_123',lessonName:'Cumulative frequency and box plots',unit:10,unitName:'10. Statistics',type:'core',term:'Summer',week:'S10B',dates:'21–25 Jun 2027',obj:'CF curves, median, IQR and box plots'},
+  {id:'y10_124',lessonName:'Unit 10 assessment',unit:10,unitName:'10. Statistics',type:'assessment',term:'Summer',week:'S10B',dates:'21–25 Jun 2027',obj:'Demonstrate secure understanding of unit objectives'},
+];
+
 SOW_BY_YG[7] = Y7_SOW;
 SOW_BY_YG[8] = Y8_SOW;
 SOW_BY_YG[9] = Y9_SOW;
+SOW_BY_YG[10] = Y10_SOW;
 
 const ASSESSMENTS = {
   7: [
@@ -1025,6 +1170,19 @@ const ASSESSMENTS = {
     {name:'End of Year Examination', sub:'Units 1, 2, 11, 5, 10, 3, 7, 8, 9 & 12 (2 papers)', week:'S7A', dates:'31 May–4 Jun 2027', term:'Summer', unit:0, eoy:true},
     {name:'Unit 6 Assessment',    sub:'Collecting & analysing data (post-EoY)',       week:'S9A',  dates:'14–18 Jun 2027',    term:'Summer',     unit:6},
     {name:'Unit 4 Assessment',    sub:'Constructions (post-EoY)',                     week:'S10B', dates:'21–25 Jun 2027',    term:'Summer',     unit:4},
+  ],
+  10: [
+    {name:'Unit 1 Assessment',   sub:'Number',                                        week:'M5A',  dates:'21–25 Sep 2026',    term:'Michaelmas', unit:1},
+    {name:'Unit 2 Assessment',   sub:'Ratio, Proportion & Measures',                  week:'M7A',  dates:'5–9 Oct 2026',      term:'Michaelmas', unit:2},
+    {name:'Unit 3 Assessment',   sub:'Linear Algebra & Straight-Line Graphs',         week:'M11A', dates:'9–13 Nov 2026',     term:'Michaelmas', unit:3},
+    {name:'Unit 4 Assessment',   sub:'Sequences',                                     week:'M15A', dates:'7–11 Dec 2026',     term:'Michaelmas', unit:4},
+    {name:'Unit 5 Assessment',   sub:'Quadratics & Formulae',                         week:'L5A',  dates:'1–5 Feb 2027',      term:'Lent',       unit:5},
+    {name:'Unit 6 Assessment',   sub:'Algebraic Fractions',                           week:'L7A',  dates:'22–26 Feb 2027',    term:'Lent',       unit:6},
+    {name:'Unit 7 Assessment',   sub:'2D Geometry & Constructions',                   week:'L10B', dates:'15–19 Mar 2027',    term:'Lent',       unit:7},
+    {name:'Unit 8 Assessment',   sub:'Pythagoras & Trigonometry (2D)',                week:'S1A',  dates:'19–23 Apr 2027',    term:'Summer',     unit:8},
+    {name:'Year 10 Summer Examinations', sub:'Units 1–8 — 2 papers',                 week:'S3A',  dates:'3–7 May 2027',      term:'Summer',     unit:0, eoy:true},
+    {name:'Unit 9 Assessment',   sub:'3D Geometry & Similarity',                      week:'S7A',  dates:'31 May–4 Jun 2027', term:'Summer',     unit:9},
+    {name:'Unit 10 Assessment',  sub:'Statistics',                                    week:'S10B', dates:'21–25 Jun 2027',    term:'Summer',     unit:10},
   ],
 };
 
@@ -1157,7 +1315,7 @@ let hodYear = 7;
 
 function renderYearTabs(){
   const yrs=['7','8','9','10','11','12','13'];
-  const available=new Set(['7','8','9']);
+  const available=new Set(['7','8','9','10']);
   document.getElementById('yg-tabs').innerHTML=yrs.map(y=>
     `<button class="yg-tab${String(hodYear)===y?' active':''}${available.has(y)?'':' disabled'}" data-year="${y}">Year ${y}</button>`
   ).join('');
@@ -1181,6 +1339,24 @@ function renderHOD(){
   // ── Teacher cards ───────────────────────────────────────────────
   let cardsHtml='<div class="dash-grid">';
   hodSets.forEach(set=>{
+    // Y10 Ma1 & Ma4 — different SoW not yet available
+    if(hodYear===10 && (set==='Ma1'||set==='Ma4')){
+      const tcName=hodTeachers[set]||set;
+      cardsHtml+=`<div class="teacher-card" style="opacity:0.55;">
+        <div class="tc-header">
+          <div class="tc-avatar">${tcName}</div>
+          <div>
+            <div class="tc-name">${tcName} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
+            <div class="tc-sub">Year 10 · SoW coming soon</div>
+          </div>
+          <div style="margin-left:auto;font-size:12px;color:var(--dark-gray);font-weight:600;">COMING SOON</div>
+        </div>
+        <div class="tc-body" style="padding:14px 16px;color:var(--dark-gray);font-size:12px;font-style:italic;">
+          Progress tracking will be enabled once the scheme of work is added.
+        </div>
+      </div>`;
+      return;
+    }
     const p=getProgress(set,hodSow); td+=p.done; tp+=p.prog;
     if(p.pct<40) behind++;
     const overallBc=barClass(p.pct);
@@ -1265,7 +1441,14 @@ function renderTeacher(){
   const tf=document.getElementById('sel-term').value;
   const q=(document.getElementById('tv-search').value||'').toLowerCase().trim();
 
-  // Y9 Ma1 uses a different (IGCSE) SoW — select the right one here
+  // Y9 Ma1 / Y10 Ma1 & Ma4 use different SoWs — handle here
+  if(yg===10 && (set==='Ma1'||set==='Ma4')){
+    const tname=(TEACHERS_BY_YG[10]||{})[set]||set;
+    document.getElementById('teacher-content').innerHTML=
+      `<div class="coming-soon"><h3>Year 10 ${set} — ${tname}</h3>
+       <p>Year 10 ${set} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
+    return;
+  }
   const sow = (yg===9 && set==='Ma1') ? Y9_MA1_SOW : SOW_BY_YG[yg];
   if(!sow){
     document.getElementById('teacher-content').innerHTML=
@@ -1437,12 +1620,11 @@ function resetProgress(){
 // ════════════════════════════════════════════════════════════════════
 //  ASSESSMENTS
 // ════════════════════════════════════════════════════════════════════
-let assessY9Filter = 'ma24';
+let assessY9Filter  = 'ma24';
+let assessY10Filter = 'ma23';
 
-function setAssessFilter(f){
-  assessY9Filter = f;
-  renderAssessments();
-}
+function setAssessFilter(f)    { assessY9Filter=f;  renderAssessments(); }
+function setAssessY10Filter(f) { assessY10Filter=f; renderAssessments(); }
 
 function renderAssessments(){
   const yg = document.getElementById('sel-assess-yg').value;
@@ -1452,7 +1634,7 @@ function renderAssessments(){
 
   const contentEl = document.getElementById('assess-content');
 
-  // Y9 toggle header
+  // Toggle header
   let toggleHtml = '';
   if(ygInt === 9){
     toggleHtml = `<div class="assess-tog-wrap">
@@ -1461,8 +1643,25 @@ function renderAssessments(){
       <button class="assess-tog-btn${assessY9Filter==='ma1'?' active':''}" onclick="setAssessFilter('ma1')">Ma1 — SSW</button>
     </div>`;
   }
+  if(ygInt === 10){
+    toggleHtml = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">Schedule for:</span>
+      <button class="assess-tog-btn${assessY10Filter==='ma23'?' active':''}" onclick="setAssessY10Filter('ma23')">Ma2–Ma3 (ADE / HPA)</button>
+      <button class="assess-tog-btn${assessY10Filter==='ma1'?' active':''}" onclick="setAssessY10Filter('ma1')">Ma1 — SSW</button>
+      <button class="assess-tog-btn${assessY10Filter==='ma4'?' active':''}" onclick="setAssessY10Filter('ma4')">Ma4 — FTA</button>
+    </div>`;
+  }
 
-  // Ma1 — use the IGCSE assessment data
+  // Y10 Ma1 / Ma4 — coming soon
+  if(ygInt === 10 && (assessY10Filter === 'ma1' || assessY10Filter === 'ma4')){
+    const setLabel = assessY10Filter === 'ma1' ? 'Ma1 — SSW' : 'Ma4 — FTA';
+    contentEl.innerHTML = toggleHtml +
+      `<div class="coming-soon" style="margin-top:8px;"><h3>${setLabel} — Assessment Schedule</h3>
+       <p>This scheme of work is not yet available. The assessment schedule will appear here once the SoW has been added.</p></div>`;
+    return;
+  }
+
+  // Y9 Ma1 — use the IGCSE assessment data
   if(ygInt === 9 && assessY9Filter === 'ma1'){
     const ma1data = (ASSESSMENTS_MA1[9]||[]);
     if(!ma1data.length){

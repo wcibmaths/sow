@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y7 · U1 L1 · Averages and Range</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #1a2744;
+    --teal:    #0d9488;
+    --teal-lt: #ccfbf1;
+    --amber:   #f59e0b;
+    --amber-lt:#fffbeb;
+    --rose:    #e11d48;
+    --rose-lt: #fff1f2;
+    --sky:     #0284c7;
+    --sky-lt:  #e0f2fe;
+    --slate:   #64748b;
+    --rule:    #e2e8f0;
+    --bg:      #f8fafc;
+    --white:   #ffffff;
+    --text:    #0f172a;
+    --text-mid:#334155;
+    --radius:  10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--navy);
+    color: white;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .topbar-crumb { font-size: 12px; color: #94a3b8; letter-spacing: .04em; }
+  .topbar-crumb a { color: #94a3b8; text-decoration: none; }
+  .topbar-crumb a:hover { color: #e2e8f0; }
+  .topbar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: white; line-height: 1.2; flex: 1;
+  }
+  .topbar-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge {
+    font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+    background: rgba(255,255,255,.12); color: #e2e8f0;
+  }
+  .badge.teal  { background: var(--teal); color: white; }
+  .badge.amber { background: var(--amber); color: #78350f; }
+
+  /* ── EXPAND / COLLAPSE CONTROLS ── */
+  .controls {
+    max-width: 980px; margin: 16px auto 0; padding: 0 20px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .ctrl-btn {
+    font-size: 12px; font-weight: 600; padding: 5px 14px;
+    border-radius: 20px; border: 1px solid var(--rule);
+    background: white; color: var(--slate); cursor: pointer;
+    transition: all .15s;
+  }
+  .ctrl-btn:hover { background: var(--navy); color: white; border-color: var(--navy); }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    max-width: 980px; margin: 12px auto 0;
+    padding: 0 20px 60px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* ── COLLAPSIBLE CARD ── */
+  .card {
+    background: var(--white); border-radius: var(--radius);
+    border: 1px solid var(--rule); overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 20px; cursor: pointer;
+    user-select: none; transition: background .15s;
+    border-bottom: 1px solid transparent;
+  }
+  .card-head:hover { filter: brightness(.97); }
+  .card.open .card-head { border-bottom-color: var(--rule); }
+
+  .head-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .head-label {
+    font-weight: 600; font-size: 13px;
+    letter-spacing: .04em; text-transform: uppercase; flex: 1;
+  }
+  .head-chevron {
+    font-size: 12px; color: var(--slate);
+    transition: transform .25s; flex-shrink: 0;
+  }
+  .card.open .head-chevron { transform: rotate(180deg); }
+
+  /* animated collapse using grid trick */
+  .card-body-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .28s ease;
+  }
+  .card.open .card-body-wrap { grid-template-rows: 1fr; }
+  .card-body-inner { overflow: hidden; }
+  .card-body { padding: 18px 20px; }
+
+  /* section accent colours */
+  .s-resources .card-head  { background: var(--teal-lt); }
+  .s-resources .head-label { color: var(--teal); }
+  .s-resources .head-icon  { background: var(--teal); color: white; }
+
+  .s-objectives .card-head  { background: var(--sky-lt); }
+  .s-objectives .head-label { color: var(--sky); }
+  .s-objectives .head-icon  { background: var(--sky); color: white; }
+
+  .s-flow .card-head  { background: #eef2ff; }
+  .s-flow .head-label { color: var(--navy); }
+  .s-flow .head-icon  { background: var(--navy); color: white; }
+
+  .s-adaptive .card-head  { background: var(--rose-lt); }
+  .s-adaptive .head-label { color: var(--rose); }
+  .s-adaptive .head-icon  { background: var(--rose); color: white; }
+
+  /* ── RESOURCES ── */
+  .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width:620px) { .res-grid { grid-template-columns: 1fr; } }
+  .res-block h4 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--slate); margin-bottom: 8px; }
+  .res-links { display: flex; flex-direction: column; gap: 6px; }
+  .res-link {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-radius: 7px; background: #f8fafc; border: 1px solid var(--rule);
+    text-decoration: none; color: var(--sky); font-size: 13.5px; font-weight: 500;
+    transition: background .15s, border-color .15s;
+  }
+  .res-link:hover { background: var(--sky-lt); border-color: var(--sky); }
+  .res-link .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sky); flex-shrink: 0; }
+  .res-link.physical { color: var(--teal); }
+  .res-link.physical .dot { background: var(--teal); }
+
+  .ai-box {
+    margin-top: 14px; padding: 14px 16px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    border-radius: 8px; color: white;
+  }
+  .ai-box-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7dd3fc; margin-bottom: 8px; }
+  .ai-prompt { font-family: 'DM Mono', monospace; font-size: 12.5px; line-height: 1.7; color: #e2e8f0; white-space: pre-wrap; user-select: all; }
+  .copy-btn {
+    margin-top: 10px; padding: 6px 14px;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 5px; color: white; font-size: 12px; cursor: pointer; transition: background .15s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,.2); }
+
+  /* ── OBJECTIVES ── */
+  .obj-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 28px; }
+  @media (max-width:620px) { .obj-cols { grid-template-columns: 1fr; } }
+  .obj-block h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--slate); margin-bottom: 8px; }
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .check-list li { padding-left: 20px; position: relative; font-size: 14px; color: var(--text-mid); }
+  .check-list li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; font-size: 13px; }
+  .curr-ref-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .curr-ref-list li { font-size: 13px; color: var(--text-mid); padding: 4px 8px; border-radius: 5px; background: #f8fafc; border: 1px solid var(--rule); }
+  .curr-ref-list li code { font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--sky); font-weight: 500; margin-right: 6px; }
+  .kw-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kw { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-style: italic; }
+
+  /* ── LESSON FLOW ── */
+  .phase-list { display: flex; flex-direction: column; }
+  .phase { display: grid; grid-template-columns: 90px 1fr; border-bottom: 1px solid var(--rule); }
+  .phase:last-child { border-bottom: none; }
+  .phase-time { padding: 16px 14px; background: #f8fafc; border-right: 1px solid var(--rule); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 4px; }
+  .phase-mins { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--slate); }
+  .phase-label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
+  .phase-bar { width: 3px; border-radius: 3px; margin-top: 6px; flex: 1; min-height: 20px; }
+  .ph-starter .phase-label { color: #7c3aed; } .ph-starter .phase-bar { background: #7c3aed; }
+  .ph-teach   .phase-label { color: var(--navy); } .ph-teach .phase-bar { background: var(--navy); }
+  .ph-practice .phase-label { color: var(--teal); } .ph-practice .phase-bar { background: var(--teal); }
+  .ph-plenary .phase-label  { color: var(--amber); } .ph-plenary .phase-bar { background: var(--amber); }
+  .phase-content { padding: 14px 18px; }
+  .phase-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .flow-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .flow-list li { font-size: 14px; color: var(--text-mid); padding: 7px 12px 7px 26px; border-radius: 6px; background: #f8fafc; border: 1px solid var(--rule); position: relative; }
+  .flow-list li::before { content: '→'; position: absolute; left: 9px; color: var(--slate); font-size: 12px; }
+  .flow-list li strong { color: var(--text); }
+  .flow-list li em { color: var(--teal); font-style: normal; font-weight: 500; }
+  .q-note { margin-top: 10px; padding: 10px 12px; background: #fffbeb; border-left: 3px solid var(--amber); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--text-mid); }
+  .q-note strong { color: var(--text); }
+
+  /* ── ADAPTIVE ── */
+  .adaptive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width:620px) { .adaptive-grid { grid-template-columns: 1fr; } }
+  .ada-block { border-radius: 8px; padding: 14px; border: 1px solid var(--rule); }
+  .ada-block h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .ada-block ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .ada-block ul li { font-size: 13.5px; color: var(--text-mid); padding-left: 16px; position: relative; }
+  .ada-block ul li::before { content: '•'; position: absolute; left: 0; }
+  .ada-support { background: #f0fdf4; } .ada-support h4 { color: #15803d; } .ada-support ul li::before { color: #15803d; }
+  .ada-stretch { background: #faf5ff; } .ada-stretch h4 { color: #7c3aed; } .ada-stretch ul li::before { color: #7c3aed; }
+  .ada-misc    { background: var(--rose-lt); } .ada-misc h4 { color: var(--rose); } .ada-misc ul li::before { color: var(--rose); }
+  .ada-afl     { background: var(--sky-lt); } .ada-afl h4 { color: var(--sky); } .ada-afl ul li::before { color: var(--sky); }
+
+  /* ── FOOTER ── */
+  .footer { max-width: 980px; margin: 0 auto; padding: 0 20px 40px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--slate); }
+  .footer a { color: var(--sky); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+  .footer-sep { color: var(--rule); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div>
+    <div class="topbar-crumb">
+      <a href="../../index.html">SoW Home</a> › Year 7 › Unit 1: Analysing and displaying data
+    </div>
+    <div class="topbar-title">1.1 Averages and Range</div>
+  </div>
+  <div class="topbar-meta">
+    <span class="badge teal">Year 7</span>
+    <span class="badge">Unit 1 · Lesson 1</span>
+    <span class="badge amber">Statistics</span>
+    <span class="badge">50 min</span>
+  </div>
+</div>
+
+<!-- EXPAND / COLLAPSE ALL -->
+<div class="controls">
+  <button class="ctrl-btn" onclick="expandAll()">Expand all</button>
+  <button class="ctrl-btn" onclick="collapseAll()">Collapse all</button>
+</div>
+
+<div class="wrapper">
+
+  <!-- ═══ SECTION 2: RESOURCES (open by default) ═══ -->
+  <div class="card s-resources open" id="card-resources">
+    <div class="card-head" onclick="toggle('card-resources')">
+      <div class="head-icon">📎</div>
+      <div class="head-label">Resources, Links &amp; AI Slide Prompt</div>
+      <div class="head-chevron">▼</div>
+    </div>
+    <div class="card-body-wrap">
+      <div class="card-body-inner">
+        <div class="card-body">
+          <div class="res-grid">
+            <div class="res-block">
+              <h4>Digital Resources</h4>
+              <div class="res-links">
+                <a href="#" class="res-link"><span class="dot"></span>1.1 Lesson slides (SharePoint)</a>
+                <a href="#" class="res-link"><span class="dot"></span>1.1 Answers (SharePoint)</a>
+                <a href="#" class="res-link"><span class="dot"></span>ActiveCourse – Lesson 1.1 (Pearson)</a>
+                <a href="#" class="res-link"><span class="dot"></span>Year 7 Workbook – p.1–4</a>
+              </div>
+            </div>
+            <div class="res-block">
+              <h4>Physical Resources</h4>
+              <div class="res-links">
+                <a href="#" class="res-link physical"><span class="dot"></span>Number line 0–100 (class set)</a>
+                <a href="#" class="res-link physical"><span class="dot"></span>Linking cubes (towers activity)</a>
+                <a href="#" class="res-link physical"><span class="dot"></span>Mini whiteboards + pens</a>
+              </div>
+            </div>
+          </div>
+          <div class="ai-box">
+            <div class="ai-box-label">✦ AI Slide Prompt — copy into ChatGPT / Copilot / Gemini</div>
+            <div class="ai-prompt" id="aiPrompt">Create a 6-slide PowerPoint lesson for Year 7 Maths (approx. age 11–12) on "Averages and Range". Include: (1) Title + Explore hook: "What is the average number of computers per household?"; (2) Warm-up activity: ordering numbers, finding smallest/largest/most common from a set; (3) Teach – mode and range using shoe size class data (include worked example); (4) Teach – median for odd and even data sets, with a number-line visual and worked example; (5) Teach – mean, with a step-by-step calculation visual; (6) Plenary – return to Explore question, then Reflect prompt. Use clear diagrams, friendly tone, age-appropriate language. No clipart.</div>
+            <button class="copy-btn" onclick="copyPrompt()">Copy prompt</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 3: OBJECTIVES (collapsed) ═══ -->
+  <div class="card s-objectives" id="card-objectives">
+    <div class="card-head" onclick="toggle('card-objectives')">
+      <div class="head-icon">🎯</div>
+      <div class="head-label">Objectives &amp; Prior Knowledge</div>
+      <div class="head-chevron">▼</div>
+    </div>
+    <div class="card-body-wrap">
+      <div class="card-body-inner">
+        <div class="card-body">
+          <div class="obj-cols">
+            <div class="obj-block">
+              <h4>Learning Objectives</h4>
+              <ul class="check-list">
+                <li>Find the mode, median and range of a set of data</li>
+                <li>Calculate and interpret the mean of a set of data</li>
+                <li>Compare sets of data using averages and range</li>
+                <li>Solve problems involving mean, mode, median and range</li>
+              </ul>
+            </div>
+            <div class="obj-block">
+              <h4>Prior Knowledge / Fluency Check</h4>
+              <ul class="check-list">
+                <li>Find the smallest, largest and most common number in a set</li>
+                <li>Order positive integers on a number line</li>
+                <li>Find the positive difference between two numbers</li>
+                <li>Use ordinal numbers (3rd, 6th, etc.)</li>
+              </ul>
+            </div>
+            <div class="obj-block">
+              <h4>Curriculum References</h4>
+              <ul class="curr-ref-list">
+                <li><code>S7.1A</code> Mode from a list</li>
+                <li><code>S7.1B</code> Median and range from a list</li>
+                <li><code>S7.1C</code> Calculate and interpret mean</li>
+                <li><code>S7.1E</code> Compare using averages and range</li>
+                <li><code>S7.1G</code> Solve problems with all four measures</li>
+              </ul>
+            </div>
+            <div class="obj-block">
+              <h4>Key Vocabulary</h4>
+              <div class="kw-list">
+                <span class="kw">data</span><span class="kw">value</span><span class="kw">range</span>
+                <span class="kw">mode</span><span class="kw">modal</span><span class="kw">median</span>
+                <span class="kw">mean</span><span class="kw">average</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 4: LESSON FLOW (collapsed) ═══ -->
+  <div class="card s-flow" id="card-flow">
+    <div class="card-head" onclick="toggle('card-flow')">
+      <div class="head-icon">⏱</div>
+      <div class="head-label">Lesson Flow — 50 minutes</div>
+      <div class="head-chevron">▼</div>
+    </div>
+    <div class="card-body-wrap">
+      <div class="card-body-inner">
+        <div class="card-body" style="padding:0;">
+          <div class="phase-list">
+
+            <div class="phase ph-starter">
+              <div class="phase-time">
+                <div class="phase-mins">0 – 8 min</div>
+                <div class="phase-label">Starter</div>
+                <div class="phase-bar"></div>
+              </div>
+              <div class="phase-content">
+                <h4>Explore Hook + Warm-up</h4>
+                <ul class="flow-list">
+                  <li>Display Explore question: <strong>"What is the average number of computers per household?"</strong> — ask what 'average' means to them. <em>Don't answer yet — return at plenary.</em></li>
+                  <li>Mini-whiteboards: give a set of numbers → ask for smallest, largest, most common. Introduce <strong>'occurs most often'</strong>.</li>
+                  <li>Quick ordering race: 5 numbers on board → students order in 30 seconds.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="phase ph-teach">
+              <div class="phase-time">
+                <div class="phase-mins">8 – 25 min</div>
+                <div class="phase-label">Teach</div>
+                <div class="phase-bar"></div>
+              </div>
+              <div class="phase-content">
+                <h4>Main Teaching — Mode → Range → Median → Mean</h4>
+                <ul class="flow-list">
+                  <li><strong>Mode:</strong> 'Most common'. Collect class shoe sizes → find mode. Ask: <em>"Mode for a Year 11 class?"</em> Qualitative vs quantitative data.</li>
+                  <li><strong>Range:</strong> Find range of shoe sizes. Emphasise range = <strong>one number</strong>, not "5 to 12 cm".</li>
+                  <li><strong>Median (Concrete):</strong> 5 students by height → find middle. Extend to 6 → mark two middle heights → find halfway. <em>Order first — always.</em></li>
+                  <li><strong>Mean:</strong> Sum all values ÷ count. Students estimate before calculating.</li>
+                  <li>Work through Q1–Q4 together. Establish range undefined for qualitative data (Q3 Discussion).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="phase ph-practice">
+              <div class="phase-time">
+                <div class="phase-mins">25 – 42 min</div>
+                <div class="phase-label">Practice</div>
+                <div class="phase-bar"></div>
+              </div>
+              <div class="phase-content">
+                <h4>Independent &amp; Supported Practice</h4>
+                <ul class="flow-list">
+                  <li>Students work through <strong>Q5–Q13</strong>. Circulate — check ordering before median (Q5–Q7).</li>
+                  <li><strong>Q6:</strong> Draw vertical line through ordered set — <em>"What fraction are less than the median?"</em></li>
+                  <li><strong>Q7:</strong> Median = 2.5 children — discuss why non-integer medians are still valid.</li>
+                  <li><strong>Q9:</strong> Estimate first; mean must sit between 4 and 10.</li>
+                  <li><strong>Q11:</strong> Count zeros — don't ignore them in the total.</li>
+                  <li><strong>Investigation Q12–Q13:</strong> Data sets with same mode and median; range of 0 → all values equal.</li>
+                </ul>
+                <div class="q-note">
+                  <strong>Q12 Support:</strong> sum of four values = 4 × 6 = 24 &nbsp;|&nbsp;
+                  <strong>Q13a:</strong> Range of 0 → all numbers identical
+                </div>
+              </div>
+            </div>
+
+            <div class="phase ph-plenary">
+              <div class="phase-time">
+                <div class="phase-mins">42 – 50 min</div>
+                <div class="phase-label">Plenary</div>
+                <div class="phase-bar"></div>
+              </div>
+              <div class="phase-content">
+                <h4>Explore Return + Reflect</h4>
+                <ul class="flow-list">
+                  <li><strong>Return to Explore:</strong> Which average for computers per household? → Mean (needs only totals; median/mode require every household ordered).</li>
+                  <li><em>"What would the mean NOT tell you?"</em> → households with zero computers.</li>
+                  <li><strong>Reflect:</strong> One thing already known + one new thing. Share 2–3 responses.</li>
+                  <li>Set homework: ActiveCourse Lesson 1.1 / Workbook p.1–4.</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 5: ADAPTIVE TEACHING (collapsed) ═══ -->
+  <div class="card s-adaptive" id="card-adaptive">
+    <div class="card-head" onclick="toggle('card-adaptive')">
+      <div class="head-icon">♿</div>
+      <div class="head-label">Adaptive Teaching</div>
+      <div class="head-chevron">▼</div>
+    </div>
+    <div class="card-body-wrap">
+      <div class="card-body-inner">
+        <div class="card-body">
+          <div class="adaptive-grid">
+            <div class="ada-block ada-support">
+              <h4>🟢 Support</h4>
+              <ul>
+                <li>Pre-ordered data sets for Q5–Q7 to reduce cognitive load</li>
+                <li>Number line 0–100 available for ordering tasks</li>
+                <li>Q9: order values first, then find mode and median together</li>
+                <li>Q12: scaffold — 4 × mean = total sum</li>
+                <li>Cube towers (concrete) for median — find middle tower physically</li>
+              </ul>
+            </div>
+            <div class="ada-block ada-stretch">
+              <h4>🟣 Stretch</h4>
+              <ul>
+                <li>Q8: estimate mean before calculating — explain strategy</li>
+                <li>Q12: what values of <em>n</em> make mean &gt; 6 or &lt; 6?</li>
+                <li>Design a data set where mode &gt; median</li>
+                <li>Design a data set where range &lt; mode</li>
+                <li>Why might broadband providers prefer mean vs. median?</li>
+              </ul>
+            </div>
+            <div class="ada-block ada-misc">
+              <h4>🔴 Common Misconceptions</h4>
+              <ul>
+                <li><strong>Median:</strong> Not ordering first — use cube tower activity</li>
+                <li><strong>Range:</strong> Writing "5 to 12" instead of 7 — it's one number</li>
+                <li><strong>Mean:</strong> Wrong count when zeros are present</li>
+                <li><strong>Two modes:</strong> Some think bimodal = no mode</li>
+              </ul>
+            </div>
+            <div class="ada-block ada-afl">
+              <h4>🔵 AFL / EAL</h4>
+              <ul>
+                <li>Key vocab on board throughout: mode, median, mean, range</li>
+                <li>Mini-whiteboard cold-call after each average taught</li>
+                <li>Q6: vertical-line visual supports EAL students</li>
+                <li>Exit card: five numbers → write all four measures</li>
+                <li>Paired talk before whole-class sharing</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<div class="footer">
+  <a href="../../index.html">← SoW Home</a>
+  <span class="footer-sep">|</span>
+  <span>Y7 · Unit 1 · Lesson 1</span>
+  <span class="footer-sep">|</span>
+  <a href="y7-u1-l2.html">Next: 1.2 →</a>
+  <span class="footer-sep">|</span>
+  <span>Maths Progress International Y7 © Pearson 2020</span>
+</div>
+
+<script>
+  function toggle(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+  function expandAll() {
+    document.querySelectorAll('.card').forEach(c => c.classList.add('open'));
+  }
+  function collapseAll() {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('open'));
+  }
+  function copyPrompt() {
+    const text = document.getElementById('aiPrompt').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = 'Copy prompt'; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1249,19 +1249,48 @@ const CALENDAR_EVENTS = [
 ];
 
 // ════════════════════════════════════════════════════════════════════
-//  STORAGE
+//  STORAGE  (server-backed, in-memory cache, localStorage cross-tab)
 // ════════════════════════════════════════════════════════════════════
-function loadAll(){
+let _cache = {};
+
+function loadAll(){ return _cache; }
+
+function _lsLoad(){
   try{ const r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):{}; }
   catch(e){ return {}; }
 }
+
 function saveAll(data){
+  _cache = data;
+  // Cross-tab ping (same-browser sync)
   try{
     localStorage.setItem(STORE_KEY, JSON.stringify(data));
     localStorage.setItem(PING_KEY, String(Date.now()));
-    flashSync();
-  }catch(e){ console.error('Save failed',e); }
+  }catch(e){}
+  flashSync();
+  // Async server save — central storage for all devices
+  fetch('/api/data',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  }).catch(e=>console.warn('Server save failed',e));
 }
+
+async function syncFromServer(){
+  try{
+    const r=await fetch('/api/data');
+    if(r.ok){
+      const serverData=await r.json();
+      _cache=serverData;
+      try{ localStorage.setItem(STORE_KEY,JSON.stringify(serverData)); }catch(e){}
+    } else {
+      _cache=_lsLoad();
+    }
+  }catch(e){
+    _cache=_lsLoad();
+  }
+}
+
 function makeKey(lessonId,set){ return lessonId+'__'+set; }
 function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
 function setStatusValue(lessonId,set,val){ const d=loadAll(); d[makeKey(lessonId,set)]=val; saveAll(d); }
@@ -1275,7 +1304,27 @@ function flashSync(){
   _flashT=setTimeout(()=>el.classList.remove('show'),1200);
 }
 
-window.addEventListener('storage',e=>{ if(e.key===PING_KEY) refreshActiveView(); });
+// Cross-tab sync (same browser)
+window.addEventListener('storage',e=>{
+  if(e.key===PING_KEY){
+    _cache=_lsLoad();
+    refreshActiveView();
+  }
+});
+
+// Cross-device polling every 30 s
+setInterval(async()=>{
+  try{
+    const r=await fetch('/api/data');
+    if(!r.ok)return;
+    const serverData=await r.json();
+    if(JSON.stringify(serverData)!==JSON.stringify(_cache)){
+      _cache=serverData;
+      try{ localStorage.setItem(STORE_KEY,JSON.stringify(serverData)); }catch(e){}
+      refreshActiveView();
+    }
+  }catch(e){}
+},30000);
 
 // ════════════════════════════════════════════════════════════════════
 //  HELPERS
@@ -1834,7 +1883,7 @@ function updateSetDropdown(){
   sel.innerHTML=sets.map(s=>`<option value="${s}"${s===cur?' selected':''}>${s} — ${teachers[s]||s}</option>`).join('');
 }
 
-function init(){
+async function init(){
   document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
   document.getElementById('sel-yg').addEventListener('change',()=>{updateSetDropdown();renderTeacher();});
   document.getElementById('sel-set').addEventListener('change',renderTeacher);
@@ -1842,6 +1891,7 @@ function init(){
   document.getElementById('tv-search').addEventListener('input',renderTeacher);
   document.getElementById('sel-assess-yg').addEventListener('change',renderAssessments);
   document.getElementById('btn-reset').addEventListener('click',resetProgress);
+  await syncFromServer();
   updateSetDropdown();
   renderYearTabs();
   renderHOD();

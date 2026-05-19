@@ -295,7 +295,7 @@
         <option value="8">Year 8</option>
         <option value="9">Year 9</option>
         <option value="10">Year 10</option>
-        <option disabled>Year 11 (coming soon)</option>
+        <option value="11">Year 11</option>
         <option disabled>Year 12 (coming soon)</option>
         <option disabled>Year 13 (coming soon)</option>
       </select>
@@ -332,7 +332,7 @@
         <option value="8">Year 8</option>
         <option value="9">Year 9</option>
         <option value="10">Year 10</option>
-        <option value="11" disabled>Year 11 (coming soon)</option>
+        <option value="11">Year 11</option>
         <option value="12" disabled>Year 12 (coming soon)</option>
       </select>
     </div>
@@ -362,12 +362,14 @@ const TEACHERS_BY_YG = {
   8:  { Ma1:'ADE', Ma2:'MKM', Ma3:'FTA', Ma4:'HPA' },
   9:  { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
   10: { Ma1:'SSW', Ma2:'ADE', Ma3:'HPA', Ma4:'FTA' },
+  11: { Ma1:'SSW', Ma2:'FTA', Ma3:'ADE', Ma4:'MKM' },
 };
 const SETS_BY_YG = {
   7:  ['Ma1','Ma2','Ma3','Ma4'],
   8:  ['Ma1','Ma2','Ma3','Ma4'],
   9:  ['Ma1','Ma2','Ma3','Ma4'],
   10: ['Ma1','Ma2','Ma3','Ma4'],
+  11: ['Ma1','Ma2','Ma3','Ma4'],
 };
 const SOW_BY_YG = {};  // populated after SOW arrays are defined
 const TEACHERS = TEACHERS_BY_YG[7];
@@ -1121,6 +1123,117 @@ SOW_BY_YG[8] = Y8_SOW;
 SOW_BY_YG[9] = Y9_SOW;
 SOW_BY_YG[10] = Y10_SOW;
 
+// ── Year 11 KS4 Normal SoW (Ma2 FTA · Ma3 ADE) — 87 lessons ──────
+const Y11_SOW = [
+  // Induction / baseline (M1A — unnumbered)
+  {id:'y11_001',lessonName:'Routines, expectations and Year 11 diagnostic',unit:0,unitName:'Induction',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',obj:'Set up Year 11 routines and run initial diagnostic.',alert:'INSET Mon, Family Orientation Tue, Welcome Day Wed. Year 11 induction and diagnostic only.'},
+  {id:'y11_002',lessonName:'Diagnostic review, book/folder setup and exam-paper expectations',unit:0,unitName:'Induction',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',obj:'Baseline review, folder setup and exam-paper expectations. Identify gaps from Year 10.'},
+  // Unit 1 — Advanced number and algebra (M2B–M3A)
+  {id:'y11_003',lessonName:'Surds 1 — simplifying, expanding and operating with surds',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',obj:'Simplify surds; expand brackets involving surds; add and subtract surds.'},
+  {id:'y11_004',lessonName:'Surds 2 — rationalising denominators',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',obj:'Rationalise denominators of the form a/√b and a/(c+√b).'},
+  {id:'y11_005',lessonName:'Fractional and negative indices',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',obj:'Evaluate and simplify expressions with fractional and negative indices.'},
+  {id:'y11_006',lessonName:'Algebraic proof 1 — integer and parity proofs',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Construct algebraic proofs involving integers, consecutive numbers and parity.'},
+  {id:'y11_007',lessonName:'Unit 1 revision lesson before assessment',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'flex',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Mixed review, common errors and exam-style practice for Unit 1.'},
+  {id:'y11_008',lessonName:'Unit 1 full end-of-unit assessment',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'assessment',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',obj:'Advanced number and algebra assessment.'},
+  // Unit 1 reflection + Unit 2A (M4B)
+  {id:'y11_009',lessonName:'Unit 1 reflection, correction and reteach',unit:1,unitName:'Unit 1 — Advanced Number and Algebra',type:'flex',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',obj:'Correct misconceptions from Unit 1; bridge into Unit 2A.'},
+  {id:'y11_010',lessonName:'Quadratic formula and discriminant',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',obj:'Use the quadratic formula; interpret the discriminant.'},
+  {id:'y11_011',lessonName:'Problems leading to quadratic equations',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',obj:'Set up and solve quadratic equations from geometric and worded contexts.'},
+  // Unit 2A continued (M5A–M6B)
+  {id:'y11_012',lessonName:'Quadratic simultaneous equations 1',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Solve simultaneous equations where one is linear and one is quadratic.'},
+  {id:'y11_013',lessonName:'Quadratic simultaneous equations 2 and graph interpretation',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Extend to harder cases; interpret solutions graphically.'},
+  {id:'y11_014',lessonName:'Quadratic inequalities',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',obj:'Solve quadratic inequalities; represent solutions on number lines and in set notation.'},
+  {id:'y11_015',lessonName:'Mixed quadratics consolidation and exam practice',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'flex',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',obj:'Mixed exam-style consolidation across Unit 2A content.'},
+  {id:'y11_016',lessonName:'Unit 2A checkpoint quiz + feedback/bridge',unit:2,unitName:'Unit 2A — Advanced Quadratics and Equations',type:'assessment',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',obj:'20–25 min checkpoint on Unit 2A content; remaining lesson for feedback and bridge into Unit 2B.'},
+  // Unit 2B — Functions and calculus (M6B–M8B)
+  {id:'y11_017',lessonName:'Function notation launch and retrieval from Unit 2A',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',obj:'Introduce function notation and retrieve key quadratic ideas.'},
+  {id:'y11_018',lessonName:'Functions 1 — notation, domain and range',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'Use function notation f(x); state domain and range.'},
+  {id:'y11_019',lessonName:'Functions 2 — composite and inverse functions',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'Find composite functions fg(x) and inverse functions f⁻¹(x).'},
+  {id:'y11_020',lessonName:'Differentiation 1 — gradient function and stationary points',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',obj:'Differentiate polynomials; find gradient at a point and stationary points.'},
+  {id:'y11_021',lessonName:'Differentiation 2 — maxima, minima and graph interpretation',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'core',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',obj:'Classify stationary points; use calculus to analyse curve behaviour.',alert:'National holiday Tue 13 Oct. Final week before Michaelmas half-term.'},
+  {id:'y11_022',lessonName:'Unit 2B revision lesson before assessment',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'flex',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',obj:'Mixed review, common errors and exam-style practice for Unit 2B.'},
+  {id:'y11_023',lessonName:'Unit 2B full end-of-unit assessment',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'assessment',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',obj:'Functions and calculus assessment.'},
+  // (M9A — Year 11 Mock Week, no regular teaching)
+  // Unit 2B reflection + Unit 3 (M10B)
+  {id:'y11_024',lessonName:'Unit 2B reflection, correction and reteach',unit:3,unitName:'Unit 2B — Functions and Calculus',type:'flex',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',obj:'Correct misconceptions from Unit 2B assessment; bridge into Unit 3.',alert:'IR1 evidence window opens.'},
+  {id:'y11_025',lessonName:'Histograms 2 — interpretation and exam-style problems',unit:4,unitName:'Unit 3 — Advanced Statistics Completion',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',obj:'Interpret histograms; solve exam-style problems involving frequency density.'},
+  {id:'y11_026',lessonName:'Cumulative frequency diagrams and median estimates',unit:4,unitName:'Unit 3 — Advanced Statistics Completion',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',obj:'Construct and interpret cumulative frequency diagrams; estimate the median.'},
+  // Unit 3 continued (M11A)
+  {id:'y11_027',lessonName:'Box plots, quartiles and IQR from grouped data',unit:4,unitName:'Unit 3 — Advanced Statistics Completion',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Draw and interpret box plots; find quartiles and IQR from grouped data.',alert:'Year 11 mock report marking and IR1 checking window.'},
+  {id:'y11_028',lessonName:'Unit 3 revision lesson before assessment',unit:4,unitName:'Unit 3 — Advanced Statistics Completion',type:'flex',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Mixed review, common errors and exam-style practice for Unit 3.'},
+  {id:'y11_029',lessonName:'Unit 3 full end-of-unit assessment',unit:4,unitName:'Unit 3 — Advanced Statistics Completion',type:'assessment',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',obj:'Advanced statistics assessment.'},
+  // Unit 3 reflection + Unit 4 (M12B)
+  {id:'y11_030',lessonName:'Unit 3 reflection, correction and reteach',unit:4,unitName:'Unit 3 — Advanced Statistics Completion',type:'flex',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',obj:'Correct misconceptions from Unit 3 assessment; bridge into Unit 4.',alert:'IR1 checking and publication window.'},
+  {id:'y11_031',lessonName:'Estimating gradients of curves',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',obj:'Estimate the gradient of a curve at a point using tangents.'},
+  {id:'y11_032',lessonName:'Using graphs to solve equations',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',obj:'Use graphical methods to solve equations and inequalities.'},
+  // Unit 4 continued (M13A)
+  {id:'y11_033',lessonName:'Trigonometric graphs 1',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'Sketch and interpret sine, cosine and tangent graphs.',alert:'IR1 publication week.'},
+  {id:'y11_034',lessonName:'Graph transformations 1 — translations and stretches',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'Apply and describe translations f(x)+a and f(x+a); stretches f(ax).'},
+  {id:'y11_035',lessonName:'Graph transformations 2 — mixed transformations',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',obj:'Apply reflections f(-x) and -f(x); combine transformations.'},
+  // Unit 4 assessment + Unit 5 (M14B)
+  {id:'y11_036',lessonName:'Unit 4 revision lesson before assessment',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'flex',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',obj:'Mixed review, common errors and exam-style practice for Unit 4.',alert:'IR1 published Thu 3 Dec.'},
+  {id:'y11_037',lessonName:'Unit 4 full end-of-unit assessment',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'assessment',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',obj:'Advanced graphs assessment.'},
+  {id:'y11_038',lessonName:'Unit 4 reflection, correction and reteach',unit:5,unitName:'Unit 4 — Advanced Graphs',type:'flex',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',obj:'Correct misconceptions from Unit 4; bridge into Unit 5.'},
+  // Unit 5 — Transformations (M15A)
+  {id:'y11_039',lessonName:'Enlargement and combined transformations',unit:6,unitName:'Unit 5 — Transformations',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Enlargement with negative/fractional scale factors; combined and inverse transformations.',alert:'School closed Mon 7 Dec and Thu 10 Dec. Year 11 PTC Wed 9 Dec.'},
+  {id:'y11_040',lessonName:'Unit 5 revision lesson before assessment',unit:6,unitName:'Unit 5 — Transformations',type:'flex',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Mixed review, common errors and exam-style practice for Unit 5.'},
+  {id:'y11_041',lessonName:'Unit 5 full end-of-unit assessment',unit:6,unitName:'Unit 5 — Transformations',type:'assessment',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',obj:'Transformations assessment.'},
+  // Unit 5 reflection + end-of-term consolidation (M16B)
+  {id:'y11_042',lessonName:'Unit 5 reflection, correction and reteach',unit:6,unitName:'Unit 5 — Transformations',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',obj:'Correct misconceptions from Unit 5; set prep task for holiday.',alert:'Last teaching day Tue 16 Dec. No new unit start.'},
+  {id:'y11_043',lessonName:'Michaelmas mixed retrieval: algebra, graphs and transformations',unit:0,unitName:'Retrieval',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',obj:'Retrieval across Michaelmas units 1–5.'},
+  {id:'y11_044',lessonName:'End-of-term consolidation and prep task setting',unit:0,unitName:'Retrieval',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',obj:'Consolidate key ideas and set holiday preparation task.'},
+  // Unit 6 — Advanced geometry (L1A–L5A)
+  {id:'y11_045',lessonName:'Similarity — area and volume scale factors',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L1A',dates:'7–8 Jan 2027',obj:'Use area and volume scale factors for similar shapes.',alert:'INSET Wed 6 Jan. Term starts Thu 7 Jan — partial teaching week.'},
+  {id:'y11_046',lessonName:'Sectors — area and arc length',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L1A',dates:'7–8 Jan 2027',obj:'Calculate arc length and sector area in exact and decimal form.'},
+  {id:'y11_047',lessonName:'Spheres and cones — surface area and volume',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',obj:'Apply formulae for surface area and volume of spheres and cones.'},
+  {id:'y11_048',lessonName:'Sine rule',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',obj:'Apply the sine rule to find sides and angles in non-right-angled triangles.'},
+  {id:'y11_049',lessonName:'Cosine rule',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',obj:'Apply the cosine rule to find sides and angles in non-right-angled triangles.'},
+  {id:'y11_050',lessonName:'Area of a triangle and harder trig problems',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:'Use ½ab sin C; solve multi-step trigonometry problems.',alert:'IR2 opens.'},
+  {id:'y11_051',lessonName:'3D Pythagoras',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:"Apply Pythagoras' theorem in three dimensions."},
+  {id:'y11_052',lessonName:'3D trigonometry',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',obj:'Apply trigonometry in three-dimensional problems.'},
+  {id:'y11_053',lessonName:'Circle theorems 1',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',obj:'Apply angle in semicircle, angles in same segment and angles at centre.',alert:'IR2 closes.'},
+  {id:'y11_054',lessonName:'Circle theorems 2 and alternate segment theorem',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',obj:'Apply cyclic quadrilateral, tangent-radius, and alternate segment theorem.'},
+  {id:'y11_055',lessonName:'Vectors 1 — notation, addition and scalar multiplication',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',obj:'Use column vector notation; add, subtract and scale vectors.'},
+  {id:'y11_056',lessonName:'Vectors 2 — magnitude and vector geometry',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Calculate magnitude; use vector geometry to prove geometric results.',alert:'HoD/HoF checking of IR2.'},
+  {id:'y11_057',lessonName:'Unit 6 revision lesson before assessment',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'flex',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Mixed review, common errors and exam-style practice for Unit 6.'},
+  {id:'y11_058',lessonName:'Unit 6 full end-of-unit assessment',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'assessment',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',obj:'Advanced geometry assessment.'},
+  // Unit 6 reflection + Mock preparation (L6B)
+  {id:'y11_059',lessonName:'Unit 6 reflection, correction and reteach',unit:7,unitName:'Unit 6 — Advanced Geometry',type:'flex',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',obj:'Correct misconceptions from Unit 6; bridge into mock preparation.',alert:'Final week before Lent half-term. No new unit start.'},
+  {id:'y11_060',lessonName:'Mock preparation: geometry and advanced algebra retrieval',unit:0,unitName:'Mock Preparation',type:'flex',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',obj:'Retrieval across geometry, advanced algebra and calculus before Year 11 mock.'},
+  {id:'y11_061',lessonName:'Mock preparation: calculator strategy and common errors',unit:0,unitName:'Mock Preparation',type:'flex',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',obj:'Exam technique, calculator strategy and common mark-scheme errors.'},
+  // (L7A — Year 11 Mock Week, no regular teaching)
+  // Mock review (L8B)
+  {id:'y11_062',lessonName:'Mock review: paper-level gap analysis',unit:0,unitName:'Mock Review',type:'flex',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',obj:'Return and analyse mock papers; identify class-level and individual gaps.',alert:'Year 11 mock results available. Mock review lessons.'},
+  {id:'y11_063',lessonName:'Mock review: targeted reteaching from mock outcomes',unit:0,unitName:'Mock Review',type:'flex',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',obj:'Targeted reteaching of highest-impact topics from mock outcomes.'},
+  // Unit 7 — Probability and Venn diagrams (L9A–L11A)
+  {id:'y11_064',lessonName:'Basic probability, sample spaces and relative frequency',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Probability scale, listing outcomes and relative frequency.',alert:'Mock marking and Full Report 3 window.'},
+  {id:'y11_065',lessonName:'Tree diagrams — independent and dependent events',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Use tree diagrams for independent and dependent events.'},
+  {id:'y11_066',lessonName:'Conditional probability from tree diagrams',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',obj:'Calculate conditional probabilities using tree diagrams.'},
+  {id:'y11_067',lessonName:'Venn diagrams and set notation',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',obj:'Construct and use Venn diagrams with set notation.',alert:'Full Report 3 checking window.'},
+  {id:'y11_068',lessonName:'Conditional probability from Venn diagrams',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',obj:'Extract conditional probabilities from Venn diagrams.'},
+  {id:'y11_069',lessonName:'Three-set Venn diagrams and set-builder notation',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',obj:'Use three-set Venn diagrams; write solutions using set-builder notation.'},
+  {id:'y11_070',lessonName:'Unit 7 revision lesson before assessment',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'flex',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Mixed review, common errors and exam-style practice for Unit 7.',alert:'Full Report 3 publication window.'},
+  {id:'y11_071',lessonName:'Unit 7 full end-of-unit assessment',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'assessment',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Probability and Venn diagrams assessment.'},
+  {id:'y11_072',lessonName:'Unit 7 reflection, correction and reteach',unit:8,unitName:'Unit 7 — Probability and Venn Diagrams',type:'flex',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',obj:'Correct misconceptions from Unit 7; begin exam preparation.'},
+  // Revision and exam preparation (L12B–S4B)
+  {id:'y11_073',lessonName:'Revision 2 — graphs, functions and calculus',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',obj:'Targeted revision based on assessment and mock evidence.',alert:'Final week before Easter. Last day Tue 1 Apr, 12pm close.'},
+  {id:'y11_074',lessonName:'Revision 3 — geometry and trigonometry strand',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',obj:'Targeted revision of geometry, trigonometry, circle theorems and vectors.'},
+  {id:'y11_075',lessonName:'Revision 4 — statistics, probability and vectors',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',obj:'Targeted revision of statistics, probability and vector geometry.'},
+  {id:'y11_076',lessonName:'Full Paper 1H practice',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'Timed full Paper 1H (non-calculator) practice under exam conditions.',alert:'Summer term starts Mon 19 Apr. Final revision and exam preparation window.'},
+  {id:'y11_077',lessonName:'Paper 1H feedback and gap reteach',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'Mark and analyse Paper 1H; targeted reteaching of identified gaps.'},
+  {id:'y11_078',lessonName:'Targeted topic rotation 1',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',obj:'Structured topic rotation addressing highest-frequency exam content.'},
+  {id:'y11_079',lessonName:'Full Paper 2H practice',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',obj:'Timed full Paper 2H (calculator) practice under exam conditions.'},
+  {id:'y11_080',lessonName:'Paper 2H feedback and gap reteach',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',obj:'Mark and analyse Paper 2H; targeted reteaching of identified gaps.'},
+  {id:'y11_081',lessonName:'Targeted topic rotation 2',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',obj:'Structured topic rotation addressing class-specific weak areas.'},
+  {id:'y11_082',lessonName:'Grade 7–9 problem solving: algebra and graphs',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S3A',dates:'3–7 May 2027',obj:'Challenging exam-style questions targeting grades 7–9 in algebra and graphs.'},
+  {id:'y11_083',lessonName:'Grade 7–9 problem solving: geometry and trigonometry',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S3A',dates:'3–7 May 2027',obj:'Challenging exam-style questions targeting grades 7–9 in geometry and trigonometry.'},
+  {id:'y11_084',lessonName:'Grade 7–9 problem solving: statistics and probability',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S3A',dates:'3–7 May 2027',obj:'Challenging exam-style questions targeting grades 7–9 in statistics and probability.'},
+  {id:'y11_085',lessonName:'Final formulae, calculator and non-calculator routines',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S4B',dates:'10–14 May 2027',obj:'Revisit key formulae, calculator methods and written-method accuracy.'},
+  {id:'y11_086',lessonName:'Individual gap-analysis intervention',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S4B',dates:'10–14 May 2027',obj:'Personalised gap-targeting based on past-paper and mock analysis.'},
+  {id:'y11_087',lessonName:'Pre-exam confidence paper and review',unit:0,unitName:'Revision and Exam Preparation',type:'flex',term:'Summer',week:'S4B',dates:'10–14 May 2027',obj:'Final short practice paper; review, confidence-building and logistics.'},
+];
+SOW_BY_YG[11] = Y11_SOW;
+
 const ASSESSMENTS = {
   7: [
     {name:'Unit 1 Assessment',   sub:'Analysing & Displaying Data',   week:'M4B',  dates:'14–18 Sep 2026',    term:'Michaelmas', unit:1},
@@ -1182,6 +1295,19 @@ const ASSESSMENTS = {
     {name:'Year 10 Summer Examinations', sub:'Units 1A–8B — off-timetable',              week:'S3A',  dates:'3–7 May 2027',      term:'Summer',     unit:0, eoy:true},
     {name:'Unit 9 Assessment',   sub:'3D Geometry and Similarity',                        week:'S7A',  dates:'31 May–4 Jun 2027', term:'Summer',     unit:14},
     {name:'Unit 10A Assessment', sub:'Core Statistics',                                   week:'S9A',  dates:'14–18 Jun 2027',    term:'Summer',     unit:15},
+  ],
+  11: [
+    {name:'Unit 1 Assessment',   sub:'Advanced Number and Algebra',                       week:'M3A',  dates:'7–11 Sep 2026',     term:'Michaelmas', unit:1},
+    {name:'Unit 2A Checkpoint',  sub:'Advanced Quadratics and Equations (20–25 min quiz)', week:'M6B',  dates:'28 Sep–2 Oct 2026', term:'Michaelmas', unit:2},
+    {name:'Unit 2B Assessment',  sub:'Functions and Calculus',                            week:'M8B',  dates:'12–16 Oct 2026',    term:'Michaelmas', unit:3},
+    {name:'Year 11 Mock 1',      sub:'Off-timetable — all units taught so far',           week:'M9A',  dates:'26–30 Oct 2026',    term:'Michaelmas', unit:0, eoy:false},
+    {name:'Unit 3 Assessment',   sub:'Advanced Statistics Completion',                    week:'M11A', dates:'9–13 Nov 2026',     term:'Michaelmas', unit:4},
+    {name:'Unit 4 Assessment',   sub:'Advanced Graphs',                                   week:'M14B', dates:'30 Nov–4 Dec 2026', term:'Michaelmas', unit:5},
+    {name:'Unit 5 Assessment',   sub:'Transformations',                                   week:'M15A', dates:'7–11 Dec 2026',     term:'Michaelmas', unit:6},
+    {name:'Unit 6 Assessment',   sub:'Advanced Geometry',                                 week:'L5A',  dates:'1–5 Feb 2027',      term:'Lent',       unit:7},
+    {name:'Year 11 Mock 2',      sub:'Off-timetable — all units taught so far',           week:'L7A',  dates:'22–26 Feb 2027',    term:'Lent',       unit:0, eoy:false},
+    {name:'Unit 7 Assessment',   sub:'Probability and Venn Diagrams',                     week:'L11A', dates:'22–26 Mar 2027',    term:'Lent',       unit:8},
+    {name:'IGCSE External Examinations', sub:'Pearson Edexcel 4MA1 Higher — study leave', week:'S5A',  dates:'17 May–4 Jun 2027', term:'Summer',     unit:0, eoy:true},
   ],
 };
 
@@ -1364,7 +1490,7 @@ let hodYear = 7;
 
 function renderYearTabs(){
   const yrs=['7','8','9','10','11','12','13'];
-  const available=new Set(['7','8','9','10']);
+  const available=new Set(['7','8','9','10','11']);
   document.getElementById('yg-tabs').innerHTML=yrs.map(y=>
     `<button class="yg-tab${String(hodYear)===y?' active':''}${available.has(y)?'':' disabled'}" data-year="${y}">Year ${y}</button>`
   ).join('');

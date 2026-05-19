@@ -1992,7 +1992,9 @@ function renderTeacher(){
             </div>
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>
-          <span class="type-badge ${bc}">${bt}</span>${lesson.tier?`<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`:''}
+          ${lesson.tier
+            ? `<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`
+            : `<span class="type-badge ${bc}">${bt}</span>`}
           ${lesson.unit?folderBtn(lesson,yg):'<span></span>'}
           ${isF
             ?`<div class="na-badge">N/A</div>`

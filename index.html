@@ -1514,15 +1514,15 @@ function renderHOD(){
   // ── Teacher cards ───────────────────────────────────────────────
   let cardsHtml='<div class="dash-grid">';
   hodSets.forEach(set=>{
-    // Y10 Ma1 & Ma4 — different SoW not yet available
-    if(hodYear===10 && (set==='Ma1'||set==='Ma4')){
+    // Y10 Ma1 & Ma4 / Y11 Ma1 & Ma4 — different SoW not yet available
+    if((hodYear===10||hodYear===11) && (set==='Ma1'||set==='Ma4')){
       const tcName=hodTeachers[set]||set;
       cardsHtml+=`<div class="teacher-card" style="opacity:0.55;">
         <div class="tc-header">
           <div class="tc-avatar">${tcName}</div>
           <div>
             <div class="tc-name">${tcName} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
-            <div class="tc-sub">Year 10 · SoW coming soon</div>
+            <div class="tc-sub">Year ${hodYear} · SoW coming soon</div>
           </div>
           <div style="margin-left:auto;font-size:12px;color:var(--dark-gray);font-weight:600;">COMING SOON</div>
         </div>
@@ -1616,12 +1616,12 @@ function renderTeacher(){
   const tf=document.getElementById('sel-term').value;
   const q=(document.getElementById('tv-search').value||'').toLowerCase().trim();
 
-  // Y9 Ma1 / Y10 Ma1 & Ma4 use different SoWs — handle here
-  if(yg===10 && (set==='Ma1'||set==='Ma4')){
-    const tname=(TEACHERS_BY_YG[10]||{})[set]||set;
+  // Y9 Ma1 / Y10 Ma1 & Ma4 / Y11 Ma1 & Ma4 use different SoWs — handle here
+  if((yg===10||yg===11) && (set==='Ma1'||set==='Ma4')){
+    const tname=(TEACHERS_BY_YG[yg]||{})[set]||set;
     document.getElementById('teacher-content').innerHTML=
-      `<div class="coming-soon"><h3>Year 10 ${set} — ${tname}</h3>
-       <p>Year 10 ${set} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
+      `<div class="coming-soon"><h3>Year ${yg} ${set} — ${tname}</h3>
+       <p>Year ${yg} ${set} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
     return;
   }
   const sow = (yg===9 && set==='Ma1') ? Y9_MA1_SOW : SOW_BY_YG[yg];
@@ -1800,9 +1800,11 @@ function resetProgress(){
 // ════════════════════════════════════════════════════════════════════
 let assessY9Filter  = 'ma24';
 let assessY10Filter = 'ma23';
+let assessY11Filter = 'ma23';
 
 function setAssessFilter(f)    { assessY9Filter=f;  renderAssessments(); }
 function setAssessY10Filter(f) { assessY10Filter=f; renderAssessments(); }
+function setAssessY11Filter(f) { assessY11Filter=f; renderAssessments(); }
 
 function renderAssessments(){
   const yg = document.getElementById('sel-assess-yg').value;
@@ -1829,10 +1831,27 @@ function renderAssessments(){
       <button class="assess-tog-btn${assessY10Filter==='ma4'?' active':''}" onclick="setAssessY10Filter('ma4')">Ma4 — FTA</button>
     </div>`;
   }
+  if(ygInt === 11){
+    toggleHtml = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">Schedule for:</span>
+      <button class="assess-tog-btn${assessY11Filter==='ma23'?' active':''}" onclick="setAssessY11Filter('ma23')">Ma2–Ma3 (FTA / ADE)</button>
+      <button class="assess-tog-btn${assessY11Filter==='ma1'?' active':''}" onclick="setAssessY11Filter('ma1')">Ma1 — SSW</button>
+      <button class="assess-tog-btn${assessY11Filter==='ma4'?' active':''}" onclick="setAssessY11Filter('ma4')">Ma4 — MKM</button>
+    </div>`;
+  }
 
   // Y10 Ma1 / Ma4 — coming soon
   if(ygInt === 10 && (assessY10Filter === 'ma1' || assessY10Filter === 'ma4')){
     const setLabel = assessY10Filter === 'ma1' ? 'Ma1 — SSW' : 'Ma4 — FTA';
+    contentEl.innerHTML = toggleHtml +
+      `<div class="coming-soon" style="margin-top:8px;"><h3>${setLabel} — Assessment Schedule</h3>
+       <p>This scheme of work is not yet available. The assessment schedule will appear here once the SoW has been added.</p></div>`;
+    return;
+  }
+
+  // Y11 Ma1 / Ma4 — coming soon
+  if(ygInt === 11 && (assessY11Filter === 'ma1' || assessY11Filter === 'ma4')){
+    const setLabel = assessY11Filter === 'ma1' ? 'Ma1 — SSW' : 'Ma4 — MKM';
     contentEl.innerHTML = toggleHtml +
       `<div class="coming-soon" style="margin-top:8px;"><h3>${setLabel} — Assessment Schedule</h3>
        <p>This scheme of work is not yet available. The assessment schedule will appear here once the SoW has been added.</p></div>`;

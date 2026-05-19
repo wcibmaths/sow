@@ -136,6 +136,11 @@
   .type-badge.cse{background:var(--light-green);color:var(--dark-green);}
   .type-badge.assess{background:var(--amber);color:var(--dark-amber);}
   .type-badge.flex{background:var(--mid-gray);color:var(--dark-gray);}
+  .tier-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;
+    letter-spacing:.3px;white-space:nowrap;margin-left:4px;}
+  .tier-badge.t-core{background:#d4edda;color:#155724;}
+  .tier-badge.t-access{background:#fff3cd;color:#856404;}
+  .tier-badge.t-exposure{background:#e2d9f3;color:#5a3792;}
 
   /* Resource button */
   .res-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;
@@ -1234,6 +1239,208 @@ const Y11_SOW = [
 ];
 SOW_BY_YG[11] = Y11_SOW;
 
+// ── Year 10 Ma4 Bottom-Set SoW (FTA) — 107 lessons ───────────────
+const Y10_MA4_SOW = [
+  {id:'y10_ma4_001',lessonName:'Induction, routines, expectations and diagnostic baseline (1/2)',unit:0,unitName:'Induction',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',tier:null,obj:'Set up routines, books, calculator expectations and diagnostic tasks.',alert:'INSET Mon; Family Orientation Tue; Welcome Day Wed. Use Thu–Fri for routines/diagnostic.'},
+  {id:'y10_ma4_002',lessonName:'Induction, routines, expectations and diagnostic baseline (2/2)',unit:0,unitName:'Induction',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',tier:null,obj:'Review baseline, identify Grade 4 priority gaps and set targets.',alert:'INSET Mon; Family Orientation Tue; Welcome Day Wed. Use Thu–Fri for routines/diagnostic.'},
+  {id:'y10_ma4_003',lessonName:'Fractions operations and mixed numbers (1/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',tier:'CORE',alert:'Yr 7, 10 & 12 CAT4 testing.'},
+  {id:'y10_ma4_004',lessonName:'FDP conversions and ordering (2/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',tier:'CORE',alert:'Yr 7, 10 & 12 CAT4 testing.'},
+  {id:'y10_ma4_005',lessonName:'Percentages of amounts (3/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',tier:'CORE',alert:'Yr 7, 10 & 12 CAT4 testing.'},
+  {id:'y10_ma4_006',lessonName:'Percentage increase and decrease (4/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',tier:'CORE',alert:'Exeter 1.'},
+  {id:'y10_ma4_007',lessonName:'Reverse percentages (5/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',tier:'CORE',alert:'Exeter 1.'},
+  {id:'y10_ma4_008',lessonName:'Ratio notation and sharing (6/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',tier:'CORE',alert:'Exeter 1.'},
+  {id:'y10_ma4_009',lessonName:'Direct proportion and best buys (7/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',tier:'CORE',alert:'Year 7 Tutor & Teacher PTC.'},
+  {id:'y10_ma4_010',lessonName:'Recipe, maps and scale problems (8/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',tier:'CORE',alert:'Year 7 Tutor & Teacher PTC.'},
+  {id:'y10_ma4_011',lessonName:'Compound interest and depreciation exposure (9/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',tier:'CORE',alert:'Year 7 Tutor & Teacher PTC.'},
+  {id:'y10_ma4_012',lessonName:'Mixed Q1–6 exam practice (10/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',tier:'CORE',alert:'Year 10 progress check; Yr 7–13 Interim Report 0 opens.'},
+  {id:'y10_ma4_013',lessonName:'Targeted fluency clinic (11/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',tier:'CORE',alert:'Year 10 progress check; Yr 7–13 Interim Report 0 opens.'},
+  {id:'y10_ma4_014',lessonName:'Unit 1A retrieval review (12/12)',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',tier:'CORE',alert:'Year 10 progress check; Yr 7–13 Interim Report 0 opens.'},
+  {id:'y10_ma4_015',lessonName:'Unit 1A assessment',unit:1,unitName:'Unit 1A — FDP, Percentages and Proportion',type:'assessment',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 1A — FDP, Percentages and Proportion.',alert:'Departmental SEF & DIP completion due; Exeter 2.'},
+  {id:'y10_ma4_016',lessonName:'Standard form conversions (1/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',tier:'CORE',alert:'Departmental SEF & DIP completion due; Exeter 2.'},
+  {id:'y10_ma4_017',lessonName:'Calculations in standard form (2/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',tier:'CORE',alert:'Departmental SEF & DIP completion due; Exeter 2.'},
+  {id:'y10_ma4_018',lessonName:'Estimation using 1 significant figure (3/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',tier:'CORE',alert:'Year 10 PTC; IR0 closes; HoD data check.'},
+  {id:'y10_ma4_019',lessonName:'Rounding and error intervals (4/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',tier:'CORE',alert:'Year 10 PTC; IR0 closes; HoD data check.'},
+  {id:'y10_ma4_020',lessonName:'Upper and lower bounds (5/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',tier:'CORE',alert:'Year 10 PTC; IR0 closes; HoD data check.'},
+  {id:'y10_ma4_021',lessonName:'Index laws and negative indices (6/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',tier:'CORE',alert:'Final week before Michaelmas half-term. No new unit starts.'},
+  {id:'y10_ma4_022',lessonName:'Prime factors, HCF and LCM (7/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',tier:'CORE',alert:'Final week before Michaelmas half-term. No new unit starts.'},
+  {id:'y10_ma4_023',lessonName:'Fractional indices and surd awareness (8/8)',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'core',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',tier:'CORE',alert:'Final week before Michaelmas half-term. No new unit starts.'},
+  {id:'y10_ma4_024',lessonName:'Unit 1B assessment',unit:2,unitName:'Unit 1B — Standard Form, Accuracy and Indices',type:'assessment',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 1B — Standard Form, Accuracy and Indices.',alert:'Shorter Year 11 mock week; Exeter 3.'},
+  {id:'y10_ma4_025',lessonName:'Collecting like terms (1/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',tier:'CORE',alert:'Shorter Year 11 mock week; Exeter 3.'},
+  {id:'y10_ma4_026',lessonName:'Expanding single brackets (2/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',tier:'CORE',alert:'Shorter Year 11 mock week; Exeter 3.'},
+  {id:'y10_ma4_027',lessonName:'Expanding double brackets (3/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 Interim Report 1 opens at 9am.'},
+  {id:'y10_ma4_028',lessonName:'Factorising common factors (4/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 Interim Report 1 opens at 9am.'},
+  {id:'y10_ma4_029',lessonName:'Factorising simple quadratics (5/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 Interim Report 1 opens at 9am.'},
+  {id:'y10_ma4_030',lessonName:'Solving linear equations (6/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',tier:'CORE',alert:'Year 11 mock results report work; Yr12 IR1 closes.'},
+  {id:'y10_ma4_031',lessonName:'Equations with brackets and unknowns both sides (7/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',tier:'CORE',alert:'Year 11 mock results report work; Yr12 IR1 closes.'},
+  {id:'y10_ma4_032',lessonName:'Forming equations from contexts (8/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',tier:'CORE',alert:'Year 11 mock results report work; Yr12 IR1 closes.'},
+  {id:'y10_ma4_033',lessonName:'Linear inequalities on number lines (9/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 closes; student reflection; HoD checking.'},
+  {id:'y10_ma4_034',lessonName:'Substitution into formulae (10/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 closes; student reflection; HoD checking.'},
+  {id:'y10_ma4_035',lessonName:'Changing the subject where subject appears once (11/11)',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 closes; student reflection; HoD checking.'},
+  {id:'y10_ma4_036',lessonName:'Unit 2A assessment',unit:3,unitName:'Unit 2A — Algebra Foundations',type:'assessment',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 2A — Algebra Foundations.',alert:'Year 12 PTC.'},
+  {id:'y10_ma4_037',lessonName:'Arithmetic sequences and nth term (1/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',tier:'CORE',alert:'Year 12 PTC.'},
+  {id:'y10_ma4_038',lessonName:'Using nth term to test terms (2/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',tier:'CORE',alert:'Year 12 PTC.'},
+  {id:'y10_ma4_039',lessonName:'Geometric and Fibonacci-type sequences (3/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 published to parents.'},
+  {id:'y10_ma4_040',lessonName:'Quadratic sequence awareness (4/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 published to parents.'},
+  {id:'y10_ma4_041',lessonName:'Solving simultaneous equations by elimination (5/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 published to parents.'},
+  {id:'y10_ma4_042',lessonName:'Solving simultaneous equations by substitution (6/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',tier:'CORE',alert:'National holidays Mon 7 Dec and Thu 10 Dec; Year 11 PTC.'},
+  {id:'y10_ma4_043',lessonName:'Exam-style sequence and simultaneous equation problems (7/7)',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',tier:'CORE',alert:'National holidays Mon 7 Dec and Thu 10 Dec; Year 11 PTC.'},
+  {id:'y10_ma4_044',lessonName:'Unit 2B assessment',unit:4,unitName:'Unit 2B — Sequences and Simultaneous Equations',type:'assessment',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 2B — Sequences and Simultaneous Equations.',alert:'Final week of Michaelmas. No new unit starts.'},
+  {id:'y10_ma4_045',lessonName:'Consolidation / retrieval before break',unit:0,unitName:'Retrieval',type:'flex',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',tier:null,alert:'Final week of Michaelmas. No new unit starts.'},
+  {id:'y10_ma4_046',lessonName:'Straight lines: y = mx + c (1/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L1A',dates:'4–8 Jan 2027',tier:'CORE',alert:'INSET Wed 6 Jan; Term starts Thu 7 Jan.'},
+  {id:'y10_ma4_047',lessonName:'Plotting and drawing linear graphs (2/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L1A',dates:'4–8 Jan 2027',tier:'CORE',alert:'INSET Wed 6 Jan; Term starts Thu 7 Jan.'},
+  {id:'y10_ma4_048',lessonName:'Gradient from two points (3/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',tier:'CORE',alert:'Year 12 & 13 mock week.'},
+  {id:'y10_ma4_049',lessonName:'Equation of a line from graph or point (4/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',tier:'CORE',alert:'Year 12 & 13 mock week.'},
+  {id:'y10_ma4_050',lessonName:'Parallel and perpendicular line awareness (5/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',tier:'CORE',alert:'Year 12 & 13 mock week.'},
+  {id:'y10_ma4_051',lessonName:'Quadratic graphs from tables (6/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',tier:'CORE',alert:'Yr 7–11 Interim Report 2 opens; Year 9 PTC.'},
+  {id:'y10_ma4_052',lessonName:'Cubic and reciprocal graph exposure (7/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',tier:'CORE',alert:'Yr 7–11 Interim Report 2 opens; Year 9 PTC.'},
+  {id:'y10_ma4_053',lessonName:'Distance-time and speed-time graphs (8/8)',unit:5,unitName:'Unit 3A — Graphs',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',tier:'CORE',alert:'Yr 7–11 Interim Report 2 opens; Year 9 PTC.'},
+  {id:'y10_ma4_054',lessonName:'Unit 3A assessment',unit:5,unitName:'Unit 3A — Graphs',type:'assessment',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',tier:'CORE',obj:'End-of-unit assessment for Unit 3A — Graphs.',alert:'Yr 7–11 IR2 closes; Exeter 5.'},
+  {id:'y10_ma4_055',lessonName:'Angles on lines and around points (1/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',tier:'CORE',alert:'Yr 7–11 IR2 closes; Exeter 5.'},
+  {id:'y10_ma4_056',lessonName:'Parallel-line angle rules (2/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',tier:'CORE',alert:'Yr 7–11 IR2 closes; Exeter 5.'},
+  {id:'y10_ma4_057',lessonName:'Interior and exterior polygon angles (3/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',tier:'CORE',alert:'HoD checking Yr 7–11 IR2; Power BI analysis.'},
+  {id:'y10_ma4_058',lessonName:'Bearings basics (4/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',tier:'CORE',alert:'HoD checking Yr 7–11 IR2; Power BI analysis.'},
+  {id:'y10_ma4_059',lessonName:'Area of triangles, rectangles and parallelograms (5/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',tier:'CORE',alert:'HoD checking Yr 7–11 IR2; Power BI analysis.'},
+  {id:'y10_ma4_060',lessonName:'Area of trapezia and composite shapes (6/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',tier:'CORE',alert:'Final week before Lent half-term. No new unit starts. Yr 7–11 IR2 publish.'},
+  {id:'y10_ma4_061',lessonName:'Circle circumference and area (7/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',tier:'CORE',alert:'Final week before Lent half-term. No new unit starts. Yr 7–11 IR2 publish.'},
+  {id:'y10_ma4_062',lessonName:'Arc length and sector area awareness (8/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',tier:'CORE',alert:'Final week before Lent half-term. No new unit starts. Yr 7–11 IR2 publish.'},
+  {id:'y10_ma4_063',lessonName:'Volume of cuboids, prisms and cylinders (9/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',tier:'CORE',alert:'Year 11 mock week; Adventure Week Yr 7–9.'},
+  {id:'y10_ma4_064',lessonName:'Surface area of prisms and cylinders (10/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',tier:'CORE',alert:'Year 11 mock week; Adventure Week Yr 7–9.'},
+  {id:'y10_ma4_065',lessonName:'Volume and surface area using formula sheet (11/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',tier:'CORE',alert:'Year 11 mock week; Adventure Week Yr 7–9.'},
+  {id:'y10_ma4_066',lessonName:'Pythagoras in 2D (12/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',tier:'CORE',alert:'Year 11 mock week continues Mon–Tue; Yr 7–10 & 12 IR3 opens; Year 7 PTC2.'},
+  {id:'y10_ma4_067',lessonName:'SOH CAH TOA for sides (13/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',tier:'CORE',alert:'Year 11 mock week continues Mon–Tue; Yr 7–10 & 12 IR3 opens; Year 7 PTC2.'},
+  {id:'y10_ma4_068',lessonName:'SOH CAH TOA for angles (14/14)',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'core',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',tier:'CORE',alert:'Year 11 mock week continues Mon–Tue; Yr 7–10 & 12 IR3 opens; Year 7 PTC2.'},
+  {id:'y10_ma4_069',lessonName:'Unit 3B assessment',unit:6,unitName:'Unit 3B — Geometry Foundations',type:'assessment',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',tier:'CORE',obj:'End-of-unit assessment for Unit 3B — Geometry Foundations.',alert:'Yr 7–10 & 12 IR3 closes; HoD checking; PD session.'},
+  {id:'y10_ma4_070',lessonName:'Mean, median, mode and range (1/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',tier:'CORE',alert:'Yr 7–10 & 12 IR3 closes; HoD checking; PD session.'},
+  {id:'y10_ma4_071',lessonName:'Estimated mean from grouped data (2/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',tier:'CORE',alert:'Yr 7–10 & 12 IR3 closes; HoD checking; PD session.'},
+  {id:'y10_ma4_072',lessonName:'Frequency tables and modal class (3/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',tier:'CORE',alert:'Power BI analysis; Exeter 7.'},
+  {id:'y10_ma4_073',lessonName:'Bar charts and pie charts (4/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',tier:'CORE',alert:'Power BI analysis; Exeter 7.'},
+  {id:'y10_ma4_074',lessonName:'Scatter graphs and correlation (5/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',tier:'CORE',alert:'Power BI analysis; Exeter 7.'},
+  {id:'y10_ma4_075',lessonName:'Line of best fit (6/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',tier:'CORE',alert:'Year 8 PTC; Year 8 report publish.'},
+  {id:'y10_ma4_076',lessonName:'Cumulative frequency introduction (7/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',tier:'CORE',alert:'Year 8 PTC; Year 8 report publish.'},
+  {id:'y10_ma4_077',lessonName:'Basic probability and sample space (8/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',tier:'CORE',alert:'Year 8 PTC; Year 8 report publish.'},
+  {id:'y10_ma4_078',lessonName:'Tree diagrams, Venn diagrams and mutually exclusive events (9/9)',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'core',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',tier:'CORE',alert:'Final week before Easter/end Lent. No new unit starts. Yr 7, 9, 10 & 12 IR3 publish.'},
+  {id:'y10_ma4_079',lessonName:'Unit 4 assessment',unit:7,unitName:'Unit 4 — Statistics and Probability',type:'assessment',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',tier:'CORE',obj:'End-of-unit assessment for Unit 4 — Statistics and Probability.',alert:'Final week before Easter/end Lent. No new unit starts. Yr 7, 9, 10 & 12 IR3 publish.'},
+  {id:'y10_ma4_080',lessonName:'Consolidation / retrieval before break',unit:0,unitName:'Retrieval',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',tier:null,alert:'Final week before Easter/end Lent. No new unit starts. Yr 7, 9, 10 & 12 IR3 publish.'},
+  {id:'y10_ma4_081',lessonName:'Pre-exam consolidation and retrieval (1/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',tier:'CORE',obj:'Grade 4 retrieval, calculator fluency and targeted gap fill.',alert:'Term starts Mon 19 Apr.'},
+  {id:'y10_ma4_082',lessonName:'Pre-exam consolidation and retrieval (2/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',tier:'CORE',alert:'Term starts Mon 19 Apr.'},
+  {id:'y10_ma4_083',lessonName:'Pre-exam consolidation and retrieval (3/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',tier:'CORE',alert:'Term starts Mon 19 Apr.'},
+  {id:'y10_ma4_084',lessonName:'Pre-exam consolidation and retrieval (4/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',tier:'CORE',alert:'Exeter 8.'},
+  {id:'y10_ma4_085',lessonName:'Pre-exam consolidation and retrieval (5/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',tier:'CORE',alert:'Exeter 8.'},
+  {id:'y10_ma4_086',lessonName:'Pre-exam consolidation and retrieval (6/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',tier:'CORE',alert:'Exeter 8.'},
+  {id:'y10_ma4_087',lessonName:'Pre-exam consolidation and retrieval (7/7)',unit:8,unitName:'Pre-Exam Consolidation',type:'flex',term:'Summer',week:'S3A',dates:'3–7 May 2027',tier:'CORE',alert:'Year 10 summer exams start; national holiday Tue 4 May.'},
+  {id:'y10_ma4_088',lessonName:'Year 10 summer exam paper / assessment slot (1/2)',unit:8,unitName:'Pre-Exam Consolidation',type:'assessment',term:'Summer',week:'S3A',dates:'3–7 May 2027',tier:'CORE',obj:'Formal Year 10 end-of-year examination.',alert:'Year 10 summer exams start; national holiday Tue 4 May.'},
+  {id:'y10_ma4_089',lessonName:'Year 10 summer exam paper / assessment slot (2/2)',unit:8,unitName:'Pre-Exam Consolidation',type:'assessment',term:'Summer',week:'S4B',dates:'10–14 May 2027',tier:'CORE',obj:'Formal Year 10 end-of-year examination.',alert:'Year 10 summer exams end; Year 10 & 12 full report 4 opens.'},
+  {id:'y10_ma4_090',lessonName:'Translations using column vectors (1/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S4B',dates:'10–14 May 2027',tier:'CORE/ACCESS',alert:'Year 10 summer exams end; Year 10 & 12 full report 4 opens.'},
+  {id:'y10_ma4_091',lessonName:'Reflections and rotations (2/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S4B',dates:'10–14 May 2027',tier:'CORE/ACCESS',alert:'Year 10 summer exams end; Year 10 & 12 full report 4 opens.'},
+  {id:'y10_ma4_092',lessonName:'Enlargements with centre and scale factor (3/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',tier:'CORE/ACCESS',alert:'Exeter 9.'},
+  {id:'y10_ma4_093',lessonName:'Describing transformations fully (4/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',tier:'CORE/ACCESS',alert:'Exeter 9.'},
+  {id:'y10_ma4_094',lessonName:'Solving quadratics by factorising (5/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S5A',dates:'17–21 May 2027',tier:'CORE/ACCESS',alert:'Exeter 9.'},
+  {id:'y10_ma4_095',lessonName:'Quadratic formula (6/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S6B',dates:'24–28 May 2027',tier:'CORE/ACCESS',alert:'Year 10 & 12 full report 4 closes; HoD checking.'},
+  {id:'y10_ma4_096',lessonName:'Completing the square awareness and discriminant exposure (7/7)',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'core',term:'Summer',week:'S6B',dates:'24–28 May 2027',tier:'CORE/ACCESS',alert:'Year 10 & 12 full report 4 closes; HoD checking.'},
+  {id:'y10_ma4_097',lessonName:'Unit 5 assessment',unit:9,unitName:'Unit 5 — Transformations and Quadratics',type:'assessment',term:'Summer',week:'S6B',dates:'24–28 May 2027',tier:'CORE/ACCESS',obj:'End-of-unit assessment for Unit 5 — Transformations and Quadratics.',alert:'Year 10 & 12 full report 4 closes; HoD checking.'},
+  {id:'y10_ma4_098',lessonName:'Sine rule and cosine rule basics (1/5)',unit:10,unitName:'Unit 6 — Higher Geometry Access',type:'core',term:'Summer',week:'S7A',dates:'31 May–4 Jun 2027',tier:'ACCESS',alert:'Yr 7–9 summer exams; national holidays Thu 3 and Fri 4 Jun.'},
+  {id:'y10_ma4_099',lessonName:'Area of triangle ½ab sin C (2/5)',unit:10,unitName:'Unit 6 — Higher Geometry Access',type:'core',term:'Summer',week:'S7A',dates:'31 May–4 Jun 2027',tier:'ACCESS',alert:'Yr 7–9 summer exams; national holidays Thu 3 and Fri 4 Jun.'},
+  {id:'y10_ma4_100',lessonName:'Similarity and area/volume scale factors (3/5)',unit:10,unitName:'Unit 6 — Higher Geometry Access',type:'core',term:'Summer',week:'S8B',dates:'7–11 Jun 2027',tier:'ACCESS',alert:'Year 7–9 full report 4 opens; Year 10 & 12 reports publish; Exeter 10.'},
+  {id:'y10_ma4_101',lessonName:'Circle theorems: core angle facts (4/5)',unit:10,unitName:'Unit 6 — Higher Geometry Access',type:'core',term:'Summer',week:'S8B',dates:'7–11 Jun 2027',tier:'ACCESS',alert:'Year 7–9 full report 4 opens; Year 10 & 12 reports publish; Exeter 10.'},
+  {id:'y10_ma4_102',lessonName:'Vectors: add, subtract and scalar multiples (5/5)',unit:10,unitName:'Unit 6 — Higher Geometry Access',type:'core',term:'Summer',week:'S8B',dates:'7–11 Jun 2027',tier:'ACCESS',alert:'Year 7–9 full report 4 opens; Year 10 & 12 reports publish; Exeter 10.'},
+  {id:'y10_ma4_103',lessonName:'Unit 6 assessment',unit:10,unitName:'Unit 6 — Higher Geometry Access',type:'assessment',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',tier:'ACCESS',obj:'End-of-unit assessment for Unit 6 — Higher Geometry Access.',alert:'Year 7–9 full reports close; PD session.'},
+  {id:'y10_ma4_104',lessonName:'Algebraic fractions and function notation (1/3)',unit:11,unitName:'Unit 7 — Exposure and Completion',type:'core',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',tier:'EXPOSURE',alert:'Year 7–9 full reports close; PD session.'},
+  {id:'y10_ma4_105',lessonName:'Constructions, loci and coordinate geometry (2/3)',unit:11,unitName:'Unit 7 — Exposure and Completion',type:'core',term:'Summer',week:'S9A',dates:'14–18 Jun 2027',tier:'EXPOSURE',alert:'Year 7–9 full reports close; PD session.'},
+  {id:'y10_ma4_106',lessonName:'Histograms, box plots and advanced statistics exposure (3/3)',unit:11,unitName:'Unit 7 — Exposure and Completion',type:'core',term:'Summer',week:'S10B',dates:'21–25 Jun 2027',tier:'EXPOSURE',alert:'Final teaching week before off-timetable final week. No new unit starts.'},
+  {id:'y10_ma4_107',lessonName:'Unit 7 assessment / transition checkpoint',unit:11,unitName:'Unit 7 — Exposure and Completion',type:'assessment',term:'Summer',week:'S10B',dates:'21–25 Jun 2027',tier:'EXPOSURE',obj:'End-of-unit assessment for Unit 7 — Exposure and Completion.',alert:'Final teaching week before off-timetable final week. No new unit starts.'},
+];
+
+// ── Year 11 Ma4 Bottom-Set SoW (MKM) — 87 lessons ────────────────
+const Y11_MA4_SOW = [
+  {id:'y11_ma4_001',lessonName:'Induction, routines, exam expectations and diagnostic review (1/2)',unit:0,unitName:'Induction',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',tier:null,obj:'Set up Year 11 routines, exam expectations and run diagnostic.',alert:'INSET Mon; Family Orientation Tue; Welcome Day Wed. Use Thu–Fri for routines/diagnostic.'},
+  {id:'y11_ma4_002',lessonName:'Induction, routines, exam expectations and diagnostic review (2/2)',unit:0,unitName:'Induction',type:'flex',term:'Michaelmas',week:'M1A',dates:'24–28 Aug 2026',tier:null,obj:'Review baseline, identify Grade 4 priority gaps and set targets.',alert:'INSET Mon; Family Orientation Tue; Welcome Day Wed. Use Thu–Fri for routines/diagnostic.'},
+  {id:'y11_ma4_003',lessonName:'Ratio and proportion exam questions (1/5)',unit:1,unitName:'Unit 1 — Number Revisit and Grade 4 Fluency',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',tier:'CORE',alert:'Yr 7, 10 & 12 CAT4 testing.'},
+  {id:'y11_ma4_004',lessonName:'Percentage change, reverse percentage and compound interest (2/5)',unit:1,unitName:'Unit 1 — Number Revisit and Grade 4 Fluency',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',tier:'CORE',alert:'Yr 7, 10 & 12 CAT4 testing.'},
+  {id:'y11_ma4_005',lessonName:'Standard form and estimation (3/5)',unit:1,unitName:'Unit 1 — Number Revisit and Grade 4 Fluency',type:'core',term:'Michaelmas',week:'M2B',dates:'31 Aug–4 Sep 2026',tier:'CORE',alert:'Yr 7, 10 & 12 CAT4 testing.'},
+  {id:'y11_ma4_006',lessonName:'Index laws and fractional indices (4/5)',unit:1,unitName:'Unit 1 — Number Revisit and Grade 4 Fluency',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',tier:'CORE',alert:'Exeter 1.'},
+  {id:'y11_ma4_007',lessonName:'Bounds and error intervals (5/5)',unit:1,unitName:'Unit 1 — Number Revisit and Grade 4 Fluency',type:'core',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',tier:'CORE',alert:'Exeter 1.'},
+  {id:'y11_ma4_008',lessonName:'Unit 1 assessment',unit:1,unitName:'Unit 1 — Number Revisit and Grade 4 Fluency',type:'assessment',term:'Michaelmas',week:'M3A',dates:'7–11 Sep 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 1 — Number Revisit and Grade 4 Fluency.',alert:'Exeter 1.'},
+  {id:'y11_ma4_009',lessonName:'Linear equations with brackets and fractions (1/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',tier:'CORE',alert:'Year 7 Tutor & Teacher PTC.'},
+  {id:'y11_ma4_010',lessonName:'Changing the subject and formulae (2/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',tier:'CORE',alert:'Year 7 Tutor & Teacher PTC.'},
+  {id:'y11_ma4_011',lessonName:'Sequences including nth term (3/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M4B',dates:'14–18 Sep 2026',tier:'CORE',alert:'Year 7 Tutor & Teacher PTC.'},
+  {id:'y11_ma4_012',lessonName:'Quadratic sequences awareness (4/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',tier:'CORE',alert:'Year 10 progress check; Yr 7–13 Interim Report 0 opens.'},
+  {id:'y11_ma4_013',lessonName:'Forming equations from contexts (5/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',tier:'CORE',alert:'Year 10 progress check; Yr 7–13 Interim Report 0 opens.'},
+  {id:'y11_ma4_014',lessonName:'Simultaneous equations (6/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M5A',dates:'21–25 Sep 2026',tier:'CORE',alert:'Year 10 progress check; Yr 7–13 Interim Report 0 opens.'},
+  {id:'y11_ma4_015',lessonName:'Quadratic equations basics (7/7)',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',tier:'CORE',alert:'Departmental SEF & DIP completion due; Exeter 2.'},
+  {id:'y11_ma4_016',lessonName:'Unit 2 assessment',unit:2,unitName:'Unit 2 — Algebra Revisit',type:'assessment',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 2 — Algebra Revisit.',alert:'Departmental SEF & DIP completion due; Exeter 2.'},
+  {id:'y11_ma4_017',lessonName:'Multi-step angle problems (1/5)',unit:3,unitName:'Unit 3 — Geometry Revisit',type:'core',term:'Michaelmas',week:'M6B',dates:'28 Sep–2 Oct 2026',tier:'CORE',alert:'Departmental SEF & DIP completion due; Exeter 2.'},
+  {id:'y11_ma4_018',lessonName:'Area and perimeter of composite shapes (2/5)',unit:3,unitName:'Unit 3 — Geometry Revisit',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',tier:'CORE',alert:'Year 10 PTC; IR0 closes; HoD data check.'},
+  {id:'y11_ma4_019',lessonName:'Circle area, arcs and sectors (3/5)',unit:3,unitName:'Unit 3 — Geometry Revisit',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',tier:'CORE',alert:'Year 10 PTC; IR0 closes; HoD data check.'},
+  {id:'y11_ma4_020',lessonName:'Volume and surface area of prisms, cylinders, cones and spheres (4/5)',unit:3,unitName:'Unit 3 — Geometry Revisit',type:'core',term:'Michaelmas',week:'M7A',dates:'5–9 Oct 2026',tier:'CORE',alert:'Year 10 PTC; IR0 closes; HoD data check.'},
+  {id:'y11_ma4_021',lessonName:'Compound measures and 3D Pythagoras exposure (5/5)',unit:3,unitName:'Unit 3 — Geometry Revisit',type:'core',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',tier:'CORE',alert:'Final week before Michaelmas half-term. No new unit starts.'},
+  {id:'y11_ma4_022',lessonName:'Unit 3 assessment',unit:3,unitName:'Unit 3 — Geometry Revisit',type:'assessment',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 3 — Geometry Revisit.',alert:'Final week before Michaelmas half-term. No new unit starts.'},
+  {id:'y11_ma4_023',lessonName:'Consolidation / retrieval before break',unit:0,unitName:'Retrieval',type:'flex',term:'Michaelmas',week:'M8B',dates:'12–16 Oct 2026',tier:null,alert:'Final week before Michaelmas half-term. No new unit starts.'},
+  {id:'y11_ma4_024',lessonName:'Mock 1 readiness and Q1–10 retrieval',unit:0,unitName:'Pre-Mock 1 Preparation',type:'flex',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',tier:'CORE',alert:'Shorter Year 11 mock week; Exeter 3.'},
+  {id:'y11_ma4_025',lessonName:'Year 11 Mock 1 paper / assessment slot (1/2)',unit:0,unitName:'Mock 1',type:'assessment',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',tier:'CORE',obj:'Full mock under exam conditions.',alert:'Shorter Year 11 mock week; Exeter 3.'},
+  {id:'y11_ma4_026',lessonName:'Year 11 Mock 1 paper / assessment slot (2/2)',unit:0,unitName:'Mock 1',type:'assessment',term:'Michaelmas',week:'M9A',dates:'26–30 Oct 2026',tier:'CORE',obj:'Full mock under exam conditions.',alert:'Shorter Year 11 mock week; Exeter 3.'},
+  {id:'y11_ma4_027',lessonName:'Mock 1 immediate reflection and error log',unit:0,unitName:'Mock 1 Review',type:'flex',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 Interim Report 1 opens at 9am.'},
+  {id:'y11_ma4_028',lessonName:'Estimated mean and grouped data (1/6)',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 Interim Report 1 opens at 9am.'},
+  {id:'y11_ma4_029',lessonName:'Cumulative frequency, median and IQR (2/6)',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'core',term:'Michaelmas',week:'M10B',dates:'2–6 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 Interim Report 1 opens at 9am.'},
+  {id:'y11_ma4_030',lessonName:'Box plots and distribution comparison (3/6)',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',tier:'CORE',alert:'Year 11 mock results report work; Yr12 IR1 closes.'},
+  {id:'y11_ma4_031',lessonName:'Histograms and frequency density (4/6)',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',tier:'CORE',alert:'Year 11 mock results report work; Yr12 IR1 closes.'},
+  {id:'y11_ma4_032',lessonName:'Tree diagrams with and without replacement (5/6)',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'core',term:'Michaelmas',week:'M11A',dates:'9–13 Nov 2026',tier:'CORE',alert:'Year 11 mock results report work; Yr12 IR1 closes.'},
+  {id:'y11_ma4_033',lessonName:'Venn diagrams and set notation (6/6)',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 closes; student reflection; HoD checking.'},
+  {id:'y11_ma4_034',lessonName:'Unit 4 assessment',unit:4,unitName:'Unit 4 — Statistics and Probability Revisit',type:'assessment',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 4 — Statistics and Probability Revisit.',alert:'Yr 7–11 & 13 IR1 closes; student reflection; HoD checking.'},
+  {id:'y11_ma4_035',lessonName:'Translation, reflection, rotation and enlargement (1/5)',unit:5,unitName:'Unit 5 — Transformations and Graphs Revisit',type:'core',term:'Michaelmas',week:'M12B',dates:'16–20 Nov 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 closes; student reflection; HoD checking.'},
+  {id:'y11_ma4_036',lessonName:'Describing transformations precisely (2/5)',unit:5,unitName:'Unit 5 — Transformations and Graphs Revisit',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',tier:'CORE',alert:'Year 12 PTC.'},
+  {id:'y11_ma4_037',lessonName:'Straight-line graphs and equations (3/5)',unit:5,unitName:'Unit 5 — Transformations and Graphs Revisit',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',tier:'CORE',alert:'Year 12 PTC.'},
+  {id:'y11_ma4_038',lessonName:'Quadratic graphs and roots (4/5)',unit:5,unitName:'Unit 5 — Transformations and Graphs Revisit',type:'core',term:'Michaelmas',week:'M13A',dates:'23–27 Nov 2026',tier:'CORE',alert:'Year 12 PTC.'},
+  {id:'y11_ma4_039',lessonName:'Graph transformations and simultaneous equations graphically (5/5)',unit:5,unitName:'Unit 5 — Transformations and Graphs Revisit',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',tier:'CORE',alert:'Yr 7–11 & 13 IR1 published to parents.'},
+  {id:'y11_ma4_040',lessonName:'Unit 5 assessment',unit:5,unitName:'Unit 5 — Transformations and Graphs Revisit',type:'assessment',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',tier:'CORE',obj:'End-of-unit assessment for Unit 5 — Transformations and Graphs Revisit.',alert:'Yr 7–11 & 13 IR1 published to parents.'},
+  {id:'y11_ma4_041',lessonName:'Pythagoras and SOH CAH TOA fluency (1/6)',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'core',term:'Michaelmas',week:'M14B',dates:'30 Nov–4 Dec 2026',tier:'ACCESS',alert:'Yr 7–11 & 13 IR1 published to parents.'},
+  {id:'y11_ma4_042',lessonName:'Angles of elevation and depression (2/6)',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',tier:'ACCESS',alert:'National holidays Mon 7 Dec and Thu 10 Dec; Year 11 PTC.'},
+  {id:'y11_ma4_043',lessonName:'Sine rule and cosine rule (3/6)',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'core',term:'Michaelmas',week:'M15A',dates:'7–11 Dec 2026',tier:'ACCESS',alert:'National holidays Mon 7 Dec and Thu 10 Dec; Year 11 PTC.'},
+  {id:'y11_ma4_044',lessonName:'Area of triangle using ½ab sin C (4/6)',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'core',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',tier:'ACCESS',alert:'Final week of Michaelmas. No new unit starts.'},
+  {id:'y11_ma4_045',lessonName:'Circle theorems entry-level proofs (5/6)',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'core',term:'Michaelmas',week:'M16B',dates:'14–18 Dec 2026',tier:'ACCESS',alert:'Final week of Michaelmas. No new unit starts.'},
+  {id:'y11_ma4_046',lessonName:'Vectors and similarity entry marks (6/6)',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'core',term:'Lent',week:'L1A',dates:'7–8 Jan 2027',tier:'ACCESS',alert:'INSET Wed 6 Jan; Term starts Thu 7 Jan.'},
+  {id:'y11_ma4_047',lessonName:'Unit 6 assessment',unit:6,unitName:'Unit 6 — Trigonometry and Access Geometry',type:'assessment',term:'Lent',week:'L1A',dates:'7–8 Jan 2027',tier:'ACCESS',obj:'End-of-unit assessment for Unit 6 — Trigonometry and Access Geometry.',alert:'INSET Wed 6 Jan; Term starts Thu 7 Jan.'},
+  {id:'y11_ma4_048',lessonName:'Differentiating integer powers of x (1/5)',unit:7,unitName:'Unit 7 — Higher Exposure: Calculus, Surds and Proof',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',tier:'EXPOSURE',alert:'Year 12 & 13 mock week.'},
+  {id:'y11_ma4_049',lessonName:'Gradients and stationary points (2/5)',unit:7,unitName:'Unit 7 — Higher Exposure: Calculus, Surds and Proof',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',tier:'EXPOSURE',alert:'Year 12 & 13 mock week.'},
+  {id:'y11_ma4_050',lessonName:'Kinematics exposure (3/5)',unit:7,unitName:'Unit 7 — Higher Exposure: Calculus, Surds and Proof',type:'core',term:'Lent',week:'L2B',dates:'11–15 Jan 2027',tier:'EXPOSURE',alert:'Year 12 & 13 mock week.'},
+  {id:'y11_ma4_051',lessonName:'Simplifying surds and rationalising simple denominators (4/5)',unit:7,unitName:'Unit 7 — Higher Exposure: Calculus, Surds and Proof',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',tier:'EXPOSURE',alert:'Yr 7–11 Interim Report 2 opens; Year 9 PTC.'},
+  {id:'y11_ma4_052',lessonName:'Algebraic proof and recurring decimals (5/5)',unit:7,unitName:'Unit 7 — Higher Exposure: Calculus, Surds and Proof',type:'core',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',tier:'EXPOSURE',alert:'Yr 7–11 Interim Report 2 opens; Year 9 PTC.'},
+  {id:'y11_ma4_053',lessonName:'Unit 7 assessment',unit:7,unitName:'Unit 7 — Higher Exposure: Calculus, Surds and Proof',type:'assessment',term:'Lent',week:'L3A',dates:'18–22 Jan 2027',tier:'EXPOSURE',obj:'End-of-unit assessment for Unit 7 — Higher Exposure.',alert:'Yr 7–11 Interim Report 2 opens; Year 9 PTC.'},
+  {id:'y11_ma4_054',lessonName:'Mock 1 targeted gap-fill lesson (1/4)',unit:0,unitName:'Mock 1 Targeted Gap Fill',type:'flex',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',tier:'CORE',alert:'Yr 7–11 IR2 closes; Exeter 5.'},
+  {id:'y11_ma4_055',lessonName:'Mock 1 targeted gap-fill lesson (2/4)',unit:0,unitName:'Mock 1 Targeted Gap Fill',type:'flex',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',tier:'CORE',alert:'Yr 7–11 IR2 closes; Exeter 5.'},
+  {id:'y11_ma4_056',lessonName:'Mock 1 targeted gap-fill lesson (3/4)',unit:0,unitName:'Mock 1 Targeted Gap Fill',type:'flex',term:'Lent',week:'L4B',dates:'25–29 Jan 2027',tier:'CORE',alert:'Yr 7–11 IR2 closes; Exeter 5.'},
+  {id:'y11_ma4_057',lessonName:'Mock 1 targeted gap-fill lesson (4/4)',unit:0,unitName:'Mock 1 Targeted Gap Fill',type:'flex',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',tier:'CORE',alert:'HoD checking Yr 7–11 IR2; Power BI analysis.'},
+  {id:'y11_ma4_058',lessonName:'Q1–10 speed and accuracy drill (1/6)',unit:0,unitName:'Q1–10 Mastery',type:'flex',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',tier:'CORE',alert:'HoD checking Yr 7–11 IR2; Power BI analysis.'},
+  {id:'y11_ma4_059',lessonName:'Q1–10 speed and accuracy drill (2/6)',unit:0,unitName:'Q1–10 Mastery',type:'flex',term:'Lent',week:'L5A',dates:'1–5 Feb 2027',tier:'CORE',alert:'HoD checking Yr 7–11 IR2; Power BI analysis.'},
+  {id:'y11_ma4_060',lessonName:'Q1–10 speed and accuracy drill (3/6)',unit:0,unitName:'Q1–10 Mastery',type:'flex',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',tier:'CORE',alert:'Final week before Lent half-term. No new unit starts. Yr 7–11 IR2 publish.'},
+  {id:'y11_ma4_061',lessonName:'Q1–10 speed and accuracy drill (4/6)',unit:0,unitName:'Q1–10 Mastery',type:'flex',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',tier:'CORE',alert:'Final week before Lent half-term. No new unit starts. Yr 7–11 IR2 publish.'},
+  {id:'y11_ma4_062',lessonName:'Q1–10 speed and accuracy drill (5/6)',unit:0,unitName:'Q1–10 Mastery',type:'flex',term:'Lent',week:'L6B',dates:'8–12 Feb 2027',tier:'CORE',alert:'Final week before Lent half-term. No new unit starts. Yr 7–11 IR2 publish.'},
+  {id:'y11_ma4_063',lessonName:'Q1–10 speed and accuracy drill (6/6)',unit:0,unitName:'Q1–10 Mastery',type:'flex',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',tier:'CORE',alert:'Year 11 mock week; Adventure Week Yr 7–9.'},
+  {id:'y11_ma4_064',lessonName:'Year 11 Mock 2 paper / assessment slot (1/4)',unit:0,unitName:'Mock 2',type:'assessment',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',tier:'CORE',obj:'Full mock under exam conditions.',alert:'Year 11 mock week; Adventure Week Yr 7–9.'},
+  {id:'y11_ma4_065',lessonName:'Year 11 Mock 2 paper / assessment slot (2/4)',unit:0,unitName:'Mock 2',type:'assessment',term:'Lent',week:'L7A',dates:'22–26 Feb 2027',tier:'CORE',obj:'Full mock under exam conditions.',alert:'Year 11 mock week; Adventure Week Yr 7–9.'},
+  {id:'y11_ma4_066',lessonName:'Year 11 Mock 2 paper / assessment slot (3/4)',unit:0,unitName:'Mock 2',type:'assessment',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',tier:'CORE',obj:'Full mock under exam conditions.',alert:'Year 11 mock week continues Mon–Tue; Yr 7–10 & 12 IR3 opens; Year 7 PTC2.'},
+  {id:'y11_ma4_067',lessonName:'Year 11 Mock 2 paper / assessment slot (4/4)',unit:0,unitName:'Mock 2',type:'assessment',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',tier:'CORE',obj:'Full mock under exam conditions.',alert:'Year 11 mock week continues Mon–Tue; Yr 7–10 & 12 IR3 opens; Year 7 PTC2.'},
+  {id:'y11_ma4_068',lessonName:'Mock 2 review and personal action plan (1/2)',unit:0,unitName:'Mock 2 Review',type:'flex',term:'Lent',week:'L8B',dates:'1–5 Mar 2027',tier:'CORE',alert:'Year 11 mock week continues Mon–Tue; Yr 7–10 & 12 IR3 opens; Year 7 PTC2.'},
+  {id:'y11_ma4_069',lessonName:'Mock 2 review and personal action plan (2/2)',unit:0,unitName:'Mock 2 Review',type:'flex',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',tier:'CORE',alert:'Yr 7–10 & 12 IR3 closes; HoD checking; PD session.'},
+  {id:'y11_ma4_070',lessonName:'Number and ratio (1/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',tier:'CORE/ACCESS',alert:'Yr 7–10 & 12 IR3 closes; HoD checking; PD session.'},
+  {id:'y11_ma4_071',lessonName:'Percentages and bounds (2/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L9A',dates:'8–12 Mar 2027',tier:'CORE/ACCESS',alert:'Yr 7–10 & 12 IR3 closes; HoD checking; PD session.'},
+  {id:'y11_ma4_072',lessonName:'Equations and formulae (3/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',tier:'CORE/ACCESS',alert:'Power BI analysis; Exeter 7.'},
+  {id:'y11_ma4_073',lessonName:'Sequences and graphs (4/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',tier:'CORE/ACCESS',alert:'Power BI analysis; Exeter 7.'},
+  {id:'y11_ma4_074',lessonName:'Angles and bearings (5/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L10B',dates:'15–19 Mar 2027',tier:'CORE/ACCESS',alert:'Power BI analysis; Exeter 7.'},
+  {id:'y11_ma4_075',lessonName:'Area, perimeter and volume (6/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',tier:'CORE/ACCESS',alert:'Year 8 PTC; Year 8 report publish.'},
+  {id:'y11_ma4_076',lessonName:'Statistics and probability (7/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',tier:'CORE/ACCESS',alert:'Year 8 PTC; Year 8 report publish.'},
+  {id:'y11_ma4_077',lessonName:'Transformations (8/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L11A',dates:'22–26 Mar 2027',tier:'CORE/ACCESS',alert:'Year 8 PTC; Year 8 report publish.'},
+  {id:'y11_ma4_078',lessonName:'Pythagoras and basic trigonometry (9/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',tier:'CORE/ACCESS',alert:'Final week before Easter/end Lent. No new unit starts. Yr 7, 9, 10 & 12 IR3 publish.'},
+  {id:'y11_ma4_079',lessonName:'Quadratics accessible marks (10/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',tier:'CORE/ACCESS',alert:'Final week before Easter/end Lent. No new unit starts. Yr 7, 9, 10 & 12 IR3 publish.'},
+  {id:'y11_ma4_080',lessonName:'Circle theorem entry marks (11/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Lent',week:'L12B',dates:'29 Mar–2 Apr 2027',tier:'CORE/ACCESS',alert:'Final week before Easter/end Lent. No new unit starts. Yr 7, 9, 10 & 12 IR3 publish.'},
+  {id:'y11_ma4_081',lessonName:'Vectors entry marks (12/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',tier:'CORE/ACCESS',alert:'Term starts Mon 19 Apr.'},
+  {id:'y11_ma4_082',lessonName:'Paper 1 Q1–12 practice (13/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',tier:'CORE/ACCESS',alert:'Term starts Mon 19 Apr.'},
+  {id:'y11_ma4_083',lessonName:'Paper 2 Q1–12 practice (14/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S1A',dates:'19–23 Apr 2027',tier:'CORE/ACCESS',alert:'Term starts Mon 19 Apr.'},
+  {id:'y11_ma4_084',lessonName:'Mixed Q13–18 access practice (15/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',tier:'CORE/ACCESS',alert:'Exeter 8.'},
+  {id:'y11_ma4_085',lessonName:'Calculator strategy and checking (16/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',tier:'CORE/ACCESS',alert:'Exeter 8.'},
+  {id:'y11_ma4_086',lessonName:'Final walking-talking paper (17/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S2B',dates:'26–30 Apr 2027',tier:'CORE/ACCESS',alert:'Exeter 8.'},
+  {id:'y11_ma4_087',lessonName:'Final pre-exam confidence check (18/18)',unit:0,unitName:'Final Revision Sprint',type:'flex',term:'Summer',week:'S3A',dates:'3–7 May 2027',tier:'CORE/ACCESS',alert:'Year 10 summer exams start; national holiday Tue 4 May.'},
+];
+
 const ASSESSMENTS = {
   7: [
     {name:'Unit 1 Assessment',   sub:'Analysing & Displaying Data',   week:'M4B',  dates:'14–18 Sep 2026',    term:'Michaelmas', unit:1},
@@ -1308,6 +1515,35 @@ const ASSESSMENTS = {
     {name:'Year 11 Mock 2',      sub:'Off-timetable — all units taught so far',           week:'L7A',  dates:'22–26 Feb 2027',    term:'Lent',       unit:0, eoy:false},
     {name:'Unit 7 Assessment',   sub:'Probability and Venn Diagrams',                     week:'L11A', dates:'22–26 Mar 2027',    term:'Lent',       unit:8},
     {name:'IGCSE External Examinations', sub:'Pearson Edexcel 4MA1 Higher — study leave', week:'S5A',  dates:'17 May–4 Jun 2027', term:'Summer',     unit:0, eoy:true},
+  ],
+};
+
+// Assessment data for Ma4 bottom-set (IGCSE) — Y10 (FTA) and Y11 (MKM)
+const ASSESSMENTS_MA4 = {
+  10: [
+    {name:'Unit 1A Assessment',          sub:'FDP, Percentages and Proportion',           week:'M6B',  dates:'28 Sep–2 Oct 2026',  term:'Michaelmas', unit:1,  tier:'CORE'},
+    {name:'Unit 1B Assessment',          sub:'Standard Form, Accuracy and Indices',       week:'M9A',  dates:'26–30 Oct 2026',     term:'Michaelmas', unit:2,  tier:'CORE'},
+    {name:'Unit 2A Assessment',          sub:'Algebra Foundations',                       week:'M13A', dates:'23–27 Nov 2026',     term:'Michaelmas', unit:3,  tier:'CORE'},
+    {name:'Unit 2B Assessment',          sub:'Sequences and Simultaneous Equations',      week:'M16B', dates:'14–18 Dec 2026',     term:'Michaelmas', unit:4,  tier:'CORE'},
+    {name:'Unit 3A Assessment',          sub:'Graphs',                                    week:'L4B',  dates:'25–29 Jan 2027',     term:'Lent',       unit:5,  tier:'CORE'},
+    {name:'Unit 3B Assessment',          sub:'Geometry Foundations',                      week:'L9A',  dates:'8–12 Mar 2027',      term:'Lent',       unit:6,  tier:'CORE'},
+    {name:'Unit 4 Assessment',           sub:'Statistics and Probability',                week:'L12B', dates:'29 Mar–2 Apr 2027',  term:'Lent',       unit:7,  tier:'CORE'},
+    {name:'Year 10 Summer Examinations', sub:'IGCSE style — units 1A–4',                 week:'S3A',  dates:'3–14 May 2027',      term:'Summer',     unit:8,  eoy:true, tier:'CORE'},
+    {name:'Unit 5 Assessment',           sub:'Transformations and Quadratics',            week:'S6B',  dates:'24–28 May 2027',     term:'Summer',     unit:9,  tier:'CORE/ACCESS'},
+    {name:'Unit 6 Assessment',           sub:'Higher Geometry Access',                    week:'S9A',  dates:'14–18 Jun 2027',     term:'Summer',     unit:10, tier:'ACCESS'},
+    {name:'Unit 7 Assessment',           sub:'Exposure and Completion checkpoint',        week:'S10B', dates:'21–25 Jun 2027',     term:'Summer',     unit:11, tier:'EXPOSURE'},
+  ],
+  11: [
+    {name:'Unit 1 Assessment',           sub:'Number Revisit and Grade 4 Fluency',        week:'M3A',  dates:'7–11 Sep 2026',      term:'Michaelmas', unit:1,  tier:'CORE'},
+    {name:'Unit 2 Assessment',           sub:'Algebra Revisit',                           week:'M6B',  dates:'28 Sep–2 Oct 2026',  term:'Michaelmas', unit:2,  tier:'CORE'},
+    {name:'Unit 3 Assessment',           sub:'Geometry Revisit',                          week:'M8B',  dates:'12–16 Oct 2026',     term:'Michaelmas', unit:3,  tier:'CORE'},
+    {name:'Mock 1',                      sub:'Off-timetable — all units taught so far',   week:'M9A',  dates:'26–30 Oct 2026',     term:'Michaelmas', unit:0, eoy:false, tier:'CORE'},
+    {name:'Unit 4 Assessment',           sub:'Statistics and Probability Revisit',        week:'M12B', dates:'16–20 Nov 2026',     term:'Michaelmas', unit:4,  tier:'CORE'},
+    {name:'Unit 5 Assessment',           sub:'Transformations and Graphs Revisit',        week:'M14B', dates:'30 Nov–4 Dec 2026',  term:'Michaelmas', unit:5,  tier:'CORE'},
+    {name:'Unit 6 Assessment',           sub:'Trigonometry and Access Geometry',          week:'L1A',  dates:'7–8 Jan 2027',       term:'Lent',       unit:6,  tier:'ACCESS'},
+    {name:'Unit 7 Assessment',           sub:'Higher Exposure: Calculus, Surds and Proof', week:'L3A', dates:'18–22 Jan 2027',     term:'Lent',       unit:7,  tier:'EXPOSURE'},
+    {name:'Mock 2',                      sub:'Off-timetable — all units taught so far',   week:'L7A',  dates:'22 Feb–5 Mar 2027',  term:'Lent',       unit:0, eoy:false, tier:'CORE'},
+    {name:'IGCSE External Examinations', sub:'Pearson Edexcel 4MA1 Higher — study leave', week:'S4B', dates:'May 2027 onwards',    term:'Summer',     unit:0, eoy:true,  tier:'CORE'},
   ],
 };
 
@@ -1514,8 +1750,8 @@ function renderHOD(){
   // ── Teacher cards ───────────────────────────────────────────────
   let cardsHtml='<div class="dash-grid">';
   hodSets.forEach(set=>{
-    // Y10 Ma1 & Ma4 / Y11 Ma1 & Ma4 — different SoW not yet available
-    if((hodYear===10||hodYear===11) && (set==='Ma1'||set==='Ma4')){
+    // Y10 Ma1 / Y11 Ma1 — coming soon (Ma4 now has its own SOW below)
+    if((hodYear===10||hodYear===11) && set==='Ma1'){
       const tcName=hodTeachers[set]||set;
       cardsHtml+=`<div class="teacher-card" style="opacity:0.55;">
         <div class="tc-header">
@@ -1532,13 +1768,17 @@ function renderHOD(){
       </div>`;
       return;
     }
-    const p=getProgress(set,hodSow); td+=p.done; tp+=p.prog;
+    // Ma4 bottom-set uses its own SOW; all other sets use hodSow
+    const cardSow = ((hodYear===10||hodYear===11) && set==='Ma4')
+      ? (hodYear===10 ? Y10_MA4_SOW : Y11_MA4_SOW)
+      : hodSow;
+    const p=getProgress(set,cardSow); td+=p.done; tp+=p.prog;
     if(p.pct<40) behind++;
     const overallBc=barClass(p.pct);
 
     let termRows='';
     terms.forEach(term=>{
-      const tp2=getTermProgress(set,term,hodSow);
+      const tp2=getTermProgress(set,term,cardSow);
       const tc2=termPctClass(tp2.pct);
       const bc2=barClass(tp2.pct);
       termRows+=`
@@ -1616,15 +1856,19 @@ function renderTeacher(){
   const tf=document.getElementById('sel-term').value;
   const q=(document.getElementById('tv-search').value||'').toLowerCase().trim();
 
-  // Y9 Ma1 / Y10 Ma1 & Ma4 / Y11 Ma1 & Ma4 use different SoWs — handle here
-  if((yg===10||yg===11) && (set==='Ma1'||set==='Ma4')){
+  // Y10 Ma1 / Y11 Ma1 — coming soon
+  if((yg===10||yg===11) && set==='Ma1'){
     const tname=(TEACHERS_BY_YG[yg]||{})[set]||set;
     document.getElementById('teacher-content').innerHTML=
       `<div class="coming-soon"><h3>Year ${yg} ${set} — ${tname}</h3>
        <p>Year ${yg} ${set} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
     return;
   }
-  const sow = (yg===9 && set==='Ma1') ? Y9_MA1_SOW : SOW_BY_YG[yg];
+  // Route to the correct SOW
+  const sow = ((yg===10||yg===11) && set==='Ma4')
+    ? (yg===10 ? Y10_MA4_SOW : Y11_MA4_SOW)
+    : (yg===9 && set==='Ma1') ? Y9_MA1_SOW
+    : SOW_BY_YG[yg];
   if(!sow){
     document.getElementById('teacher-content').innerHTML=
       `<div class="coming-soon"><h3>Year ${yg} SoW coming soon</h3><p>Upload the Year ${yg} SoW to activate this view.</p></div>`;
@@ -1739,7 +1983,7 @@ function renderTeacher(){
             </div>
             ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>
-          <span class="type-badge ${bc}">${bt}</span>
+          <span class="type-badge ${bc}">${bt}</span>${lesson.tier?`<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`:''}
           ${lesson.unit?folderBtn(lesson,yg):'<span></span>'}
           ${isF
             ?`<div class="na-badge">N/A</div>`
@@ -1840,21 +2084,42 @@ function renderAssessments(){
     </div>`;
   }
 
-  // Y10 Ma1 / Ma4 — coming soon
-  if(ygInt === 10 && (assessY10Filter === 'ma1' || assessY10Filter === 'ma4')){
-    const setLabel = assessY10Filter === 'ma1' ? 'Ma1 — SSW' : 'Ma4 — FTA';
+  // Y10 Ma1 / Y11 Ma1 — coming soon
+  if((ygInt === 10 && assessY10Filter === 'ma1') || (ygInt === 11 && assessY11Filter === 'ma1')){
+    const setLabel = 'Ma1 — SSW';
     contentEl.innerHTML = toggleHtml +
       `<div class="coming-soon" style="margin-top:8px;"><h3>${setLabel} — Assessment Schedule</h3>
        <p>This scheme of work is not yet available. The assessment schedule will appear here once the SoW has been added.</p></div>`;
     return;
   }
 
-  // Y11 Ma1 / Ma4 — coming soon
-  if(ygInt === 11 && (assessY11Filter === 'ma1' || assessY11Filter === 'ma4')){
-    const setLabel = assessY11Filter === 'ma1' ? 'Ma1 — SSW' : 'Ma4 — MKM';
-    contentEl.innerHTML = toggleHtml +
-      `<div class="coming-soon" style="margin-top:8px;"><h3>${setLabel} — Assessment Schedule</h3>
-       <p>This scheme of work is not yet available. The assessment schedule will appear here once the SoW has been added.</p></div>`;
+  // Y10 Ma4 (FTA) / Y11 Ma4 (MKM) — use ASSESSMENTS_MA4
+  if((ygInt === 10 && assessY10Filter === 'ma4') || (ygInt === 11 && assessY11Filter === 'ma4')){
+    const ma4data = ASSESSMENTS_MA4[ygInt] || [];
+    const teacherLabel = ygInt === 10 ? 'Ma4 — FTA' : 'Ma4 — MKM';
+    const terms=['Michaelmas','Lent','Summer'];
+    let html = toggleHtml;
+    terms.forEach(term=>{
+      const ta=ma4data.filter(a=>a.term===term);
+      if(!ta.length)return;
+      html+=`<div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
+          margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
+        <div class="assess-grid">`;
+      ta.forEach(a=>{
+        const cls=a.eoy?'eoy':a.interim?'interim':'';
+        const tierCls=a.tier==='EXPOSURE'?'t-exposure':a.tier&&a.tier.includes('ACCESS')?'t-access':a.tier?'t-core':'';
+        html+=`<div><div class="assess-card ${cls}">
+          <div class="assess-week">${a.week}</div>
+          <div class="assess-name">${esc(a.name)}${a.tier?`<span class="tier-badge ${tierCls}" style="margin-left:6px;">${esc(a.tier)}</span>`:''}</div>
+          <div class="assess-sub">${esc(a.sub)}</div>
+          <div class="assess-date">📅 ${a.dates}</div>
+          ${a.eoy?`<div class="assess-flag" style="color:var(--navy);">${ygInt===11?'IGCSE External Examinations':'Year ${ygInt} Exams'}</div>`:''}
+        </div></div>`;
+      });
+      html+='</div></div>';
+    });
+    contentEl.innerHTML = html;
     return;
   }
 

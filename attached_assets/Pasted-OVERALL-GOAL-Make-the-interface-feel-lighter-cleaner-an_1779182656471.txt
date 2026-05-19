@@ -1,0 +1,211 @@
+OVERALL GOAL
+
+Make the interface feel lighter, cleaner, and more modern
+Improve contrast and readability
+Reduce the dull gray-green appearance
+Add stronger visual hierarchy
+Use color intentionally instead of covering large areas
+
+UPDATED COLOR PALETTE
+
+Primary Navy
+#17314F
+Use for:
+
+Navbar
+Main headings
+Active tabs
+Important numbers
+Icons
+
+Secondary Slate
+#7B8A9B
+Use for:
+
+Secondary headings
+Labels
+Subtle UI elements
+
+Accent Orange
+#C46A3C
+Use for:
+
+Buttons
+Active dropdowns
+Links
+Hover states
+Progress highlights
+
+Soft Sage
+#A9C4B0
+Use for:
+
+Success states
+Progress bars
+Badges
+Small highlights only
+
+Main Background
+#F7F4F1
+Use for:
+
+Entire page background
+
+Card Background
+#FFFFFF
+Use for:
+
+Lesson cards
+Panels
+Content containers
+
+Alternate Section Background
+#F1ECE7
+Use for:
+
+Alternating rows
+Secondary sections
+
+Borders
+#E5DED8
+Use for:
+
+Card borders
+Dividers
+Input borders
+
+Primary Text
+#2E2E2E
+
+Muted Text
+#7A7A7A
+
+MAJOR UI CHANGES
+
+LIGHTER PAGE BACKGROUND
+Current page feels muddy.
+
+Change:
+
+Replace gray-beige background with #F7F4F1
+WHITE CONTENT CARDS
+Current cards blend into background.
+
+Change:
+
+Make all lesson cards white
+Add subtle border: #E5DED8
+Add slight shadow
+Border radius: 12px
+
+Example:
+box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+DARK NAVBAR
+Current navbar lacks contrast.
+
+Change:
+
+Use #17314F navbar
+White text
+Accent orange active states
+REDUCE GREEN USAGE
+Current green dominates too much space.
+
+Change:
+
+Use green only for:
+progress
+success
+small badges
+highlights
+ADD STRONGER ACCENT COLOR
+Current interface lacks energy.
+
+Use:
+#C46A3C
+
+For:
+
+buttons
+active filters
+links
+hover states
+dropdown highlights
+IMPROVE VISUAL HIERARCHY
+
+Headings:
+#17314F
+
+Body text:
+#2E2E2E
+
+Metadata:
+#7A7A7A
+
+Interactive elements:
+#C46A3C
+
+IMPROVE SECTION SEPARATION
+
+Use alternating backgrounds:
+
+#FFFFFF
+#F1ECE7
+
+This improves scanning and readability.
+
+MODERNIZE INPUTS AND BUTTONS
+
+Inputs:
+
+White background
+Border: #E5DED8
+Radius: 10px
+
+Buttons:
+
+Primary: #C46A3C
+Hover: darker orange
+Text: white
+ACTIVE STATES
+
+Active tab:
+
+Navy background
+White text
+Small orange underline or border
+TYPOGRAPHY
+
+Recommended:
+Headings:
+
+Playfair Display
+or
+Libre Baskerville
+
+Body:
+
+Inter
+or
+Manrope
+
+OVERALL STYLE TARGET
+
+Aim for:
+
+Modern SaaS dashboard
+Premium academic platform
+Clean LMS aesthetic
+Minimal Scandinavian feel
+More whitespace
+Better contrast
+Softer backgrounds
+Stronger focus areas
+
+Reference style:
+
+Notion
+Linear
+modern Canvas LMS
+premium admin dashboards

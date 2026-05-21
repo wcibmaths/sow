@@ -1,0 +1,202 @@
+Please update the IAL Teacher View, Assessment Schedule and Dashboard.
+
+Use the same visual and structural format as Year 7 to Year 9. The IAL view currently looks different and has too many broad subheadings. It should show individual lesson rows clearly, like the KS3 Teacher View.
+
+Required changes
+
+Match Year 7 to Year 9 formatting
+
+The IAL Teacher View should use the same layout style as Year 7 to Year 9:
+
+Item	Required format
+Week row	Beige calendar row with week code, date range and cycle
+Unit heading	One clear unit heading only
+Lesson rows	One row per sublesson
+Assessment rows	Separate visible row, styled like KS3 assessment rows
+Status dropdown	Same placement and styling as KS3
+Plan/Test buttons	Same placement and styling as KS3
+Too many subheadings	Remove or reduce
+
+Do not group several sublessons inside one long text block.
+
+Each IAL sublesson should appear as its own row, like:
+
+1/8 P1.1 Algebraic Expressions, Laws of indices
+2/8 P1.1 Algebraic Expressions, Expanding brackets
+3/8 P1.1 Algebraic Expressions, Factorising
+etc.
+
+Avoid this current format:
+
+“P1.1 Algebraic Expressions, P1.1.1 Index Laws, P1.1.2 Expanding Brackets, P1.1.3 Factorising…”
+
+That is too hard for teachers to track.
+
+Fix Class Set options for Year 12
+
+Year 12 should have separate class set options for P1/P2 and S1.
+
+Current issue:
+S1 appears as one combined option: “S1, SSW & ADE”.
+
+Required class set dropdown for Year 12:
+
+Dropdown label	Course	Teacher
+Ma1, SSW, P1/P2	P1/P2	SSW
+Ma2, FTA, P1/P2	P1/P2	FTA
+Ma1, SSW, S1	S1	SSW
+Ma2, ADE, S1	S1	ADE
+
+Do not show S1 as one combined class set in Teacher View.
+
+The dashboard card title should also reflect the selected class properly.
+
+Examples:
+SSW, Year 12 Ma1 P1/P2
+FTA, Year 12 Ma2 P1/P2
+SSW, Year 12 Ma1 S1
+ADE, Year 12 Ma2 S1
+
+Fix Year 13 class set options
+
+Year 13 should show:
+
+Dropdown label	Course	Teacher
+ADE, P3/P4	P3/P4	ADE
+XLN, D1	D1	XLN
+
+Make sure Year 13 D1 has its own Teacher View, assessment rows and dashboard summary.
+
+Add visible unit test rows in Teacher View
+
+Unit tests are still not showing clearly in the IAL Teacher View.
+
+Add separate assessment rows, same style as Year 7 to Year 11.
+
+Each unit test row should show:
+
+unit test title
+assessment type
+date/week
+course
+teacher
+status dropdown
+Test button, not Plan button
+
+Use this format:
+
+Unit Test: P1.1 Algebraic Expressions
+End-of-unit assessment for P1.1 Algebraic Expressions.
+
+Or:
+
+Unit Test: S1.2 Measures of Location and Spread
+End-of-unit assessment for S1.2.
+
+Do this for Year 12 and Year 13.
+
+Assessment types
+
+Use these assessment labels:
+
+Type	Use
+Topic Checkpoint	Short 20-30 minute quiz
+Unit Test	Full lesson end-of-unit test
+Mock Exam	School mock week
+Past Paper Practice	L11A and L12B
+None	Normal teaching lesson
+
+Only full unit tests should appear as separate assessment rows.
+
+Topic checkpoints can appear inside a lesson row if needed.
+
+Teacher View should count lessons correctly
+
+Use the corrected IAL timetable:
+
+Course	Lessons per fortnight
+P1/P2	8
+P3/P4	8
+S1	3
+D1	3
+
+The lesson counter should count individual lesson rows, not broad topic blocks.
+
+Example:
+P1/P2 should not show “0 of 15 lessons completed” if there are many sublessons. It should count the actual sublesson rows and assessment rows assigned to that class.
+
+Calendar rules
+
+Use the ACY 2026-27 WCIB calendar, not the old dates in the uploaded current SoW.
+
+Keep these calendar rules:
+
+M1A is induction, routines and diagnostics only.
+Formal teaching starts in M2B.
+L2B is Year 12 and Year 13 mock week, no regular teaching.
+L11A and L12B are past paper practice only.
+First teaching must finish by L10B, Friday 19 March 2027.
+Do not place new teaching in L11A or L12B.
+Show key sixth form notes in the calendar notes column.
+Dashboard changes
+
+Dashboard should show separate cards or rows for:
+
+Class	Teacher	Course	Lessons per fortnight	Completion target
+Year 12 Ma1	SSW	P1/P2	8	L10B
+Year 12 Ma2	FTA	P1/P2	8	L10B
+Year 12 Ma1	SSW	S1	3	L10B
+Year 12 Ma2	ADE	S1	3	L10B
+Year 13	ADE	P3/P4	8	L10B
+Year 13	XLN	D1	3	L10B
+
+Dashboard warnings should flag:
+
+any first teaching after L10B
+any new teaching in L11A or L12B
+any regular teaching during L2B mock week
+missing unit test rows
+incorrect lesson-per-fortnight allocation
+S1 shown as combined instead of split by class and teacher
+Assessment Schedule changes
+
+Assessment Schedule should list unit tests clearly by class.
+
+Required columns:
+
+Year group
+Class set
+Course
+Teacher
+Week
+Date range
+Assessment title
+Assessment type
+Notes
+
+Make sure S1 assessments appear separately for:
+
+Year 12 Ma1, SSW, S1
+Year 12 Ma2, ADE, S1
+
+Make sure D1 assessments appear for:
+
+Year 13, XLN, D1
+Source of truth
+
+Use the corrected IAL v5 SoW as the content source, but fix the rendering and data model issues above.
+
+Do not merge content blocks.
+
+Keep the same current SoW sequencing.
+
+P1/P2 should be sequential, except:
+
+P1.8 with P2.7, Differentiation
+P1.9 with P2.8, Integration
+
+P3/P4 should follow the current SoW sequence.
+
+S1 should follow the current SoW sequence.
+
+D1 should follow the current SoW sequence.

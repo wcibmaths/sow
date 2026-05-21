@@ -52,6 +52,10 @@ def save_data(data):
 def index():
     return send_file('index.html')
 
+@app.route('/wellington-logo.png')
+def wellington_logo():
+    return send_file('attached_assets/wellington-logo.png', mimetype='image/png')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())

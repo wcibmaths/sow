@@ -3121,7 +3121,7 @@ function resetProgress(){
 let assessY9Filter  = 'ma24';
 let assessY10Filter = 'ma23';
 let assessY11Filter = 'ma23';
-let assessY12Filter = 'Ma1P12';
+let assessY12Filter = 'P12';
 let assessY13Filter = 'P34';
 
 function setAssessFilter(f)    { assessY9Filter=f;  renderAssessments(); }
@@ -3165,13 +3165,11 @@ function renderAssessments(){
   }
   if(ygInt === 12){
     toggleHtml = `<div class="assess-tog-wrap">
-      <span class="assess-tog-lbl">Class:</span>
-      <button class="assess-tog-btn${assessY12Filter==='Ma1P12'?' active':''}" onclick="setAssessY12Filter('Ma1P12')">Ma1 · P1/P2 (SSW)</button>
-      <button class="assess-tog-btn${assessY12Filter==='Ma2P12'?' active':''}" onclick="setAssessY12Filter('Ma2P12')">Ma2 · P1/P2 (FTA)</button>
-      <button class="assess-tog-btn${assessY12Filter==='Ma1S1'?' active':''}" onclick="setAssessY12Filter('Ma1S1')">Ma1 · S1 (SSW)</button>
-      <button class="assess-tog-btn${assessY12Filter==='Ma2S1'?' active':''}" onclick="setAssessY12Filter('Ma2S1')">Ma2 · S1 (ADE)</button>
-      <button class="assess-tog-btn${assessY12Filter==='FMP1234'?' active':''}" onclick="setAssessY12Filter('FMP1234')">FM P1-P4 (MKM)</button>
-      <button class="assess-tog-btn${assessY12Filter==='FMM1'?' active':''}" onclick="setAssessY12Filter('FMM1')">FM M1 (XLN)</button>
+      <span class="assess-tog-lbl">Schedule for:</span>
+      <button class="assess-tog-btn${assessY12Filter==='P12'?' active':''}" onclick="setAssessY12Filter('P12')">Ma1 / Ma2 · P1/P2 (SSW · FTA)</button>
+      <button class="assess-tog-btn${assessY12Filter==='S1'?' active':''}" onclick="setAssessY12Filter('S1')">Ma1 / Ma2 · S1 (SSW · ADE)</button>
+      <button class="assess-tog-btn${assessY12Filter==='FMP1234'?' active':''}" onclick="setAssessY12Filter('FMP1234')">FM P1-P4 — MKM</button>
+      <button class="assess-tog-btn${assessY12Filter==='FMM1'?' active':''}" onclick="setAssessY12Filter('FMM1')">FM M1 — XLN</button>
     </div>`;
   }
   if(ygInt === 13){
@@ -3186,61 +3184,74 @@ function renderAssessments(){
     </div>`;
   }
 
-  // Y12 / Y13 IAL — derive from SoW, render as table with the required columns.
+  // Y12 / Y13 IAL — derive from SoW, render as term-grouped cards (same layout as Y7-Y11).
   if(ygInt === 12 || ygInt === 13){
-    const set = ygInt===12 ? assessY12Filter : assessY13Filter;
+    // Y12 toggle keys are SoW groups (P12 / S1 / FMP1234 / FMM1); resolve to a representative set key.
+    const Y12_GROUP_REP = { P12:'Ma1P12', S1:'Ma1S1', FMP1234:'FMP1234', FMM1:'FMM1' };
+    const Y12_GROUP_HEADER = {
+      P12:    {label:'Ma1 & Ma2 · P1/P2', teachers:'SSW · FTA', course:'IAL Pure 1 / Pure 2',
+               note:'Two classes following the same scheme of work. Both sit the same assessments on the same week.'},
+      S1:     {label:'Ma1 & Ma2 · S1',    teachers:'SSW · ADE', course:'IAL Statistics 1',
+               note:'Two classes following the same scheme of work. Both sit the same assessments on the same week.'},
+      FMP1234:{label:'FM P1-P4',          teachers:'MKM',       course:'IAL Further Maths · Pure 1-4',
+               note:'Further Maths Pure 1-4. 7 lessons per teaching week.'},
+      FMM1:   {label:'FM M1',              teachers:'XLN',       course:'IAL Further Maths · Mechanics 1',
+               note:'Further Maths Mechanics 1. Shares the M1 scheme of work with Year 13.'},
+    };
+    const filterKey = ygInt===12 ? assessY12Filter : assessY13Filter;
+    const set = ygInt===12 ? (Y12_GROUP_REP[filterKey] || filterKey) : filterKey;
     const info = (IAL_INFO[ygInt]||{})[set] || {};
+    const header = ygInt===12 ? (Y12_GROUP_HEADER[filterKey] || {}) : {
+      label:(info.label||set).replace(/\s*\([^)]*\)\s*$/,''),
+      teachers:info.teacher||'',
+      course:info.course ? `IAL ${info.course}` : 'IAL',
+      note:info.classNote||''
+    };
     const items = ialAssessmentsFor(ygInt, set);
-    const setLabel = (info.label||set).replace(/\s*\([^)]*\)\s*$/,'');
-    // classSet column: 'Ma1'/'Ma2' for Y12, or the set key itself for Y13
-    const classSetCol = /^Ma[12]/.test(set) ? set.slice(0,3) : set;
-    let html = toggleHtml;
     const _sow = (IAL_SOW_BY_SET[ygInt]||{})[set] || [];
     const _hasPP = _sow.some(r=>/past paper/i.test((r.unitName||'')+' '+(r.lessonName||'')));
     const _scheduleSummary = _hasPP
       ? 'Mock week L2B · Past-paper block from L11A · First teaching complete by L10B (19 Mar 2027).'
       : 'Mock week L2B · Targeted revision L10B · First teaching complete by L10B (19 Mar 2027).';
+
+    let html = toggleHtml;
     html += `<div style="background:#F4F1EA;border-left:4px solid var(--navy);padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:16px;">
-      <div style="font-weight:700;color:var(--navy);font-size:13px;">Pearson Edexcel IAL · ${esc(setLabel)}</div>
-      <div style="font-size:12px;color:var(--dark-gray);margin-top:4px;">${esc(info.classNote||'')} ${_scheduleSummary}</div>
+      <div style="font-weight:700;color:var(--navy);font-size:13px;">${esc(header.course)} · ${esc(header.label)} <span style="font-weight:400;color:var(--dark-gray);">(${esc(header.teachers)})</span></div>
+      <div style="font-size:12px;color:var(--dark-gray);margin-top:4px;">${esc(header.note)} ${_scheduleSummary}</div>
     </div>`;
+
     if(!items.length){
       html += `<div class="coming-soon"><h3>No scheduled assessments</h3><p>This class has no formal assessments outside the SoW.</p></div>`;
       contentEl.innerHTML = html; return;
     }
-    html += `<div style="overflow-x:auto;border:1px solid var(--mid-gray);border-radius:8px;background:#fff;">
-      <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
-        <thead>
-          <tr style="background:#F4F1EA;color:var(--navy);font-weight:700;text-align:left;">
-            <th style="padding:9px 10px;">Year group</th>
-            <th style="padding:9px 10px;">Class set</th>
-            <th style="padding:9px 10px;">Course</th>
-            <th style="padding:9px 10px;">Teacher</th>
-            <th style="padding:9px 10px;">Week</th>
-            <th style="padding:9px 10px;">Date range</th>
-            <th style="padding:9px 10px;">Assessment title</th>
-            <th style="padding:9px 10px;">Type</th>
-            <th style="padding:9px 10px;">Notes</th>
-          </tr>
-        </thead><tbody>`;
-    items.forEach((a,i)=>{
-      const flag = a.kind==='mock' ? 'Off-timetable mock week. No regular teaching.'
-                 : a.kind==='past' ? 'Protected past-paper block. No new teaching.'
-                 : a.kind==='eou'  ? 'End-of-unit evidence assessment.' : '';
-      const rowBg = i%2 ? '#FBFAF6' : '#fff';
-      html += `<tr style="background:${rowBg};border-top:1px solid var(--mid-gray);">
-        <td style="padding:8px 10px;">Year ${ygInt}</td>
-        <td style="padding:8px 10px;">${esc(classSetCol)}</td>
-        <td style="padding:8px 10px;">${esc(info.course||'')}</td>
-        <td style="padding:8px 10px;font-weight:600;">${esc(info.teacher||'')}</td>
-        <td style="padding:8px 10px;font-family:'SF Mono',monospace;">${esc(a.week)}</td>
-        <td style="padding:8px 10px;">${esc(a.dates)}</td>
-        <td style="padding:8px 10px;">${esc(a.name)}</td>
-        <td style="padding:8px 10px;"><span class="type-badge ${a.kind==='eou'?'core':a.kind==='mock'?'assess':'cse'}">${esc(a.type)}</span></td>
-        <td style="padding:8px 10px;color:var(--dark-gray);">${esc(flag)}</td>
-      </tr>`;
+
+    const terms=['Michaelmas','Lent','Summer'];
+    terms.forEach(term=>{
+      const ta = items.filter(a=>a.term===term);
+      if(!ta.length) return;
+      html += `<div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
+          margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
+        <div class="assess-grid">`;
+      ta.forEach(a=>{
+        const cls = a.kind==='mock' ? 'eoy' : a.kind==='past' ? 'interim' : '';
+        const flagHtml = a.kind==='mock'
+          ? '<div class="assess-flag" style="color:var(--navy);">★ MOCK WEEK · OFF-TIMETABLE</div>'
+          : a.kind==='past'
+            ? '<div class="assess-flag">PROTECTED PAST-PAPER BLOCK</div>'
+            : a.kind==='eou'
+              ? '<div class="assess-flag" style="color:var(--navy);">END-OF-UNIT TEST</div>'
+              : '';
+        html += `<div><div class="assess-card ${cls}">
+          <div class="assess-week">${esc(a.week)}</div>
+          <div class="assess-name">${esc(a.name)}</div>
+          <div class="assess-sub">${esc(a.sub||header.label)}</div>
+          <div class="assess-date">📅 ${esc(a.dates)}</div>
+          ${flagHtml}
+        </div></div>`;
+      });
+      html += '</div></div>';
     });
-    html += `</tbody></table></div>`;
     contentEl.innerHTML = html;
     return;
   }

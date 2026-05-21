@@ -12,30 +12,72 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* Soft pastel dashboard palette */
-    --navy:       #2F3640;   /* main text / headings */
-    --header-bg:  #7A829B;   /* header & section header bars */
-    --header-active:#9A8FAF; /* active nav tab */
-    --accent:     #DBA39D;   /* blush clay – accent / underline */
-    --blue:       #DBA39D;   /* legacy accent → blush clay */
-    --light-blue: #EAF1F6;   /* legacy light accent → mercury-pale */
-    --green:      #C9E4D4;   /* pale mint */
-    --light-green:#E8F4EE;
-    --dark-green: #5F8F78;
-    --amber:      #A8BFD1;   /* mercury blue (in-progress) */
-    --dark-amber: #5F7386;
-    --light-amber:#EAF1F6;
-    --lavender:   #B39EB5;
-    --coral:      #F5E7E4;
-    --red:        #B06B62;
-    --gray:       #FBF8F4;   /* soft panel background */
-    --mid-gray:   #E2DDD7;   /* border */
-    --dark-gray:  #6C7480;   /* muted text */
-    --track:      #E7E2DB;   /* progress bar track */
+    /* page surfaces */
+    --bg:         #F4EFE7;
     --page-bg:    #F4EFE7;
+    --surface:    #FFFFFF;
+    --surface-2:  #F9F5EE;
+    --border:     #E2DDD7;
+    --border-2:   #EFEAE2;
+
+    /* text */
+    --text:       #2F3640;
+    --mid:        #4F5762;
+    --muted:      #6C7480;
+
+    /* dark anchor — header bar + SoW banner */
+    --sidebar-bg:     #3E4655;
+    --sidebar-active: #5E5670;
+    --navy:           #2F3640;   /* legacy primary text */
+    --navy-2:         #2F3641;
+    --navy-3:         #5E5670;
+    --header-bg:      #3E4655;
+    --header-active:  #5E5670;
+
+    /* on-dark text */
+    --on-dark:       #FFFFFF;
+    --on-dark-muted: rgba(255,255,255,.85);
+    --on-dark-dim:   rgba(255,255,255,.62);
+    --on-dark-line:  rgba(255,255,255,.16);
+
+    /* signature accent (blush) */
+    --accent:    #DBA39D;
+    --blush:     #DBA39D;
+    --blush-bg:  #F0DDD9;
+    --blush-d:   #B47267;
+
+    /* pastel families */
+    --mint:      #C9E4D4;
+    --mint-bg:   #E2F1E8;
+    --mint-d:    #5A9B7F;
+
+    --blue:      #A8BFD1;
+    --blue-bg:   #D9E4ED;
+    --blue-d:    #6E8AA5;
+
+    --lavender:    #B39EB5;
+    --lavender-bg: #E3DBE5;
+    --lavender-d:  #8A7194;
+
+    /* legacy aliases (mapped onto the new palette) */
+    --green:      var(--mint);
+    --light-green:var(--mint-bg);
+    --dark-green: var(--mint-d);
+    --amber:      var(--blue);
+    --light-amber:var(--blue-bg);
+    --dark-amber: var(--blue-d);
+    --light-blue: var(--blue-bg);
+    --coral:      var(--blush-bg);
+    --red:        var(--blush-d);
+    --gray:       var(--surface-2);
+    --mid-gray:   var(--border);
+    --dark-gray:  var(--muted);
+    --track:      var(--border-2);
+
     --soft-shadow:0 2px 10px rgba(47, 54, 64, 0.05);
     --font:       'Inter','Segoe UI',Arial,sans-serif;
-    --font-head:  'Playfair Display',Georgia,serif;
+    --font-head:  'Inter','Segoe UI',Arial,sans-serif;
+    --font-brand: 'Inter','Segoe UI',Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--font);background:var(--page-bg);color:var(--navy);font-size:14px;}
@@ -47,8 +89,9 @@
     border-right:1px solid rgba(255,255,255,0.14);}
   .brand .logo{width:36px;height:36px;background:var(--accent);border-radius:8px;
     display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:white;}
-  .brand h1{font-size:15px;font-weight:700;line-height:1.2;font-family:var(--font-head);}
-  .brand p{font-size:11px;opacity:0.75;}
+  .brand h1{font-size:15px;font-weight:600;line-height:1.2;
+    font-family:var(--font-brand);letter-spacing:-0.015em;}
+  .brand p{font-size:11px;opacity:0.75;letter-spacing:0.01em;}
   nav{display:flex;align-items:center;gap:2px;padding:0 16px;flex:1;}
   .nav-btn{padding:8px 16px;border:none;background:transparent;color:rgba(255,255,255,0.75);
     cursor:pointer;font-size:13px;font-family:var(--font);border-radius:6px;
@@ -249,11 +292,11 @@
     padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;
     background:var(--accent);color:white;border:none;
     text-decoration:none;transition:background 0.15s,transform 0.1s;}
-  .assess-link:hover{background:#C28A82;transform:translateY(-1px);}
+  .assess-link:hover{background:var(--blush-d);transform:translateY(-1px);}
   .assess-card.interim .assess-link{background:var(--accent);}
-  .assess-card.interim .assess-link:hover{background:#C28A82;}
+  .assess-card.interim .assess-link:hover{background:var(--blush-d);}
   .assess-card.eoy .assess-link{background:var(--lavender);}
-  .assess-card.eoy .assess-link:hover{background:#9A86A0;}
+  .assess-card.eoy .assess-link:hover{background:var(--lavender-d);}
 
   /* ── Dashboard teacher cards ── */
   .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-bottom:20px;}
@@ -3383,7 +3426,7 @@ function renderAssessments(){
 //  CALENDAR
 // ════════════════════════════════════════════════════════════════════
 function renderCalendar(){
-  const tc={Michaelmas:'#7A829B',Lent:'#9A8FAF',Summer:'#DBA39D'};
+  const tc={Michaelmas:'#3E4655',Lent:'#5E5670',Summer:'#DBA39D'};
   const td={'Michaelmas':'Wed 26 Aug – Wed 16 Dec 2026','Lent':'Thu 7 Jan – Fri 2 Apr 2027','Summer':'Mon 19 Apr – Wed 30 Jun 2027'};
   let html='';
   ['Michaelmas','Lent','Summer'].forEach(term=>{

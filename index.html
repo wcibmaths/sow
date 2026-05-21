@@ -87,8 +87,10 @@
     position:sticky;top:0;z-index:100;box-shadow:var(--soft-shadow);}
   .brand{padding:12px 20px;display:flex;align-items:center;gap:12px;
     border-right:1px solid rgba(255,255,255,0.14);}
-  .brand .logo{width:36px;height:36px;background:var(--accent);border-radius:8px;
-    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:white;}
+  .brand .logo{width:36px;height:36px;background:#FFFFFF;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.18);overflow:hidden;}
+  .brand .logo svg{width:100%;height:100%;display:block;}
   .brand h1{font-size:15px;font-weight:600;line-height:1.2;
     font-family:var(--font-brand);letter-spacing:-0.015em;}
   .brand p{font-size:11px;opacity:0.75;letter-spacing:0.01em;}
@@ -379,7 +381,22 @@
 
 <header>
   <div class="brand">
-    <div class="logo">W</div>
+    <div class="logo" aria-label="WCIB school crest">
+      <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="crestG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3E4655"/>
+            <stop offset="100%" stop-color="#5E5670"/>
+          </linearGradient>
+        </defs>
+        <path d="M18 3 L31 7 V18 C31 25.5 25.6 30.7 18 33 C10.4 30.7 5 25.5 5 18 V7 Z"
+              fill="url(#crestG)" stroke="#DBA39D" stroke-width="0.8"/>
+        <text x="18" y="22" text-anchor="middle"
+              font-family="'Inter','Segoe UI',Arial,sans-serif"
+              font-size="11" font-weight="700" letter-spacing="-0.5"
+              fill="#FFFFFF">WCIB</text>
+      </svg>
+    </div>
     <div><h1>WCIB Maths Department</h1><p>Scheme of Work 2026/27</p></div>
   </div>
   <nav>
@@ -458,10 +475,6 @@
   </div>
   <div class="card">
     <div class="card-title" id="assess-card-title">Year 7 — Assessment Schedule 2026/27</div>
-    <div class="banner">
-      <span style="font-size:20px">📋</span>
-      <div><strong>Fixed dates — same for all sets.</strong> Click any assessment card to open the unit test folder on SharePoint.</div>
-    </div>
     <div id="assess-content"></div>
   </div>
 </div>
@@ -2882,9 +2895,7 @@ function renderHOD(){
     const setDisplay = ialInfo
       ? ialInfo.label.replace(/\s*\([^)]*\)\s*$/, '')
       : set;
-    const subLine = ialInfo
-      ? `Year ${hodYear} ${ialInfo.course} · ${ialInfo.expectedPerFortnight} lessons/fortnight · target L10B · ${p.done} of ${p.total} done`
-      : `Year ${hodYear} · ${p.done} of ${p.total} lessons done`;
+    const subLine = `Year ${hodYear} · ${p.done} of ${p.total} lessons done`;
     cardsHtml+=`<div class="teacher-card">
       <div class="tc-header">
         <div class="tc-avatar">${teacher.length>5?teacher.slice(0,5):teacher}</div>
@@ -3001,18 +3012,8 @@ function renderTeacher(){
     </div>
   </div></div>`;
 
-  // IAL banner + warnings
+  // IAL pacing alerts only — notes bar removed for a cleaner SoW page.
   if(ialInfo){
-    html+=`<div class="card" style="background:var(--gray);border-left:4px solid var(--amber);padding:14px 18px;margin-bottom:14px;">
-      <div style="font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px;">Pearson Edexcel IAL · ${esc(ialInfo.label)}</div>
-      <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
-        ${esc(ialInfo.classNote)}<br>
-        <strong>Pacing model:</strong> ${ialInfo.expectedPerFortnight} lessons per full fortnight · <strong>16 tracked fortnight blocks</strong> (M1A induction + F01–F15).
-        <strong>First-teaching target:</strong> all content complete by L10B (19 Mar 2027).
-        <strong>L11A–L12B</strong> protected past-paper block · <strong>L2B</strong> is mock week (off normal timetable).
-        ${ialInfo.riskNote?`<br><span style="color:var(--red);font-weight:600;">⚠ ${esc(ialInfo.riskNote)}</span>`:''}
-      </div>
-    </div>`;
     if(ialWarns.length){
       const reds = ialWarns.filter(w=>w.level==='red');
       html+=`<div class="card" style="border-left:4px solid ${reds.length?'var(--red)':'var(--amber)'};padding:12px 16px;margin-bottom:14px;">
@@ -3103,15 +3104,20 @@ function renderTeacher(){
         const seqLabel=isA?'★':lessonSeqNo[lesson.id]||'';
         const noLabel=seqLabel?`<span class="lesson-no">${esc(seqLabel)}</span>`:'';
 
+        // Y12/Y13 IAL lesson titles: strip leading unit prefix like "P1.", "S1.", "FP1." etc.
+        // so "P1.1.1 Index Laws" → "1.1 Index Laws".
+        let displayName = lesson.lessonName;
+        if(yg===12 || yg===13){
+          displayName = displayName.replace(/^(?:FP\d|FM\w+|P\d|S\d|M\d|D\d)\.(\d+\.\d+\s+.*)$/, '$1');
+        }
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">
             <div class="lesson-name-row">
               ${noLabel}${lesson.planUrl
-                ? `<a href="${lesson.planUrl}" target="_blank" class="lesson-name${isA?' assess':''}" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">${esc(lesson.lessonName)}</a>`
-                : `<span class="lesson-name${isA?' assess':''}">${esc(lesson.lessonName)}</span>`
+                ? `<a href="${lesson.planUrl}" target="_blank" class="lesson-name${isA?' assess':''}" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">${esc(displayName)}</a>`
+                : `<span class="lesson-name${isA?' assess':''}">${esc(displayName)}</span>`
               }
             </div>
-            ${lesson.obj?`<div class="lesson-obj">${esc(lesson.obj)}</div>`:`<div class="lesson-unit">${esc(lesson.unitName)}</div>`}
           </div>
           ${lesson.tier
             ? `<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`

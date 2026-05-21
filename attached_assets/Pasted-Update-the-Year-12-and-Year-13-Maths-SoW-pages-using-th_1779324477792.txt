@@ -1,0 +1,156 @@
+Update the Year 12 and Year 13 Maths SoW pages using the latest IAL Maths SoW v2 file.
+
+File to use:
+IAL_Maths_SoW_2026_27_v2_compressed_mid_march.xlsx
+
+Apply the changes to all relevant pages:
+Teacher View
+Assessment Schedule
+Dashboard
+
+Core timetable rules
+
+Year 12 P1/P2
+Use 8 lessons per fortnight.
+Classes:
+Year 12 Ma1 P1/P2, teacher SSW
+Year 12 Ma2 P1/P2, teacher FTA
+Year 13 P3/P4
+Use 8 lessons per fortnight.
+Class:
+Year 13 P3/P4, teacher ADE
+Year 12 S1
+Use 3 lessons per fortnight.
+Classes combined where needed.
+Teachers:
+SSW and ADE
+Year 13 D1
+Use 3 lessons per fortnight.
+Teacher:
+XLN
+
+Planning structure
+
+Use fortnightly planning blocks, not weekly lesson counts, because the exact weekly split is not known yet.
+
+All first teaching must finish by L10B, Friday 19 March 2027.
+
+L11A and L12B must be protected for past paper practice before the April break.
+
+Do not place new first-teaching content in L11A or L12B.
+
+Calendar rules to apply
+
+Add or update calendar notes for these key dates:
+
+Michaelmas Term
+M1A, induction and routines
+M2B, Year 12 CAT4 testing
+M6B, Year 12 progress check
+M13A, Year 12 PTC on Thursday 26 November
+M15A, Sixth Form and IGCSE Options Fair on Tuesday 8 December
+M16B, final week of Michaelmas, no new heavy content
+
+Lent Term
+L1A, term restart after INSET
+L2B, Year 12 and Year 13 mock week, no regular teaching
+L3A to L4B, mock review and targeted reteaching
+L6B, final week before Lent half-term, no new unit start if avoidable
+L7A, return after Lent half-term
+L10B, final deadline for first teaching
+L11A and L12B, past paper practice only
+
+Summer Term
+Use for final revision, exam practice, intervention and study leave.
+Do not treat S11A as required teaching time.
+
+Teacher View changes
+
+For each IAL class, display:
+Year group
+Class
+Course or unit
+Teacher
+Fortnight block
+Date range
+Lesson allowance per fortnight
+Topic or content focus
+Assessment or checkpoint
+Calendar notes
+Status or pacing risk
+
+Teacher View must show these rows separately:
+Year 12 Ma1 P1/P2, SSW
+Year 12 Ma2 P1/P2, FTA
+Year 12 S1, SSW and ADE
+Year 13 P3/P4, ADE
+Year 13 D1, XLN
+
+Use the latest workbook content as the source of truth for topic order and pacing.
+
+Assessment Schedule changes
+
+Add or update assessments from the IAL v2 workbook.
+
+Make sure the schedule includes:
+P1/P2 topic assessments or checkpoints
+S1 assessments or checkpoints
+P3/P4 assessments or checkpoints
+D1 assessments or checkpoints
+Year 12 and Year 13 mock week in L2B
+Past paper practice window in L11A and L12B
+
+Assessment Schedule must not show L11A or L12B as new content teaching. These weeks should show past papers, timed practice, feedback and correction.
+
+Dashboard changes
+
+Update dashboard summary cards or tables to show:
+
+Year 12 Ma1 P1/P2
+Teacher: SSW
+Fortnightly lessons: 8
+Content completion target: L10B
+Past paper window: L11A-L12B
+
+Year 12 Ma2 P1/P2
+Teacher: FTA
+Fortnightly lessons: 8
+Content completion target: L10B
+Past paper window: L11A-L12B
+
+Year 12 S1
+Teachers: SSW and ADE
+Fortnightly lessons: 3
+Content completion target: L10B
+Past paper window: L11A-L12B
+
+Year 13 P3/P4
+Teacher: ADE
+Fortnightly lessons: 8
+Content completion target: L10B
+Past paper window: L11A-L12B
+Risk level: tight pacing
+
+Year 13 D1
+Teacher: XLN
+Fortnightly lessons: 3
+Content completion target: L10B
+Past paper window: L11A-L12B
+
+Dashboard warnings
+
+Add a warning if any first-teaching content appears after L10B.
+
+Add a warning if L11A or L12B contains anything other than:
+past papers
+timed practice
+exam technique
+feedback
+correction
+targeted intervention
+
+Add a warning if Year 12 or Year 13 content is scheduled during L2B mock week.
+
+Add a warning if P1/P2 or P3/P4 uses fewer or more than 8 lessons per fortnight.
+
+Add a warning if S1 or D1 uses fewer or more than 3 lessons per fortnight.

@@ -358,8 +358,8 @@
         <option value="9">Year 9</option>
         <option value="10">Year 10</option>
         <option value="11">Year 11</option>
-        <option disabled>Year 12 (coming soon)</option>
-        <option disabled>Year 13 (coming soon)</option>
+        <option value="12">Year 12 (IAL)</option>
+        <option value="13">Year 13 (IAL)</option>
       </select>
     </div>
     <div class="ctrl"><label>Class Set</label>
@@ -395,7 +395,8 @@
         <option value="9">Year 9</option>
         <option value="10">Year 10</option>
         <option value="11">Year 11</option>
-        <option value="12" disabled>Year 12 (coming soon)</option>
+        <option value="12">Year 12 (IAL)</option>
+        <option value="13">Year 13 (IAL)</option>
       </select>
     </div>
   </div>
@@ -425,6 +426,8 @@ const TEACHERS_BY_YG = {
   9:  { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
   10: { Ma1:'SSW', Ma2:'ADE', Ma3:'HPA', Ma4:'FTA' },
   11: { Ma1:'SSW', Ma2:'FTA', Ma3:'ADE', Ma4:'MKM' },
+  12: { Ma1:'SSW', Ma2:'FTA', S1:'SSW & ADE' },
+  13: { P34:'ADE', D1:'XLN' },
 };
 const SETS_BY_YG = {
   7:  ['Ma1','Ma2','Ma3','Ma4'],
@@ -432,6 +435,8 @@ const SETS_BY_YG = {
   9:  ['Ma1','Ma2','Ma3','Ma4'],
   10: ['Ma1','Ma2','Ma3','Ma4'],
   11: ['Ma1','Ma2','Ma3','Ma4'],
+  12: ['Ma1','Ma2','S1'],
+  13: ['P34','D1'],
 };
 const SOW_BY_YG = {};  // populated after SOW arrays are defined
 const TEACHERS = TEACHERS_BY_YG[7];
@@ -1609,13 +1614,228 @@ const CALENDAR_EVENTS = [
   {term:'Michaelmas', label:'National Holiday',        dates:'Tue 13 Oct 2026',         type:'holiday', note:'Reduced lessons M8B'},
   {term:'Michaelmas', label:'National Holidays',       dates:'Mon 7 + Thu 10 Dec 2026', type:'holiday', note:'Reduced lessons M15A'},
   {term:'Michaelmas', label:'Term ends 12pm',          dates:'Wed 16 Dec 2026',         type:'partial', note:'M16B partial week'},
+  {term:'Michaelmas', label:'Y12 CAT4 Testing',        dates:'31 Aug–4 Sep 2026',       type:'exams',   note:'Year 12 CAT4 baseline (M2B)'},
+  {term:'Michaelmas', label:'Y12 Progress Check',      dates:'28 Sep–2 Oct 2026',       type:'exams',   note:'Year 12 progress check (M6B)'},
+  {term:'Michaelmas', label:'Y12 Parents Consultation',dates:'Thu 26 Nov 2026',         type:'inset',   note:'Y12 PTC (M13A)'},
+  {term:'Michaelmas', label:'Options Fair',            dates:'Tue 8 Dec 2026',          type:'inset',   note:'Y12 options fair (M15A)'},
   {term:'Lent',       label:'INSET Day',               dates:'Wed 6 Jan 2027',          type:'inset',   note:'Teaching starts Thu 7 Jan'},
+  {term:'Lent',       label:'⚠️ Y12 & Y13 Mock Week',  dates:'11–15 Jan 2027',          type:'exams',   note:'L2B — off normal timetable, no teaching'},
+  {term:'Lent',       label:'Mock Review Weeks',       dates:'18–29 Jan 2027',          type:'inset',   note:'L3A–L4B mock results review'},
   {term:'Lent',       label:'Lent Half Term',          dates:'15–19 Feb 2027',          type:'break'},
   {term:'Lent',       label:'⚠️ Adventure Week (Y7–9)',dates:'22–26 Feb 2027',          type:'adventure',note:'Full week lost — no Y7 teaching'},
+  {term:'Lent',       label:'IAL First-Teaching Deadline', dates:'19 Mar 2027',         type:'exams',   note:'End of L10B — Y12/Y13 IAL first teaching complete'},
+  {term:'Lent',       label:'⭐ IAL Past-paper Block', dates:'22 Mar–2 Apr 2027',        type:'exams',   note:'L11A–L12B protected: no new teaching'},
   {term:'Summer',     label:'National Holidays',       dates:'Thu 3 + Fri 4 Jun 2027',  type:'holiday', note:'Reduced lessons S7A'},
   {term:'Summer',     label:'⚠️ Y7–9 Summer Exams',    dates:'31 May–4 Jun 2027',       type:'exams',   note:'No curriculum teaching S7A'},
+  {term:'Summer',     label:'IAL External Exams',      dates:'May 2027 onwards',        type:'exams',   note:'Y12/Y13 study leave begins after S4B'},
   {term:'Summer',     label:'Term ends 12pm',          dates:'Wed 30 Jun 2027',         type:'partial', note:'S11A partial week'},
 ];
+
+// ══════════════════════════════════════════════════════════════════
+//  IAL Y12/Y13 SoW Data (fortnight-block model)
+// ══════════════════════════════════════════════════════════════════
+const IAL_INFO = {
+  12: {
+    Ma1: {label:'Year 12 P1/P2',  teacher:'SSW', expectedPerFortnight:8, classNote:'Pearson Edexcel IAL — Year 12 P1/P2 (SSW set).'},
+    Ma2: {label:'Year 12 P1/P2',  teacher:'FTA', expectedPerFortnight:8, classNote:'Pearson Edexcel IAL — Year 12 P1/P2 (FTA set).'},
+    S1:  {label:'Year 12 S1',     teacher:'SSW & ADE', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL S1 — shared between SSW and ADE.'},
+  },
+  13: {
+    P34: {label:'Year 13 P3/P4',  teacher:'ADE', expectedPerFortnight:8, classNote:'Pearson Edexcel IAL — Year 13 P3/P4 (ADE).', riskNote:'Tight pacing — full P3 plus P4 vectors must complete by L10B.'},
+    D1:  {label:'Year 13 D1',     teacher:'XLN', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL Decision 1 — XLN.'},
+  },
+};
+
+function _ialRow(id, term, week, dates, teacher, mod, lessons, unit, unitName, name, focus, assess, calNote, pacNote, type){
+  const parts = [];
+  if(calNote) parts.push(calNote);
+  if(pacNote) parts.push(pacNote);
+  return {
+    id, term, week, dates, teacher, module:mod, fortnightLessons:lessons,
+    unit, unitName, lessonName:name, type,
+    obj: focus, assess: assess||'',
+    calendarNote: calNote||'', pacingNote: pacNote||'',
+    alert: parts.join(' · ')
+  };
+}
+
+function _makeY12P1P2Sow(prefix, T){
+  return [
+    _ialRow(`${prefix}_001`,'Michaelmas','M1A','24–28 Aug 2026',T,'P1/P2',0,0,'Orientation','Orientation and diagnostic','Routines, diagnostic tasks, folder setup, calculator expectations.','Diagnostic only','Orientation / induction','No new examinable content.','flex'),
+    _ialRow(`${prefix}_002`,'Michaelmas','M2B-M3A','31 Aug–11 Sep 2026',T,'P1',8,1,'Pure 1 — Foundations','P1.1 Algebraic expressions','Index laws, expanding brackets, factorising, negative/fractional indices, surds and rationalising denominators.','Checkpoint quiz','Full fortnight · Y12 CAT4 testing (M2B)','Source allocation retained: 8 lessons.','core'),
+    _ialRow(`${prefix}_003`,'Michaelmas','M4B-M5A','14–25 Sep 2026',T,'P1',8,1,'Pure 1 — Foundations','P1.2 Quadratics; P1.3 Equations and inequalities','Quadratic equations, discriminant, simultaneous equations, inequalities and algebraic problem solving.','End-of-unit assessment','Full fortnight','Source allocation retained: 8 lessons.','core'),
+    _ialRow(`${prefix}_004`,'Michaelmas','M6B-M7A','28 Sep–9 Oct 2026',T,'P1',8,1,'Pure 1 — Foundations','P1.4 Graphs and transformations; P1.5 Straight line graphs','Cubic and reciprocal graphs, graph transformations, gradients, straight-line equations.','Checkpoint quiz','Full fortnight · Y12 progress check (M6B)','Placed before half-term so M8B is consolidation, not a new unit start.','core'),
+    _ialRow(`${prefix}_005`,'Michaelmas','M8B','12–16 Oct 2026',T,'P1',4,1,'Pure 1 — Foundations','P1.4/P1.5 consolidation','Mixed graph questions, corrections, exam-style practice.','Short graph skills quiz','Pre-half-term week','Final week before half-term, no new unit start. Short: 4 lessons.','core'),
+    _ialRow(`${prefix}_006`,'Michaelmas','HT-Mich','19–23 Oct 2026',T,'',0,0,'Half-term','Michaelmas half-term','No teaching.','','Michaelmas half-term','Visible break row.','flex'),
+    _ialRow(`${prefix}_007`,'Michaelmas','M9A-M10B','26 Oct–6 Nov 2026',T,'P1/P2',8,2,'Trigonometry','P1.6 Trigonometric ratios; P2.6 Trigonometric identities and equations','Sine/cosine rule, triangle area, radians link, identities and trigonometric equations.','Checkpoint quiz','Full fortnight','Part 1 of 12 source lessons.','core'),
+    _ialRow(`${prefix}_008`,'Michaelmas','M11A-M12B','9–20 Nov 2026',T,'P1/P2',8,2,'Trigonometry','P1.6/P2.6 finish; P1.7 Radians','Finish trigonometry and identities, then radian measure, arc length and sector area.','End-of-unit assessment','Full fortnight','Completes the 12+4 source lesson allocation.','core'),
+    _ialRow(`${prefix}_009`,'Michaelmas','M13A-M14B','23 Nov–4 Dec 2026',T,'P2',8,3,'Pure 2 — Algebra & Geometry','P2.1 Algebraic methods; P2.2 Coordinate geometry','Algebraic fractions, functions of lines, midpoint, perpendicular bisectors, coordinate geometry.','Checkpoint quiz','Full fortnight · Y12 PTC Thu 26 Nov (M13A)','P2.2 starts here and finishes next block.','core'),
+    _ialRow(`${prefix}_010`,'Michaelmas','M15A-M16B','7–16 Dec 2026',T,'P2',5,3,'Pure 2 — Algebra & Geometry','P2.2 finish; P2.3 Exponentials and logarithms start','Finish coordinate geometry, introduce exponential functions and logarithms.','Checkpoint quiz','Short fortnight · Options Fair Tue 8 Dec · No heavy content M16B','Shortened fortnight (5 lessons).','core'),
+    _ialRow(`${prefix}_011`,'Michaelmas','Xmas','17 Dec–6 Jan',T,'',0,0,'Christmas / INSET','Christmas / INSET','No teaching.','','Christmas / INSET','Visible break row.','flex'),
+    _ialRow(`${prefix}_012`,'Lent','L1A','7–8 Jan 2027',T,'P2',2,3,'Pure 2 — Algebra & Geometry','P2.3 Exponentials and logarithms','Log laws, exponential equations, log graphs and modelling.','No formal assessment','Partial start after INSET · INSET Wed 6 Jan','Partial week only — 2 lessons.','core'),
+    _ialRow(`${prefix}_013`,'Lent','L2B','11–15 Jan 2027',T,'',0,3,'Pure 2 — Algebra & Geometry','Mock week','Year 12 and 13 mocks — no regular teaching this week.','Mock assessment','Year 12 and 13 mock week','Off normal timetable.','assessment'),
+    _ialRow(`${prefix}_014`,'Lent','L3A-L4B','18–29 Jan 2027',T,'P2',8,3,'Pure 2 — Algebra & Geometry','P2.3 finish; P2.4 Binomial expansion; P2.5 Sequences start','Finish logs, Pascal/binomial, arithmetic and geometric sequences.','Checkpoint quiz','Full fortnight · Mock review (L3A–L4B)','Compressed but source allocation protected by grouping related topics.','core'),
+    _ialRow(`${prefix}_015`,'Lent','L5A-L6B','1–12 Feb 2027',T,'P2/P1',8,4,'Calculus','P2.5 finish; P1.8/P2.7 Differentiation start','Sequences/series, gradients of curves, first principles, differentiation rules.','Checkpoint quiz','Full fortnight · No new heavy content L6B','Start calculus before half-term.','core'),
+    _ialRow(`${prefix}_016`,'Lent','HT-Lent','15–19 Feb 2027',T,'',0,0,'Half-term','Lent half-term','No teaching.','','Lent half-term','Visible break row.','flex'),
+    _ialRow(`${prefix}_017`,'Lent','L7A-L8B','22 Feb–5 Mar 2027',T,'P1/P2',8,4,'Calculus','Differentiation finish; Integration start','Differentiation applications, stationary points, kinematics links, introduce integration.','End-of-unit assessment','Full fortnight · Return from half-term (L7A)','Integration starts before the final content block.','core'),
+    _ialRow(`${prefix}_018`,'Lent','L9A-L10B','8–19 Mar 2027',T,'P1/P2',8,4,'Calculus','P1.9/P2.8 Integration','Integrating powers of x, definite integrals, area under curves, differential equations basics.','End-of-unit assessment','⭐ Final first-teaching block — content target','All first teaching complete by L10B (19 Mar 2027).','core'),
+    _ialRow(`${prefix}_019`,'Lent','L11A-L12B','22 Mar–2 Apr 2027',T,'P1/P2',8,5,'Past-Paper Block','Past-paper block','Two weeks of mixed P1/P2 past-paper practice, timed questions, marking and corrections.','Past-paper practice','Protected past-paper block before April break','No new first-teaching content here.','cse'),
+    _ialRow(`${prefix}_020`,'Lent','Easter','5–18 Apr 2027',T,'',0,0,'April break','April break','Independent revision.','','April break','No teaching.','flex'),
+    _ialRow(`${prefix}_021`,'Summer','S1A-S2B','19–30 Apr 2027',T,'P1/P2',8,6,'Final Revision & Exam Readiness','Final revision','Targeted paper practice and intervention.','Timed practice','Final revision / exam readiness','Use live exam timetable once released.','cse'),
+    _ialRow(`${prefix}_022`,'Summer','S3A-S4B','3–14 May 2027',T,'P1/P2',8,6,'Final Revision & Exam Readiness','Exam readiness','Final corrections, formula use, command words, calculator fluency.','Timed practice','External exam readiness / likely exam season pressure','No new content.','cse'),
+    _ialRow(`${prefix}_023`,'Summer','S5A+','17 May–30 Jun 2027',T,'P1/P2',0,6,'Final Revision & Exam Readiness','External exams / study leave','Targeted support only.','','Study leave / external exams','No new content.','flex'),
+  ];
+}
+
+const Y12_MA1_SOW = _makeY12P1P2Sow('y12_ma1','SSW');
+const Y12_MA2_SOW = _makeY12P1P2Sow('y12_ma2','FTA');
+
+const Y12_S1_SOW = [
+  _ialRow('y12_s1_001','Michaelmas','M1A','24–28 Aug 2026','SSW & ADE','',0,0,'Orientation','Orientation and diagnostic','Statistical vocabulary diagnostic, calculator/statistics mode setup.','Diagnostic only','Orientation / induction','No new examinable content.','flex'),
+  _ialRow('y12_s1_002','Michaelmas','M2B-M3A','31 Aug–11 Sep 2026','SSW & ADE','S1',3,1,'Data Representation & Spread','S1.1 Models; S1.2 Location/spread','Mathematical models, data types, mean/median/mode, quartiles, variance and standard deviation.','Checkpoint quiz','Full fortnight · Y12 CAT4 testing (M2B)','Compressed to 3 lessons across the fortnight.','core'),
+  _ialRow('y12_s1_003','Michaelmas','M4B-M5A','14–25 Sep 2026','SSW & ADE','S1',3,1,'Data Representation & Spread','S1.2 finish; S1.3 data representation start','Coding, histograms, box plots and outliers.','Checkpoint quiz','Full fortnight','Use homework for routine calculations.','core'),
+  _ialRow('y12_s1_004','Michaelmas','M6B-M7A','28 Sep–9 Oct 2026','SSW & ADE','S1',3,1,'Data Representation & Spread','S1.3 finish; correlation/regression start','Histograms, box plots, scatter diagrams and product moment correlation.','No formal assessment','Full fortnight · Y12 progress check (M6B)','Focus on exam interpretation.','core'),
+  _ialRow('y12_s1_005','Michaelmas','M8B','12–16 Oct 2026','SSW & ADE','S1',1.5,1,'Data Representation & Spread','S1 Consolidation','Data representation and measures mixed practice.','Short quiz','Pre-half-term week','Short fortnight — 1.5 lessons.','core'),
+  _ialRow('y12_s1_006','Michaelmas','HT-Mich','19–23 Oct 2026','SSW & ADE','',0,0,'Half-term','Michaelmas half-term','No teaching.','','Michaelmas half-term','Visible break row.','flex'),
+  _ialRow('y12_s1_007','Michaelmas','M9A-M10B','26 Oct–6 Nov 2026','SSW & ADE','S1',3,2,'Correlation & Probability','S1.5 Correlation/regression; S1.4 Probability start','Regression lines, coding, probability language and set notation.','Checkpoint quiz','Full fortnight','Keep pace via homework practice.','core'),
+  _ialRow('y12_s1_008','Michaelmas','M11A-M12B','9–20 Nov 2026','SSW & ADE','S1',3,2,'Correlation & Probability','S1.4 Probability','Conditional probability, independent events, tree diagrams.','End-of-unit assessment','Full fortnight','Main Michaelmas evidence.','core'),
+  _ialRow('y12_s1_009','Michaelmas','M13A-M14B','23 Nov–4 Dec 2026','SSW & ADE','S1',3,3,'Discrete Random Variables','S1.6 Discrete random variables start','Probability distributions, expected value and variance.','Checkpoint quiz','Full fortnight · Y12 PTC Thu 26 Nov (M13A)','','core'),
+  _ialRow('y12_s1_010','Michaelmas','M15A-M16B','7–16 Dec 2026','SSW & ADE','S1',2,3,'Discrete Random Variables','S1.6 finish','Discrete random variables mixed exam practice.','Short quiz','Short fortnight · Options Fair Tue 8 Dec · No heavy content M16B','Shortened fortnight — 2 lessons.','core'),
+  _ialRow('y12_s1_011','Michaelmas','Xmas','17 Dec–6 Jan','SSW & ADE','',0,0,'Christmas / INSET','Christmas / INSET','No teaching.','','Christmas / INSET','Visible break row.','flex'),
+  _ialRow('y12_s1_012','Lent','L1A','7–8 Jan 2027','SSW & ADE','S1',1,4,'Normal & Mixed Review','Retrieval','DRVs and probability retrieval.','No formal assessment','Partial start after INSET','Partial week — 1 lesson.','core'),
+  _ialRow('y12_s1_013','Lent','L2B','11–15 Jan 2027','SSW & ADE','',0,4,'Normal & Mixed Review','Mock week','Year 12 and 13 mocks — no regular teaching.','Mock assessment','Year 12 and 13 mock week','Off normal timetable.','assessment'),
+  _ialRow('y12_s1_014','Lent','L3A-L4B','18–29 Jan 2027','SSW & ADE','S1',3,4,'Normal & Mixed Review','S1.7 Normal distribution start','Standard normal, using tables/calculator, inverse normal.','Checkpoint quiz','Full fortnight · Mock review weeks','','core'),
+  _ialRow('y12_s1_015','Lent','L5A-L6B','1–12 Feb 2027','SSW & ADE','S1',3,4,'Normal & Mixed Review','S1.7 finish','Normal distribution applications and mixed exam questions.','End-of-unit assessment','Full fortnight · No new heavy content L6B','All major S1 content now taught.','core'),
+  _ialRow('y12_s1_016','Lent','HT-Lent','15–19 Feb 2027','SSW & ADE','',0,0,'Half-term','Lent half-term','No teaching.','','Lent half-term','Visible break row.','flex'),
+  _ialRow('y12_s1_017','Lent','L7A-L8B','22 Feb–5 Mar 2027','SSW & ADE','S1',3,4,'Normal & Mixed Review','Mixed S1 review','Probability, DRV and normal distribution mixed exam practice.','Timed practice','Full fortnight · Return from half-term','','core'),
+  _ialRow('y12_s1_018','Lent','L9A-L10B','8–19 Mar 2027','SSW & ADE','S1',3,4,'Normal & Mixed Review','Final gaps','Full S1 mixed questions and exam technique.','Timed practice','⭐ Final first-teaching block — content target','Content complete by L10B (19 Mar 2027).','core'),
+  _ialRow('y12_s1_019','Lent','L11A-L12B','22 Mar–2 Apr 2027','SSW & ADE','S1',3,5,'Past-Paper Block','Past-paper block','Two weeks of S1 past-paper practice and corrections.','Past-paper practice','Protected past-paper block before April break','No new first-teaching content.','cse'),
+  _ialRow('y12_s1_020','Lent','Easter','5–18 Apr 2027','SSW & ADE','',0,0,'April break','April break','Independent revision.','','April break','No teaching.','flex'),
+  _ialRow('y12_s1_021','Summer','S1A-S2B','19–30 Apr 2027','SSW & ADE','S1',3,6,'Final Revision & Exam Readiness','Final revision','Timed sections and targeted support.','Timed practice','Final revision / exam readiness','','cse'),
+  _ialRow('y12_s1_022','Summer','S3A-S4B','3–14 May 2027','SSW & ADE','S1',3,6,'Final Revision & Exam Readiness','Exam readiness','Corrections and final techniques.','Timed practice','External exam readiness / likely exam season pressure','','cse'),
+  _ialRow('y12_s1_023','Summer','S5A+','17 May–30 Jun 2027','SSW & ADE','S1',0,6,'Final Revision & Exam Readiness','External exams / study leave','Targeted support only.','','Study leave / external exams','','flex'),
+];
+
+const Y13_P34_SOW = [
+  _ialRow('y13_p34_001','Michaelmas','M1A','24–28 Aug 2026','ADE','P3/P4',0,0,'Orientation','Orientation and diagnostic','Diagnostic, Year 12 retrieval, exam strategy and folder setup.','Diagnostic only','Orientation / induction','No new examinable content.','flex'),
+  _ialRow('y13_p34_002','Michaelmas','M2B-M3A','31 Aug–11 Sep 2026','ADE','P3',8,1,'Pure 3 — Core','P3.1 Algebraic methods; P3.2 Functions/graphs; P3.3 Trig functions start','Algebraic fractions, modulus, functions, inverse/composite functions, sec/cosec/cot basics.','Checkpoint quiz','Full fortnight','Combines early P3 content to reduce pure backlog.','core'),
+  _ialRow('y13_p34_003','Michaelmas','M4B-M5A','14–25 Sep 2026','ADE','P3',8,1,'Pure 3 — Core','P3.3 finish; P3.4 Trig addition formulae start','Trig functions, reciprocal trig, addition formulae, double angle formulae.','Checkpoint quiz','Full fortnight','Heavy trig block begins early.','core'),
+  _ialRow('y13_p34_004','Michaelmas','M6B-M7A','28 Sep–9 Oct 2026','ADE','P3',8,1,'Pure 3 — Core','P3.4 finish; P3.5 Exponentials/logarithms start','Addition formulae applications, identities, logarithmic/exponential modelling.','End-of-unit assessment','Full fortnight','Finish main trig before half-term.','core'),
+  _ialRow('y13_p34_005','Michaelmas','M8B','12–16 Oct 2026','ADE','P3',4,1,'Pure 3 — Core','P3.5 finish','Exponentials and logarithms consolidation.','Short assessment','Pre-half-term week','Final week before half-term — 4 lessons.','core'),
+  _ialRow('y13_p34_006','Michaelmas','HT-Mich','19–23 Oct 2026','ADE','',0,0,'Half-term','Michaelmas half-term','No teaching.','','Michaelmas half-term','Visible break row.','flex'),
+  _ialRow('y13_p34_007','Michaelmas','M9A-M10B','26 Oct–6 Nov 2026','ADE','P3',8,2,'Calculus & Numerical Methods','P3.6 Differentiation; P3.7/P3.8 Integration/numerical methods start','Differentiate trig/exponential/log functions, integration standard functions, numerical methods intro.','Checkpoint quiz','Full fortnight','Calculus starts immediately after half-term.','core'),
+  _ialRow('y13_p34_008','Michaelmas','M11A-M12B','9–20 Nov 2026','ADE','P3/P4',8,3,'Pure 4 — Foundations','P3.7/P3.8 finish; P4.1 Proof / P4.2 Partial fractions / P4.3 Coord geom start','Integration methods, numerical methods, proof by contradiction, partial fractions, parametric/coordinate geometry links.','End-of-unit assessment','Full fortnight','Keeps P4 start before late Michaelmas.','core'),
+  _ialRow('y13_p34_009','Michaelmas','M13A-M14B','23 Nov–4 Dec 2026','ADE','P4',8,3,'Pure 4 — Foundations','P4.1/P4.2/P4.3 finish; P4.4 Binomial expansion start','Proof, partial fractions, coordinate geometry, binomial expansion with rational powers.','Checkpoint quiz','Full fortnight','Sets up P4 calculus.','core'),
+  _ialRow('y13_p34_010','Michaelmas','M15A-M16B','7–16 Dec 2026','ADE','P4',5,3,'Pure 4 — Foundations','P4.4 Binomial expansion','Finish binomial expansion with rational/negative powers and validity range.','Checkpoint quiz','Short fortnight · No heavy content M16B','Shortened fortnight — 5 lessons.','core'),
+  _ialRow('y13_p34_011','Michaelmas','Xmas','17 Dec–6 Jan','ADE','',0,0,'Christmas / INSET','Christmas / INSET','No teaching.','','Christmas / INSET','Visible break row.','flex'),
+  _ialRow('y13_p34_012','Lent','L1A','7–8 Jan 2027','ADE','P4',2,4,'Advanced Calculus','P4.4 finish; P4.5/P4.6 Calculus start','Finish binomial; begin parametric differentiation/integration techniques.','No formal assessment','Partial start after INSET','Partial week — 2 lessons.','core'),
+  _ialRow('y13_p34_013','Lent','L2B','11–15 Jan 2027','ADE','',0,4,'Advanced Calculus','Mock week','Year 12 and 13 mocks — no regular teaching.','Mock assessment','Year 12 and 13 mock week','Off normal timetable.','assessment'),
+  _ialRow('y13_p34_014','Lent','L3A-L4B','18–29 Jan 2027','ADE','P4',8,4,'Advanced Calculus','P4.5/P4.6 Differentiation and integration','Parametric differentiation, implicit differentiation, integration by parts/substitution, differential equations.','Checkpoint quiz','Full fortnight','Compressed but protected.','core'),
+  _ialRow('y13_p34_015','Lent','L5A-L6B','1–12 Feb 2027','ADE','P4',8,4,'Advanced Calculus','P4.5/P4.6 finish; P4.7 Vectors start','Finish advanced calculus, introduce vectors in 2D/3D.','End-of-unit assessment','Full fortnight · No new heavy content L6B','Start vectors before half-term.','core'),
+  _ialRow('y13_p34_016','Lent','HT-Lent','15–19 Feb 2027','ADE','',0,0,'Half-term','Lent half-term','No teaching.','','Lent half-term','Visible break row.','flex'),
+  _ialRow('y13_p34_017','Lent','L7A-L8B','22 Feb–5 Mar 2027','ADE','P4',8,5,'Vectors','P4.7 Vectors','Vector equations of lines, scalar product, intersections, distances and angles.','Checkpoint quiz','Full fortnight','Part 1.','core'),
+  _ialRow('y13_p34_018','Lent','L9A-L10B','8–19 Mar 2027','ADE','P4',8,5,'Vectors','P4.7 Vectors finish','3D vector problems, mixed exam questions and full review.','End-of-unit assessment','⭐ Final first-teaching block — content target','All first teaching complete by L10B (19 Mar 2027).','core'),
+  _ialRow('y13_p34_019','Lent','L11A-L12B','22 Mar–2 Apr 2027','ADE','P3/P4',8,6,'Past-Paper Block','Past-paper block','Two weeks of mixed P3/P4 past-paper practice, timed questions, marking and corrections.','Past-paper practice','Protected past-paper block before April break','No new first-teaching content.','cse'),
+  _ialRow('y13_p34_020','Lent','Easter','5–18 Apr 2027','ADE','',0,0,'April break','April break','Independent revision.','','April break','No teaching.','flex'),
+  _ialRow('y13_p34_021','Summer','S1A-S2B','19–30 Apr 2027','ADE','P3/P4',8,7,'Final Revision & Exam Readiness','Final revision','Targeted paper practice and intervention.','Timed practice','Final revision / exam readiness','','cse'),
+  _ialRow('y13_p34_022','Summer','S3A-S4B','3–14 May 2027','ADE','P3/P4',8,7,'Final Revision & Exam Readiness','Exam readiness','Final corrections, exam timing and high-mark questions.','Timed practice','External exam readiness / likely exam season pressure','','cse'),
+  _ialRow('y13_p34_023','Summer','S5A+','17 May–30 Jun 2027','ADE','P3/P4',0,7,'Final Revision & Exam Readiness','External exams / study leave','Targeted support only.','','Study leave / external exams','','flex'),
+];
+
+const Y13_D1_SOW = [
+  _ialRow('y13_d1_001','Michaelmas','M1A','24–28 Aug 2026','XLN','D1',0,0,'Orientation','Orientation and diagnostic','Decision maths notation, algorithm tracing diagnostic.','Diagnostic only','Orientation / induction','No new content.','flex'),
+  _ialRow('y13_d1_002','Michaelmas','M2B-M3A','31 Aug–11 Sep 2026','XLN','D1',3,1,'Algorithms','D1.1 Algorithms','Algorithms, flowcharts, bubble sort, quick sort, bin packing, binary search.','Checkpoint quiz','Full fortnight','Compressed to 3 lessons across the fortnight.','core'),
+  _ialRow('y13_d1_003','Michaelmas','M4B-M5A','14–25 Sep 2026','XLN','D1',3,2,'Graphs & Networks','D1.2 Graphs and networks','Graph modelling, terminology, adjacency, degrees, isomorphism-style reasoning.','Checkpoint quiz','Full fortnight','','core'),
+  _ialRow('y13_d1_004','Michaelmas','M6B-M7A','28 Sep–9 Oct 2026','XLN','D1',3,2,'Graphs & Networks','D1.3 Algorithms on graphs start','Kruskal, Prim and Dijkstra methods.','No formal assessment','Full fortnight','','core'),
+  _ialRow('y13_d1_005','Michaelmas','M8B','12–16 Oct 2026','XLN','D1',1.5,2,'Graphs & Networks','D1.3 finish','Graph algorithms mixed questions.','Short quiz','Pre-half-term week','Short — 1.5 lessons.','core'),
+  _ialRow('y13_d1_006','Michaelmas','HT-Mich','19–23 Oct 2026','XLN','',0,0,'Half-term','Michaelmas half-term','No teaching.','','Michaelmas half-term','Visible break row.','flex'),
+  _ialRow('y13_d1_007','Michaelmas','M9A-M10B','26 Oct–6 Nov 2026','XLN','D1',3,3,'Route Inspection & TSP','D1.4 Route inspection; D1.5 TSP start','Eulerian graphs, route inspection, lower/upper bounds.','Checkpoint quiz','Full fortnight','','core'),
+  _ialRow('y13_d1_008','Michaelmas','M11A-M12B','9–20 Nov 2026','XLN','D1',3,3,'Route Inspection & TSP','D1.4/D1.5 finish','Travelling Salesman algorithms and mixed optimisation questions.','End-of-unit assessment','Full fortnight','Main Michaelmas evidence.','core'),
+  _ialRow('y13_d1_009','Michaelmas','M13A-M14B','23 Nov–4 Dec 2026','XLN','D1',3,4,'Critical Path Analysis','D1.6 Critical path analysis start','Activity networks, precedence tables, early/late times.','Checkpoint quiz','Full fortnight','','core'),
+  _ialRow('y13_d1_010','Michaelmas','M15A-M16B','7–16 Dec 2026','XLN','D1',2,4,'Critical Path Analysis','D1.6 continue','Critical path, floats, scheduling interpretation.','Short quiz','Short fortnight · No heavy content M16B','Shortened fortnight — 2 lessons.','core'),
+  _ialRow('y13_d1_011','Michaelmas','Xmas','17 Dec–6 Jan','XLN','',0,0,'Christmas / INSET','Christmas / INSET','No teaching.','','Christmas / INSET','Visible break row.','flex'),
+  _ialRow('y13_d1_012','Lent','L1A','7–8 Jan 2027','XLN','D1',1,4,'Critical Path Analysis','D1.6 finish','Critical path mixed exam practice.','No formal assessment','Partial start after INSET','Partial week — 1 lesson.','core'),
+  _ialRow('y13_d1_013','Lent','L2B','11–15 Jan 2027','XLN','',0,4,'Critical Path Analysis','Mock week','Year 12 and 13 mocks — no regular teaching.','Mock assessment','Year 12 and 13 mock week','Off normal timetable.','assessment'),
+  _ialRow('y13_d1_014','Lent','L3A-L4B','18–29 Jan 2027','XLN','D1',3,5,'Linear Programming','D1.7 Linear programming start','Inequalities, feasible regions and objective lines.','Checkpoint quiz','Full fortnight','','core'),
+  _ialRow('y13_d1_015','Lent','L5A-L6B','1–12 Feb 2027','XLN','D1',3,5,'Linear Programming','D1.7 finish','Linear programming interpretation and mixed exam questions.','End-of-unit assessment','Full fortnight · No new heavy content L6B','All core content taught.','core'),
+  _ialRow('y13_d1_016','Lent','HT-Lent','15–19 Feb 2027','XLN','',0,0,'Half-term','Lent half-term','No teaching.','','Lent half-term','Visible break row.','flex'),
+  _ialRow('y13_d1_017','Lent','L7A-L8B','22 Feb–5 Mar 2027','XLN','D1',3,6,'Mixed Review','Mixed D1 review','Algorithms, networks, CPA and LP mixed exam practice.','Timed practice','Full fortnight','','core'),
+  _ialRow('y13_d1_018','Lent','L9A-L10B','8–19 Mar 2027','XLN','D1',3,6,'Mixed Review','Final gaps','Full D1 mixed questions and exam technique.','Timed practice','⭐ Final first-teaching block — content target','Content complete by L10B (19 Mar 2027).','core'),
+  _ialRow('y13_d1_019','Lent','L11A-L12B','22 Mar–2 Apr 2027','XLN','D1',3,7,'Past-Paper Block','Past-paper block','Two weeks of D1 past-paper practice and corrections.','Past-paper practice','Protected past-paper block before April break','No new first-teaching content.','cse'),
+  _ialRow('y13_d1_020','Lent','Easter','5–18 Apr 2027','XLN','',0,0,'April break','April break','Independent revision.','','April break','No teaching.','flex'),
+  _ialRow('y13_d1_021','Summer','S1A-S2B','19–30 Apr 2027','XLN','D1',3,8,'Final Revision & Exam Readiness','Final revision','Timed sections and targeted support.','Timed practice','Final revision / exam readiness','','cse'),
+  _ialRow('y13_d1_022','Summer','S3A-S4B','3–14 May 2027','XLN','D1',3,8,'Final Revision & Exam Readiness','Exam readiness','Corrections and final techniques.','Timed practice','External exam readiness / likely exam season pressure','','cse'),
+  _ialRow('y13_d1_023','Summer','S5A+','17 May–30 Jun 2027','XLN','D1',0,8,'Final Revision & Exam Readiness','External exams / study leave','Targeted support only.','','Study leave / external exams','','flex'),
+];
+
+const IAL_SOW_BY_SET = {
+  12: { Ma1: Y12_MA1_SOW, Ma2: Y12_MA2_SOW, S1: Y12_S1_SOW },
+  13: { P34: Y13_P34_SOW, D1: Y13_D1_SOW },
+};
+
+// Resolve the correct SoW array for any (year-group, set) pair
+function sowFor(yg, set){
+  const ial = (IAL_SOW_BY_SET[yg]||{})[set];
+  if(ial) return ial;
+  if((yg===10||yg===11) && set==='Ma4') return yg===10 ? Y10_MA4_SOW : Y11_MA4_SOW;
+  if(yg===9 && set==='Ma1') return Y9_MA1_SOW;
+  return SOW_BY_YG[yg] || null;
+}
+
+// Derive a flat assessment list for IAL classes from their SoW rows
+function ialAssessmentsFor(yg, set){
+  const sow = (IAL_SOW_BY_SET[yg]||{})[set] || [];
+  const out = [];
+  sow.forEach(r=>{
+    const a = r.assess || '';
+    if(!a || /^Diagnostic only$/i.test(a)) return;
+    let name = '', kind = '';
+    if(/Mock assessment/i.test(a))          { name='Mock Week';            kind='mock'; }
+    else if(/End-of-unit assessment/i.test(a)){ name='End-of-unit Assessment'; kind='eou'; }
+    else if(/Past-paper practice/i.test(a)) { name='Past-paper Block';     kind='past'; }
+    else if(/Checkpoint quiz/i.test(a))     { name='Checkpoint Quiz';      kind='check'; }
+    else if(/Short (quiz|assessment|graph)/i.test(a)){ name='Short Quiz';   kind='short'; }
+    else if(/Timed practice/i.test(a))      { name='Timed Practice';       kind='timed'; }
+    else return;
+    out.push({name, sub:r.lessonName, week:r.week, dates:r.dates, term:r.term, kind});
+  });
+  return out;
+}
+
+// SoW pacing/safety validation
+function validateIalSow(yg, set){
+  const info = (IAL_INFO[yg]||{})[set];
+  const sow = (IAL_SOW_BY_SET[yg]||{})[set];
+  const warns = [];
+  if(!info || !sow) return warns;
+  const expect = info.expectedPerFortnight;
+
+  // 1) First-teaching after L10B (any core block in L11A/L12B/Summer)
+  const lateCore = sow.filter(r=>r.type==='core' && (/^L11A|^L12B/.test(r.week) || r.term==='Summer'));
+  if(lateCore.length) warns.push({level:'red', msg:`First-teaching content scheduled after L10B (${lateCore.length} block).`});
+
+  // 2) L11A-L12B must be past-paper only
+  const pp = sow.find(r=>r.week==='L11A-L12B');
+  if(pp && !/past-paper/i.test(pp.lessonName)){
+    warns.push({level:'red', msg:'L11A–L12B contains non-past-paper content.'});
+  }
+
+  // 3) L2B mock week must not have teaching
+  const mock = sow.find(r=>r.week==='L2B');
+  if(mock && mock.type!=='assessment' && mock.fortnightLessons>0){
+    warns.push({level:'red', msg:'L2B (mock week) has teaching scheduled — should be off-timetable.'});
+  }
+
+  // 4) Full fortnights match expected lessons (skip explicitly short fortnights)
+  sow.filter(r=>r.type==='core' && /-/.test(r.week) && !/HT|Xmas|Easter|S\d+A/.test(r.week))
+    .forEach(r=>{
+      if(!/short|shortened|partial|compressed/i.test(r.pacingNote||'') && r.fortnightLessons!==expect){
+        warns.push({level:'amber', msg:`${r.week}: ${r.fortnightLessons} lessons (expected ${expect}).`});
+      }
+    });
+
+  return warns;
+}
 
 // ════════════════════════════════════════════════════════════════════
 //  STORAGE  (server-backed, in-memory cache, localStorage cross-tab)
@@ -1783,7 +2003,7 @@ let hodYear = 7;
 
 function renderYearTabs(){
   const yrs=['7','8','9','10','11','12','13'];
-  const available=new Set(['7','8','9','10','11']);
+  const available=new Set(['7','8','9','10','11','12','13']);
   document.getElementById('yg-tabs').innerHTML=yrs.map(y=>
     `<button class="yg-tab${String(hodYear)===y?' active':''}${available.has(y)?'':' disabled'}" data-year="${y}">Year ${y}</button>`
   ).join('');
@@ -1825,10 +2045,9 @@ function renderHOD(){
       </div>`;
       return;
     }
-    // Ma4 bottom-set uses its own SOW; all other sets use hodSow
-    const cardSow = ((hodYear===10||hodYear===11) && set==='Ma4')
-      ? (hodYear===10 ? Y10_MA4_SOW : Y11_MA4_SOW)
-      : hodSow;
+    // Resolve the correct SoW for this card (Ma4 bottom-set, IAL, or default)
+    const cardSow = sowFor(hodYear,set) || hodSow;
+    const ialInfo = (IAL_INFO[hodYear]||{})[set];
     const p=getProgress(set,cardSow); td+=p.done; tp+=p.prog;
     if(p.pct<40) behind++;
     const overallBc=barClass(p.pct);
@@ -1848,12 +2067,15 @@ function renderHOD(){
     });
 
     const teacher=hodTeachers[set]||set;
+    const subLine = ialInfo
+      ? `${ialInfo.label} · ${p.done} of ${p.total} fortnight blocks done`
+      : `Year ${hodYear} · ${p.done} of ${p.total} lessons done`;
     cardsHtml+=`<div class="teacher-card">
       <div class="tc-header">
-        <div class="tc-avatar">${teacher}</div>
+        <div class="tc-avatar">${teacher.length>5?teacher.slice(0,5):teacher}</div>
         <div>
-          <div class="tc-name">${teacher} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
-          <div class="tc-sub">Year ${hodYear} · ${p.done} of ${p.total} lessons done</div>
+          <div class="tc-name">${teacher} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}${ialInfo?` (${ialInfo.label.replace(/^Year \d+ /,'')})`:''}</span></div>
+          <div class="tc-sub">${subLine}</div>
         </div>
         <div style="margin-left:auto;font-size:22px;font-weight:800;">
           <span style="color:${p.pct>=70?'var(--green)':p.pct>=40?'var(--amber)':'var(--red)'}">${p.pct}%</span>
@@ -1882,7 +2104,7 @@ function renderHOD(){
   terms.forEach((term,i)=>{
     const label=['Target 100% by Dec','Target 100% by Apr','Target 100% by Jul'][i];
     let sumDone=0,sumTotal=0;
-    hodSets.forEach(set=>{const tp2=getTermProgress(set,term,hodSow);sumDone+=tp2.done;sumTotal+=tp2.total;});
+    hodSets.forEach(set=>{const cs=sowFor(hodYear,set)||hodSow;const tp2=getTermProgress(set,term,cs);sumDone+=tp2.done;sumTotal+=tp2.total;});
     const avgPct=sumTotal?Math.round(sumDone/sumTotal*100):0;
     const bc=barClass(avgPct);
     summaryHtml+=`<div class="term-summary-row">
@@ -1897,7 +2119,11 @@ function renderHOD(){
   document.getElementById('stat-done').textContent=Math.round(td/hodSets.length);
   document.getElementById('stat-prog').textContent=Math.round(tp/hodSets.length);
   document.getElementById('stat-behind').textContent=behind;
-  const assessCount=(ASSESSMENTS[hodYear]||[]).length;
+  let assessCount=(ASSESSMENTS[hodYear]||[]).length;
+  if(IAL_SOW_BY_SET[hodYear]){
+    assessCount = Object.keys(IAL_SOW_BY_SET[hodYear])
+      .reduce((n,s)=>n+ialAssessmentsFor(hodYear,s).length, 0);
+  }
   document.getElementById('stat-assess').textContent=assessCount;
   document.getElementById('stat-done-lbl').textContent=`Avg lessons Done (Y${hodYear})`;
   document.getElementById('stat-prog-lbl').textContent=`Avg lessons In Progress (Y${hodYear})`;
@@ -1921,11 +2147,10 @@ function renderTeacher(){
        <p>Year ${yg} ${set} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
     return;
   }
-  // Route to the correct SOW
-  const sow = ((yg===10||yg===11) && set==='Ma4')
-    ? (yg===10 ? Y10_MA4_SOW : Y11_MA4_SOW)
-    : (yg===9 && set==='Ma1') ? Y9_MA1_SOW
-    : SOW_BY_YG[yg];
+  // Route to the correct SOW (IAL-aware via sowFor helper)
+  const sow = sowFor(yg, set);
+  const ialInfo = (IAL_INFO[yg]||{})[set];
+  const ialWarns = ialInfo ? validateIalSow(yg, set) : [];
   if(!sow){
     document.getElementById('teacher-content').innerHTML=
       `<div class="coming-soon"><h3>Year ${yg} SoW coming soon</h3><p>Upload the Year ${yg} SoW to activate this view.</p></div>`;
@@ -1941,17 +2166,43 @@ function renderTeacher(){
   ):base;
   const p=getProgress(set,sow);
 
+  const unitLabel = ialInfo ? `lessons completed (${p.pct}%) · fortnight-block tracker` : `lessons completed (${p.pct}%)`;
   let html=`<div class="card"><div class="tv-header">
     <div>
-      <div class="tv-title">${teachers[set]||set} — Year ${yg} ${set}</div>
+      <div class="tv-title">${teachers[set]||set} — Year ${yg} ${set}${ialInfo?` <span style="font-weight:400;color:var(--dark-gray);font-size:14px;">· ${ialInfo.label.replace(/^Year \d+ /,'')}</span>`:''}</div>
       <div id="tv-lbl" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">
-        ${p.done} of ${p.total} lessons completed (${p.pct}%)</div>
+        ${p.done} of ${p.total} ${unitLabel}</div>
     </div>
     <div class="tv-progress-wrap">
       <div class="tv-bar-wrap"><div id="tv-bar" class="tv-bar" style="width:${p.pct}%"></div></div>
       <span id="tv-pct" style="font-weight:700;color:var(--navy)">${p.pct}%</span>
     </div>
   </div></div>`;
+
+  // IAL banner + warnings
+  if(ialInfo){
+    html+=`<div class="card" style="background:#F4F1EA;border-left:4px solid var(--navy);padding:14px 18px;margin-bottom:14px;">
+      <div style="font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px;">Pearson Edexcel IAL · ${esc(ialInfo.label)}</div>
+      <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
+        ${esc(ialInfo.classNote)}<br>
+        <strong>Pacing model:</strong> ${ialInfo.expectedPerFortnight} lessons per full fortnight · <strong>23 tracked fortnight blocks</strong>.
+        <strong>First-teaching target:</strong> all content complete by L10B (19 Mar 2027).
+        <strong>L11A–L12B</strong> protected past-paper block · <strong>L2B</strong> is mock week (off normal timetable).
+        ${ialInfo.riskNote?`<br><span style="color:var(--red);font-weight:600;">⚠ ${esc(ialInfo.riskNote)}</span>`:''}
+      </div>
+    </div>`;
+    if(ialWarns.length){
+      const reds = ialWarns.filter(w=>w.level==='red');
+      html+=`<div class="card" style="border-left:4px solid ${reds.length?'var(--red)':'var(--amber)'};padding:12px 16px;margin-bottom:14px;">
+        <div style="font-weight:700;font-size:13px;margin-bottom:6px;color:${reds.length?'var(--red)':'var(--amber)'};">
+          ${reds.length?'⚠ Pacing alerts':'⚠ Pacing notes'} · ${ialWarns.length} item${ialWarns.length>1?'s':''}
+        </div>
+        <ul style="margin:0;padding-left:18px;font-size:12.5px;color:var(--dark-gray);line-height:1.6;">
+          ${ialWarns.map(w=>`<li style="color:${w.level==='red'?'var(--red)':'var(--dark-gray)'}">${esc(w.msg)}</li>`).join('')}
+        </ul>
+      </div>`;
+    }
+  }
 
   // Pre-compute total lessons per unit and sequential numbers (core + cse only)
   const unitCounts={};
@@ -2078,7 +2329,7 @@ function handleChange(e){
   // Update progress bar
   const set2=document.getElementById('sel-set').value;
   const yg2=parseInt(document.getElementById('sel-yg').value);
-  const p=getProgress(set2,SOW_BY_YG[yg2]||Y7_SOW);
+  const p=getProgress(set2,sowFor(yg2,set2)||Y7_SOW);
   const bar=document.getElementById('tv-bar');
   const pct=document.getElementById('tv-pct');
   const lbl=document.getElementById('tv-lbl');
@@ -2091,7 +2342,7 @@ function resetProgress(){
   if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
   const set=document.getElementById('sel-set').value;
   const yg=parseInt(document.getElementById('sel-yg').value);
-  const sow=SOW_BY_YG[yg]||Y7_SOW;
+  const sow=sowFor(yg,set)||Y7_SOW;
   const d=loadAll();
   sow.forEach(l=>delete d[makeKey(l.id,set)]);
   saveAll(d);
@@ -2104,10 +2355,14 @@ function resetProgress(){
 let assessY9Filter  = 'ma24';
 let assessY10Filter = 'ma23';
 let assessY11Filter = 'ma23';
+let assessY12Filter = 'Ma1';
+let assessY13Filter = 'P34';
 
 function setAssessFilter(f)    { assessY9Filter=f;  renderAssessments(); }
 function setAssessY10Filter(f) { assessY10Filter=f; renderAssessments(); }
 function setAssessY11Filter(f) { assessY11Filter=f; renderAssessments(); }
+function setAssessY12Filter(f) { assessY12Filter=f; renderAssessments(); }
+function setAssessY13Filter(f) { assessY13Filter=f; renderAssessments(); }
 
 function renderAssessments(){
   const yg = document.getElementById('sel-assess-yg').value;
@@ -2141,6 +2396,61 @@ function renderAssessments(){
       <button class="assess-tog-btn${assessY11Filter==='ma1'?' active':''}" onclick="setAssessY11Filter('ma1')">Ma1 — SSW</button>
       <button class="assess-tog-btn${assessY11Filter==='ma4'?' active':''}" onclick="setAssessY11Filter('ma4')">Ma4 — MKM</button>
     </div>`;
+  }
+  if(ygInt === 12){
+    toggleHtml = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">IAL class:</span>
+      <button class="assess-tog-btn${assessY12Filter==='Ma1'?' active':''}" onclick="setAssessY12Filter('Ma1')">Ma1 P1/P2 — SSW</button>
+      <button class="assess-tog-btn${assessY12Filter==='Ma2'?' active':''}" onclick="setAssessY12Filter('Ma2')">Ma2 P1/P2 — FTA</button>
+      <button class="assess-tog-btn${assessY12Filter==='S1'?' active':''}" onclick="setAssessY12Filter('S1')">S1 — SSW & ADE</button>
+    </div>`;
+  }
+  if(ygInt === 13){
+    toggleHtml = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">IAL class:</span>
+      <button class="assess-tog-btn${assessY13Filter==='P34'?' active':''}" onclick="setAssessY13Filter('P34')">P3/P4 — ADE</button>
+      <button class="assess-tog-btn${assessY13Filter==='D1'?' active':''}" onclick="setAssessY13Filter('D1')">D1 — XLN</button>
+    </div>`;
+  }
+
+  // Y12 / Y13 IAL — derive from SoW
+  if(ygInt === 12 || ygInt === 13){
+    const set = ygInt===12 ? assessY12Filter : assessY13Filter;
+    const info = (IAL_INFO[ygInt]||{})[set] || {};
+    const items = ialAssessmentsFor(ygInt, set);
+    const terms = ['Michaelmas','Lent','Summer'];
+    let html = toggleHtml;
+    html += `<div style="background:#F4F1EA;border-left:4px solid var(--navy);padding:12px 16px;border-radius:0 6px 6px 0;margin-bottom:16px;">
+      <div style="font-weight:700;color:var(--navy);font-size:13px;">Pearson Edexcel IAL · ${esc(info.label||set)}</div>
+      <div style="font-size:12px;color:var(--dark-gray);margin-top:4px;">${esc(info.classNote||'')} Mock week L2B · Past-paper block L11A–L12B · First teaching complete by L10B (19 Mar 2027).</div>
+    </div>`;
+    terms.forEach(term=>{
+      const ta=items.filter(a=>a.term===term);
+      if(!ta.length)return;
+      html+=`<div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
+          margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
+        <div class="assess-grid">`;
+      ta.forEach(a=>{
+        const cls = a.kind==='mock'||a.kind==='past'?'eoy':a.kind==='eou'?'interim':'';
+        const flag = a.kind==='mock' ? '<div class="assess-flag" style="color:var(--red);">⚠ Off-timetable mock week</div>'
+                   : a.kind==='past' ? '<div class="assess-flag" style="color:var(--navy);">★ Protected past-paper block</div>'
+                   : a.kind==='eou'  ? '<div class="assess-flag">★ End-of-unit evidence</div>' : '';
+        html+=`<div><div class="assess-card ${cls}">
+          <div class="assess-week">${esc(a.week)}</div>
+          <div class="assess-name">${esc(a.name)}</div>
+          <div class="assess-sub">${esc(a.sub)}</div>
+          <div class="assess-date">📅 ${esc(a.dates)}</div>
+          ${flag}
+        </div></div>`;
+      });
+      html+='</div></div>';
+    });
+    if(!items.length){
+      html += `<div class="coming-soon"><h3>No scheduled assessments</h3><p>This class has no formal assessments outside the SoW.</p></div>`;
+    }
+    contentEl.innerHTML = html;
+    return;
   }
 
   // Y10 Ma1 / Y11 Ma1 — coming soon

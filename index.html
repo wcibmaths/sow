@@ -426,8 +426,8 @@ const TEACHERS_BY_YG = {
   9:  { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
   10: { Ma1:'SSW', Ma2:'ADE', Ma3:'HPA', Ma4:'FTA' },
   11: { Ma1:'SSW', Ma2:'FTA', Ma3:'ADE', Ma4:'MKM' },
-  12: { Ma1P12:'SSW', Ma2P12:'FTA', Ma1S1:'SSW', Ma2S1:'ADE' },
-  13: { P34:'ADE', M1:'ADE', D1:'XLN', FMP1234:'MKM', FMFP12:'HPA', FMS23:'SSW', FMM2:'XLN' },
+  12: { Ma1P12:'SSW', Ma2P12:'FTA', Ma1S1:'SSW', Ma2S1:'ADE', FMP1234:'MKM', FMM1:'XLN' },
+  13: { P34:'ADE', M1:'ADE', D1:'XLN', FMFP12:'HPA', FMS23:'SSW', FMM2:'XLN' },
 };
 const SETS_BY_YG = {
   7:  ['Ma1','Ma2','Ma3','Ma4'],
@@ -435,8 +435,8 @@ const SETS_BY_YG = {
   9:  ['Ma1','Ma2','Ma3','Ma4'],
   10: ['Ma1','Ma2','Ma3','Ma4'],
   11: ['Ma1','Ma2','Ma3','Ma4'],
-  12: ['Ma1P12','Ma2P12','Ma1S1','Ma2S1'],
-  13: ['P34','M1','D1','FMP1234','FMFP12','FMS23','FMM2'],
+  12: ['Ma1P12','Ma2P12','Ma1S1','Ma2S1','FMP1234','FMM1'],
+  13: ['P34','M1','D1','FMFP12','FMS23','FMM2'],
 };
 const SOW_BY_YG = {};  // populated after SOW arrays are defined
 const TEACHERS = TEACHERS_BY_YG[7];
@@ -1640,12 +1640,13 @@ const IAL_INFO = {
     Ma2P12: {label:'Ma2 · P1/P2 (FTA)', course:'P1/P2', teacher:'FTA', expectedPerFortnight:8, classNote:'Pearson Edexcel IAL — Pure 1 / Pure 2. 4 lessons per teaching week.'},
     Ma1S1:  {label:'Ma1 · S1 (SSW)',    course:'S1',    teacher:'SSW', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL — Statistics 1. 2 lessons in Cycle A weeks, 1 in Cycle B.'},
     Ma2S1:  {label:'Ma2 · S1 (ADE)',    course:'S1',    teacher:'ADE', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL — Statistics 1. 2 lessons in Cycle A weeks, 1 in Cycle B.'},
+    FMP1234:{label:'FM P1-P4 (MKM)',     course:'FM P1-P4', teacher:'MKM', expectedPerFortnight:14, classNote:'Pearson Edexcel IAL Further Maths — Pure 1-4. 7 lessons per teaching week.'},
+    FMM1:   {label:'FM M1 (XLN)',        course:'M1',       teacher:'XLN', expectedPerFortnight:3,  classNote:'Pearson Edexcel IAL Further Maths — Mechanics 1. 2 lessons in Cycle A weeks, 1 in Cycle B. Shares the M1 SoW with Year 13.'},
   },
   13: {
     P34:     {label:'P3/P4 (ADE)',          course:'P3/P4',   teacher:'ADE', expectedPerFortnight:8,  classNote:'Pearson Edexcel IAL — Pure 3 / Pure 4. 4 lessons per teaching week.'},
     M1:      {label:'M1 (ADE)',             course:'M1',      teacher:'ADE', expectedPerFortnight:3,  classNote:'Pearson Edexcel IAL — Mechanics 1. 2 lessons in Cycle A weeks, 1 in Cycle B (Further Maths cohort).'},
     D1:      {label:'D1 (XLN)',             course:'D1',      teacher:'XLN', expectedPerFortnight:3,  classNote:'Pearson Edexcel IAL — Decision 1. 2 lessons in Cycle A weeks, 1 in Cycle B.'},
-    FMP1234: {label:'FM P1-P4 (MKM)',       course:'FM P1-P4',teacher:'MKM', expectedPerFortnight:14, classNote:'Pearson Edexcel IAL Further Maths — Pure 1-4. 7 lessons per teaching week.'},
     FMFP12:  {label:'FM FP1/FP2 (HPA)',     course:'FP1/FP2', teacher:'HPA', expectedPerFortnight:11, classNote:'Pearson Edexcel IAL Further Maths — Further Pure 1/2. 5-6 lessons per teaching week.'},
     FMS23:   {label:'FM S2/S3 (SSW)',       course:'S2/S3',   teacher:'SSW', expectedPerFortnight:4,  classNote:'Pearson Edexcel IAL Further Maths — Statistics 2/3. 2 lessons per teaching week.'},
     FMM2:    {label:'FM M2 (XLN)',          course:'M2',      teacher:'XLN', expectedPerFortnight:4,  classNote:'Pearson Edexcel IAL Further Maths — Mechanics 2. 2 lessons per teaching week.'},
@@ -2493,16 +2494,17 @@ const Y13_FM_M2_SOW = [
 
 const IAL_SOW_BY_SET = {
   12: {
-    Ma1P12: Y12_P12_SOW,
-    Ma2P12: Y12_P12_SOW,
-    Ma1S1:  Y12_S1_SOW,
-    Ma2S1:  Y12_S1_SOW,
+    Ma1P12:  Y12_P12_SOW,
+    Ma2P12:  Y12_P12_SOW,
+    Ma1S1:   Y12_S1_SOW,
+    Ma2S1:   Y12_S1_SOW,
+    FMP1234: Y13_FM_P1234_SOW,
+    FMM1:    Y13_M1_SOW,
   },
   13: {
     P34:    Y13_P34_SOW,
     M1:     Y13_M1_SOW,
     D1:     Y13_D1_SOW,
-    FMP1234:Y13_FM_P1234_SOW,
     FMFP12: Y13_FM_FP12_SOW,
     FMS23:  Y13_FM_S23_SOW,
     FMM2:   Y13_FM_M2_SOW,
@@ -3168,6 +3170,8 @@ function renderAssessments(){
       <button class="assess-tog-btn${assessY12Filter==='Ma2P12'?' active':''}" onclick="setAssessY12Filter('Ma2P12')">Ma2 · P1/P2 (FTA)</button>
       <button class="assess-tog-btn${assessY12Filter==='Ma1S1'?' active':''}" onclick="setAssessY12Filter('Ma1S1')">Ma1 · S1 (SSW)</button>
       <button class="assess-tog-btn${assessY12Filter==='Ma2S1'?' active':''}" onclick="setAssessY12Filter('Ma2S1')">Ma2 · S1 (ADE)</button>
+      <button class="assess-tog-btn${assessY12Filter==='FMP1234'?' active':''}" onclick="setAssessY12Filter('FMP1234')">FM P1-P4 (MKM)</button>
+      <button class="assess-tog-btn${assessY12Filter==='FMM1'?' active':''}" onclick="setAssessY12Filter('FMM1')">FM M1 (XLN)</button>
     </div>`;
   }
   if(ygInt === 13){
@@ -3176,7 +3180,6 @@ function renderAssessments(){
       <button class="assess-tog-btn${assessY13Filter==='P34'?' active':''}" onclick="setAssessY13Filter('P34')">P3/P4 (ADE)</button>
       <button class="assess-tog-btn${assessY13Filter==='M1'?' active':''}" onclick="setAssessY13Filter('M1')">M1 (ADE)</button>
       <button class="assess-tog-btn${assessY13Filter==='D1'?' active':''}" onclick="setAssessY13Filter('D1')">D1 (XLN)</button>
-      <button class="assess-tog-btn${assessY13Filter==='FMP1234'?' active':''}" onclick="setAssessY13Filter('FMP1234')">FM P1-P4 (MKM)</button>
       <button class="assess-tog-btn${assessY13Filter==='FMFP12'?' active':''}" onclick="setAssessY13Filter('FMFP12')">FM FP1/FP2 (HPA)</button>
       <button class="assess-tog-btn${assessY13Filter==='FMS23'?' active':''}" onclick="setAssessY13Filter('FMS23')">FM S2/S3 (SSW)</button>
       <button class="assess-tog-btn${assessY13Filter==='FMM2'?' active':''}" onclick="setAssessY13Filter('FMM2')">FM M2 (XLN)</button>

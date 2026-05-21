@@ -1,0 +1,55 @@
+Update the Scheme of Work dashboard colours to match the soft pastel dashboard mockup.
+
+Keep the same fonts as the WCIB Maths Hub.
+Do not change the layout, content, tabs, cards, or data logic.
+Only update colours, borders, shadows, buttons, chips, and progress indicators.
+
+Use this palette:
+- Page background: #F4EFE7
+- Card background: #FFFFFF
+- Soft panel background: #FBF8F4
+- Border: #E2DDD7
+- Main text: #2F3640
+- Muted text: #6C7480
+- Header/nav background: #7A829B
+- Header/nav active: #9A8FAF
+- Active underline/accent: #DBA39D
+- Pale Mint: #C9E4D4
+- Mercury Blue: #A8BFD1
+- Blush Clay: #DBA39D
+- Muted Lavender: #B39EB5
+
+Specific changes:
+1. Replace the dark navy top bar with #7A829B.
+2. Keep top bar text white.
+3. Make the active nav tab use #9A8FAF with a small #DBA39D underline.
+4. Change the page background to #F4EFE7.
+5. Make all cards white with #E2DDD7 borders.
+6. Use a soft shadow only: 0 2px 10px rgba(47, 54, 64, 0.05).
+7. Use #2F3640 for headings and large numbers.
+8. Use #6C7480 for labels and secondary text.
+9. Use white summary cards with soft coloured icon circles:
+   - Avg lessons done: #C9E4D4
+   - Avg lessons in progress: #A8BFD1
+   - Classes behind pace: #DBA39D
+   - Assessments scheduled: #B39EB5
+10. Use the same colours as thin left borders on the matching summary cards.
+11. Change active Year Group pill to soft blue #A8BFD1 with dark text.
+12. Keep inactive year pills white with #E2DDD7 border.
+13. Use #FBF8F4 for the department average panel.
+14. Progress bar track should be #E7E2DB.
+15. Progress fill colours:
+   - done/completed: #C9E4D4
+   - in progress: #A8BFD1
+   - warning/behind pace: #DBA39D
+16. Replace harsh orange/red percentages with softer colours:
+   - normal/neutral: #5F7386
+   - completed/good: #5F8F78
+   - warning: #B06B62
+17. Teacher cards should stay white with soft borders.
+18. Teacher initial circles should use soft pastel fills from the palette.
+19. Status chips:
+   - done: background #E8F4EE, text #5F8F78
+   - in progress: background #EAF1F6, text #5F7386
+   - not started: background #F5E7E4, text #B06B62
+20. Keep the design clean, spacious, light, and professional.

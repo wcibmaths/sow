@@ -1485,9 +1485,12 @@ const ASSESSMENTS = {
   ],
 };
 
-// ── Y9 Ma1 mirrors Y10 Ma2 (ADE) — identical SoW + Assessment Schedule ──
+// ── Accelerated Ma1 classes share a higher year's SoW + Assessment Schedule ──
+// Year 9 Ma1 (SSW) mirrors Year 10 Ma2 (ADE) — IGCSE Higher Linear A.
+// Year 8 Ma1 (ADE) mirrors Year 9 Ma2 (FTA) — Pearson Maths Progress Year 9 textbook.
 const Y9_MA1_SOW = Y10_SOW;
-const ASSESSMENTS_MA1 = { 9: ASSESSMENTS[10] };
+const Y8_MA1_SOW = Y9_SOW;
+const ASSESSMENTS_MA1 = { 9: ASSESSMENTS[10], 8: ASSESSMENTS[9] };
 
 // Assessment data for Ma4 bottom-set (IGCSE) — Y10 (FTA) and Y11 (MKM)
 const ASSESSMENTS_MA4 = {
@@ -2450,6 +2453,7 @@ function sowFor(yg, set){
   if(ial) return ial;
   if((yg===10||yg===11) && set==='Ma4') return yg===10 ? Y10_MA4_SOW : Y11_MA4_SOW;
   if(yg===9 && set==='Ma1') return Y9_MA1_SOW;
+  if(yg===8 && set==='Ma1') return Y8_MA1_SOW;
   return SOW_BY_YG[yg] || null;
 }
 
@@ -2876,6 +2880,24 @@ function renderTeacher(){
     </div>
   </div></div>`;
 
+  // Accelerated-class banner — Year 8 Ma1 and Year 9 Ma1 follow a higher year's SoW.
+  if(yg===8 && set==='Ma1'){
+    html += `<div class="card" style="border-left:4px solid var(--navy);padding:12px 16px;margin-bottom:14px;background:#f4f7fb;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--navy);">Accelerated class — taught one year ahead</div>
+      <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
+        Year 8 Ma1 (ADE) uses the Pearson <em>Maths Progress International — Year 9</em> textbook and follows the Year 9 (Ma2 / FTA) scheme of work. The Michaelmas plan below is therefore identical to Year 9 Ma2.
+      </div>
+    </div>`;
+  }
+  if(yg===9 && set==='Ma1'){
+    html += `<div class="card" style="border-left:4px solid var(--navy);padding:12px 16px;margin-bottom:14px;background:#f4f7fb;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--navy);">Accelerated class — IGCSE pathway begins early</div>
+      <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
+        Year 9 Ma1 (SSW) follows the Pearson Edexcel IGCSE Higher Linear A scheme of work — the same plan as the Year 10 regular class (Ma2 / ADE). The Michaelmas content below is therefore identical to Year 10 Ma2.
+      </div>
+    </div>`;
+  }
+
   // IAL pacing alerts only — notes bar removed for a cleaner SoW page.
   if(ialInfo){
     if(ialWarns.length){
@@ -3054,12 +3076,14 @@ function resetProgress(){
 // ════════════════════════════════════════════════════════════════════
 //  ASSESSMENTS
 // ════════════════════════════════════════════════════════════════════
+let assessY8Filter  = 'ma24';
 let assessY9Filter  = 'ma24';
 let assessY10Filter = 'ma23';
 let assessY11Filter = 'ma23';
 let assessY12Filter = 'P12';
 let assessY13Filter = 'P34';
 
+function setAssessY8Filter(f)  { assessY8Filter=f;  renderAssessments(); }
 function setAssessFilter(f)    { assessY9Filter=f;  renderAssessments(); }
 function setAssessY10Filter(f) { assessY10Filter=f; renderAssessments(); }
 function setAssessY11Filter(f) { assessY11Filter=f; renderAssessments(); }
@@ -3076,6 +3100,13 @@ function renderAssessments(){
 
   // Toggle header
   let toggleHtml = '';
+  if(ygInt === 8){
+    toggleHtml = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">Schedule for:</span>
+      <button class="assess-tog-btn${assessY8Filter==='ma24'?' active':''}" onclick="setAssessY8Filter('ma24')">Ma2–Ma4 (MKM / FTA / HPA)</button>
+      <button class="assess-tog-btn${assessY8Filter==='ma1'?' active':''}" onclick="setAssessY8Filter('ma1')">Ma1 — ADE</button>
+    </div>`;
+  }
   if(ygInt === 9){
     toggleHtml = `<div class="assess-tog-wrap">
       <span class="assess-tog-lbl">Schedule for:</span>
@@ -3223,6 +3254,45 @@ function renderAssessments(){
           <div class="assess-sub">${esc(a.sub)}</div>
           <div class="assess-date">📅 ${a.dates}</div>
           ${a.eoy?`<div class="assess-flag" style="color:var(--navy);">${ygInt===11?'IGCSE External Examinations':'Year ${ygInt} Exams'}</div>`:''}
+        </div></div>`;
+      });
+      html+='</div></div>';
+    });
+    contentEl.innerHTML = html;
+    return;
+  }
+
+  // Y8 Ma1 (ADE) — accelerated, mirrors Y9 Ma2 assessment schedule
+  if(ygInt === 8 && assessY8Filter === 'ma1'){
+    const ma1data = (ASSESSMENTS_MA1[8]||[]);
+    if(!ma1data.length){
+      contentEl.innerHTML = toggleHtml +
+        `<div class="coming-soon" style="margin-top:8px;"><h3>Ma1 — Assessment Schedule</h3><p>Ma1 assessment data will appear here soon.</p></div>`;
+      return;
+    }
+    const terms=['Michaelmas','Lent','Summer'];
+    let html = toggleHtml;
+    html += `<div class="card" style="border-left:4px solid var(--navy);padding:12px 16px;margin-bottom:14px;background:#f4f7fb;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--navy);">Accelerated class — follows Year 9 (Ma2 / FTA)</div>
+      <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
+        Year 8 Ma1 (ADE) is taught one year ahead using the Pearson <em>Maths Progress International — Year 9</em> textbook. The assessment schedule below is the same one used by Year 9 Ma2 (FTA).
+      </div>
+    </div>`;
+    terms.forEach(term=>{
+      const ta=ma1data.filter(a=>a.term===term);
+      if(!ta.length)return;
+      html+=`<div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dark-gray);
+          margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--mid-gray);">${term} Term</div>
+        <div class="assess-grid">`;
+      ta.forEach(a=>{
+        const cls=a.eoy?'eoy':a.interim?'interim':'';
+        html+=`<div><div class="assess-card ${cls}">
+          <div class="assess-week">${a.week}</div>
+          <div class="assess-name">${esc(a.name)}</div>
+          <div class="assess-sub">${esc(a.sub)}</div>
+          <div class="assess-date">📅 ${a.dates}</div>
+          ${a.eoy?'<div class="assess-flag" style="color:var(--navy);">Year 8 Summer Exams</div>':''}
         </div></div>`;
       });
       html+='</div></div>';

@@ -12,3 +12,9 @@ id = "XoWpKGqrpNX4EnvdiUqkF"
 uri = "file://attached_assets/Y10_Ma2-Ma3_SoW_2026-27.xlsx"
 type = "table"
 title = "Year 10 Ma2/Ma3 — Scheme of Work 2026/27"
+
+[[outputs]]
+id = "3aOmtA8b8WsXvO9CBaBzk"
+uri = "file://attached_assets/Y11_Ma2-Ma3_SoW_2026-27.xlsx"
+type = "table"
+title = "Year 11 Ma2/Ma3 — Scheme of Work 2026/27"

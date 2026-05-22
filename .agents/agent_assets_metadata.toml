@@ -6,3 +6,9 @@ id = "HZ_Fx2wXU5FAV8Embdym9"
 uri = "file://Y12_Y13_SOW.csv"
 type = "table"
 title = "Y12 & Y13 Scheme of Work (all lessons)"
+
+[[outputs]]
+id = "XoWpKGqrpNX4EnvdiUqkF"
+uri = "file://attached_assets/Y10_Ma2-Ma3_SoW_2026-27.xlsx"
+type = "table"
+title = "Year 10 Ma2/Ma3 — Scheme of Work 2026/27"

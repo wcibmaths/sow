@@ -290,8 +290,8 @@
   .lesson-obj{font-size:11px;color:var(--dark-gray);margin-top:2px;line-height:1.4;}
   .lesson-unit{font-size:11px;color:var(--dark-gray);}
   .unit-divider{display:flex;align-items:center;gap:8px;padding:7px 16px 7px 13px;
-    margin:8px 0 0;background:var(--gray);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;}
-  .unit-divider.misc{background:var(--gray);border-left-color:var(--mid-gray);}
+    margin:8px 0 0;background:#F8F4EC;border-left:3px solid var(--amber);border-radius:0 6px 6px 0;}
+  .unit-divider.misc{background:#F8F4EC;border-left-color:var(--mid-gray);}
   .unit-divider-name{font-size:11px;font-weight:700;text-transform:uppercase;
     letter-spacing:0.06em;color:var(--navy);flex:1;}
   .unit-divider.misc .unit-divider-name{color:var(--dark-gray);}
@@ -3037,8 +3037,13 @@ function renderTeacher(){
       const first=wkL[0];
       const alertL=wkL.find(l=>l.alert);
       html+=`<div class="week"><div class="week-header">
-        <span class="week-label">Week ${wk}</span>
-        <span class="week-dates">${first.dates} · Cycle ${first.cycle||first.week.slice(-1)}</span>
+        <div class="week-head-left">
+          <span class="week-icon" aria-hidden="true">🗓️</span>
+          <div class="week-title-wrap">
+            <span class="week-label">Week ${wk}</span>
+            <span class="week-dates">${first.dates} · Cycle ${first.cycle||first.week.slice(-1)}</span>
+          </div>
+        </div>
         ${alertL?`<span class="week-alert">${alertL.alert}</span>`:''}
       </div>`;
 

@@ -1,0 +1,137 @@
+Improve the Dashboard page so it gives useful HoD internal oversight.
+
+Keep the same fonts, colour palette, routing, dropdowns, tracking logic, and existing teacher progress cards.
+Do not show external exam dates on this dashboard.
+Do not redesign the whole site.
+
+Main goal:
+The dashboard should answer:
+- What is happening in the next 2 weeks?
+- Which classes are behind pace?
+- What needs HoD attention?
+- How healthy is each year group?
+- What is the current teacher/class progress?
+
+Required dashboard structure:
+
+1. Top summary cards
+
+Replace the current broad summary cards with:
+- Lessons completed this week
+- Classes behind pace
+- Assessments in next 14 days
+- Internal events in next 14 days
+
+Do not include “External exams coming soon”.
+
+2. Next 2 Weeks card
+
+Add a card called:
+Next 2 Weeks, Internal Academic Events
+
+Show events from today to 14 days ahead.
+
+Include:
+- school holidays
+- term dates
+- parent events
+- mock exams
+- internal assessment windows
+- CAT/testing dates
+- data drops
+- reporting deadlines
+- whole-school academic dates
+
+Do not include:
+- IGCSE external exams
+- IAL external exams
+- Pearson exam timetable dates
+- any public exam board dates
+
+Display as a compact table:
+Date | Event | Details | Applies To | Type
+
+If no events exist, show:
+No internal academic events in the next 2 weeks.
+
+3. Needs Attention card
+
+Add a card called:
+Needs Attention
+
+Show concise warning items such as:
+- classes 2 or more lessons behind pace
+- assessments happening in the next 7 days
+- classes with no recent lesson updates
+- classes with 0 completed lessons after teaching has started
+
+Keep this short and action-focused.
+Use soft blush warning styling, not bright red.
+
+4. Classes Behind Pace card
+
+Add or improve a card called:
+Classes Behind Pace
+
+Show only classes currently behind.
+
+Columns:
+Year Group | Class / Set | Teacher | Lessons Planned To Date | Lessons Completed To Date | Behind | Next Assessment
+
+Sort by most lessons behind first.
+
+If no classes are behind, show:
+All classes are currently on pace.
+
+5. Year Group Health Overview
+
+Add or keep a card called:
+Year Group Health Overview
+
+Columns:
+Year Group | % Lessons Completed To Date | Classes On Pace | Classes Behind | Next Assessment | Main Concern
+
+Keep this compact and useful for HoD review.
+
+6. Keep teacher/class progress section
+
+Keep the existing section shown in the current dashboard:
+- Year Group filter pills
+- Department Average — Term Targets
+- Teacher/class progress cards
+- Overall year progress
+- By term progress
+- Done / in progress / not started chips
+
+This section should remain visible on the dashboard, below the new HoD insight cards.
+
+7. Data logic
+
+Use the existing Scheme of Work and Assessment Schedule data where available.
+
+Use the browser’s current date.
+Do not hard-code today’s date.
+
+Calculate:
+- events from today to today + 14 days
+- assessments from today to today + 14 days
+- classes behind pace based on lessons scheduled up to today vs lessons marked done
+- next assessment date where available
+- classes with no recent updates if update date data exists
+
+If a calculation is not possible because the data does not exist yet, create a clear placeholder helper function and keep the UI ready for the data.
+
+8. Visual style
+
+Use the existing soft pastel/cream style.
+
+Use:
+- white cards
+- subtle borders
+- muted blue/green headings
+- soft blush/terracotta for warnings
+- compact tables
+- no loud colours
+- no external exam section
+
+Show the diff before applying or committing.

@@ -472,10 +472,10 @@
 
 <div id="view-hod" class="view active">
   <div class="stats-grid">
-    <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label" id="stat-done-lbl">Avg lessons Done (Y7)</div></div>
-    <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label" id="stat-prog-lbl">Avg lessons In Progress (Y7)</div></div>
-    <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Classes behind pace</div></div>
-    <div class="stat"><div class="stat-num" id="stat-assess">7</div><div class="stat-label" id="stat-assess-lbl">Assessments scheduled (Y7)</div></div>
+    <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label" id="stat-done-lbl">Lessons completed this week</div></div>
+    <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label" id="stat-prog-lbl">Classes behind pace</div></div>
+    <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Assessments in next 14 days</div></div>
+    <div class="stat"><div class="stat-num" id="stat-assess">0</div><div class="stat-label" id="stat-assess-lbl">External exams coming soon</div></div>
   </div>
   <div class="card">
     <div class="card-title">Year Group</div>
@@ -2744,6 +2744,30 @@ function renderYearTabs(){
 
 function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
 function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
+const EXTERNAL_EXAMS = [
+  { date:'2027-05-12', paper:'Edexcel IGCSE Mathematics A Higher', type:'External Exam' },
+  { date:'2027-05-17', paper:'IAL P1', type:'External Exam' },
+  { date:'2027-05-20', paper:'IAL S1', type:'External Exam' },
+  { date:'2027-05-25', paper:'IAL P2', type:'External Exam' },
+  { date:'2027-06-02', paper:'IAL M1', type:'External Exam' },
+  { date:'2027-06-07', paper:'IAL P3', type:'External Exam' },
+  { date:'2027-06-10', paper:'IAL D1', type:'External Exam' },
+  { date:'2027-06-14', paper:'IAL P4', type:'External Exam' },
+  { date:'2027-06-18', paper:'IAL S2', type:'External Exam' },
+  { date:'2027-06-22', paper:'IAL M2', type:'External Exam' },
+  { date:'2027-06-25', paper:'IAL S3', type:'External Exam' }
+];
+function parseStartDate(raw){
+  if(!raw) return null;
+  const clean=String(raw).replace(/–/g,'-');
+  const first=clean.split('-')[0].trim();
+  const yearMatch=clean.match(/\b(20\d{2})\b/);
+  const year=yearMatch?yearMatch[1]:'2026';
+  const d=new Date(`${first} ${year}`);
+  return Number.isNaN(d.getTime())?null:d;
+}
+function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+function sameDay(a,b){ return a.toDateString()===b.toDateString(); }
 
 function renderHOD(){
   const hodSets    = SETS_BY_YG[hodYear]     || SETS;
@@ -2751,6 +2775,9 @@ function renderHOD(){
   const hodSow     = SOW_BY_YG[hodYear]      || Y7_SOW;
 
   let td=0,tp=0,behind=0;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const in14=new Date(today); in14.setDate(today.getDate()+14);
+  const in7=new Date(today); in7.setDate(today.getDate()+7);
   const terms=['Michaelmas','Lent','Summer'];
   const termShort={Michaelmas:'Mich.',Lent:'Lent',Summer:'Sum.'};
 
@@ -2763,9 +2790,9 @@ function renderHOD(){
     document.getElementById('stat-prog').textContent='0';
     document.getElementById('stat-behind').textContent='0';
     document.getElementById('stat-assess').textContent='0';
-    document.getElementById('stat-done-lbl').textContent=`Avg lessons Done (Y${hodYear})`;
-    document.getElementById('stat-prog-lbl').textContent=`Avg lessons In Progress (Y${hodYear})`;
-    document.getElementById('stat-assess-lbl').textContent=`Assessments scheduled (Y${hodYear})`;
+    document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
+    document.getElementById('stat-prog-lbl').textContent='Classes behind pace';
+    document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
     return;
   }
   let cardsHtml='<div class="dash-grid">';
@@ -2860,26 +2887,60 @@ function renderHOD(){
   });
   summaryHtml+='</div>';
 
-  document.getElementById('hod-content').innerHTML=summaryHtml+cardsHtml;
-  document.getElementById('stat-done').textContent=Math.round(td/hodSets.length);
-  document.getElementById('stat-prog').textContent=Math.round(tp/hodSets.length);
-  document.getElementById('stat-behind').textContent=behind;
-  let assessCount=(ASSESSMENTS[hodYear]||[]).length;
-  if(IAL_SOW_BY_SET[hodYear]){
-    // Sum unique SoW arrays only — two classes sharing the same course should
-    // count their assessments once at the year level.
-    const seenSow = new Set();
-    assessCount = Object.entries(IAL_SOW_BY_SET[hodYear])
-      .reduce((n,[s,sow])=>{
-        if(!sow || !sow.length || seenSow.has(sow)) return n;
-        seenSow.add(sow);
-        return n + ialAssessmentsFor(hodYear,s).length;
-      }, 0);
-  }
-  document.getElementById('stat-assess').textContent=assessCount;
-  document.getElementById('stat-done-lbl').textContent=`Avg lessons Done (Y${hodYear})`;
-  document.getElementById('stat-prog-lbl').textContent=`Avg lessons In Progress (Y${hodYear})`;
-  document.getElementById('stat-assess-lbl').textContent=`Assessments scheduled (Y${hodYear})`;
+  const upcomingEvents=[];
+  const behindRows=[];
+  let noRecentUpdates=[];
+  let lessonsDoneWeek=0;
+  Object.keys(SOW_BY_YG).forEach(yg=>{
+    (SETS_BY_YG[yg]||[]).forEach(set=>{
+      const sow=sowFor(Number(yg),set);
+      if(!sow) return;
+      const prog=getProgress(set,sow);
+      const plannedByToday=sow.filter(l=>{const d=parseStartDate(l.dates);return d&&d<=today;}).length;
+      const doneByToday=sow.filter(l=>{const d=parseStartDate(l.dates);return d&&d<=today&&lessonStatus(set,l.id)==='done';}).length;
+      const diff=Math.max(0,plannedByToday-doneByToday);
+      const nextAssess=sow.filter(l=>l.type==='assessment').map(l=>parseStartDate(l.dates)).filter(d=>d&&d>=today).sort((a,b)=>a-b)[0];
+      if(diff>0) behindRows.push({yg,set,teacher:(TEACHERS_BY_YG[yg]||{})[set]||set,plannedByToday,doneByToday,diff,nextAssess});
+      if(plannedByToday>0&&doneByToday===0) noRecentUpdates.push(`Year ${yg} ${set} has 0 completed lessons after teaching started`);
+      lessonsDoneWeek += sow.filter(l=>{const d=parseStartDate(l.dates); return d && d>=new Date(today.getTime()-6*86400000) && d<=today && lessonStatus(set,l.id)==='done';}).length;
+      sow.forEach(l=>{
+        const d=parseStartDate(l.dates); if(!d||d<today||d>in14) return;
+        const lower=(l.lessonName||'').toLowerCase();
+        const alert=(l.alert||'');
+        const isAssess=l.type==='assessment';
+        if(isAssess || alert){
+          upcomingEvents.push({date:d,scope:`Year ${yg}, ${set}`,event:isAssess?l.lessonName:alert,type:isAssess?'Assessment':'Academic Note'});
+        }
+      });
+    });
+  });
+  const holidayEvents=(CALENDAR_EVENTS||[])
+    .filter(r=>r.type==='holiday' || r.type==='break')
+    .map(r=>({date:parseStartDate(r.dates),scope:'Whole school',event:r.label,type:r.type==='break'?'Holiday':'Holiday'}))
+    .filter(r=>r.date&&r.date>=today&&r.date<=in14);
+  upcomingEvents.push(...holidayEvents);
+  upcomingEvents.sort((a,b)=>a.date-b.date);
+  behindRows.sort((a,b)=>b.diff-a.diff);
+  const assessments14=upcomingEvents.filter(e=>e.type==='Assessment').length;
+  const externalUpcoming=EXTERNAL_EXAMS.map(e=>({...e,dateObj:new Date(e.date)})).filter(e=>e.dateObj>=today).sort((a,b)=>a.dateObj-b.dateObj).slice(0,6);
+  const attention=[
+    ...behindRows.filter(r=>r.diff>=2).map(r=>`Year ${r.yg} ${r.set} (${r.teacher}) is ${r.diff} lessons behind`),
+    ...upcomingEvents.filter(e=>e.type==='Assessment'&&e.date<=in7).map(e=>`${fmtDate(e.date)}: ${e.scope} — ${e.event}`),
+    ...noRecentUpdates.slice(0,3)
+  ].slice(0,8);
+  let eventsHtml = upcomingEvents.length?`<div class="scroll"><table class="table"><thead><tr><th>Date</th><th>Year Group/Set</th><th>Event</th><th>Type</th></tr></thead><tbody>${upcomingEvents.map(e=>`<tr><td>${fmtDate(e.date)}</td><td>${e.scope}</td><td>${e.event}</td><td>${e.type}</td></tr>`).join('')}</tbody></table></div>`:`<p>No key academic events in the next 2 weeks.</p>`;
+  let extHtml = externalUpcoming.length?`<div class="scroll"><table class="table"><thead><tr><th>Date</th><th>Exam</th><th>Type</th></tr></thead><tbody>${externalUpcoming.map(e=>`<tr><td>${fmtDate(e.dateObj)}</td><td>${e.paper}</td><td>${e.type}</td></tr>`).join('')}</tbody></table></div>`:`<p>No external exam dates stored yet.</p>`;
+  let behindHtml = behindRows.length?`<div class="scroll"><table class="table"><thead><tr><th>Year</th><th>Class/Set</th><th>Teacher</th><th>Planned</th><th>Done</th><th>Behind</th><th>Next assessment</th></tr></thead><tbody>${behindRows.map(r=>`<tr><td>Year ${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td><td>${r.plannedByToday}</td><td>${r.doneByToday}</td><td>${r.diff}</td><td>${r.nextAssess?fmtDate(r.nextAssess):'—'}</td></tr>`).join('')}</tbody></table></div>`:`<p>All classes are currently on pace.</p>`;
+  const attentionHtml = attention.length?`<ul>${attention.map(a=>`<li>${a}</li>`).join('')}</ul>`:`<p>No urgent issues right now.</p>`;
+  const insightsHtml = `<div class="card"><div class="card-title">Next 2 Weeks</div>${eventsHtml}</div>
+  <div class="card"><div class="card-title">Upcoming External Exam Dates</div>${extHtml}</div>
+  <div class="card"><div class="card-title">Classes Behind Pace</div>${behindHtml}</div>
+  <div class="card"><div class="card-title">Needs Attention</div>${attentionHtml}</div>`;
+  document.getElementById('hod-content').innerHTML=insightsHtml+summaryHtml+cardsHtml;
+  document.getElementById('stat-done').textContent=lessonsDoneWeek;
+  document.getElementById('stat-prog').textContent=behindRows.length;
+  document.getElementById('stat-behind').textContent=assessments14;
+  document.getElementById('stat-assess').textContent=externalUpcoming.length;
 }
 
 // ════════════════════════════════════════════════════════════════════

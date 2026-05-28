@@ -2618,7 +2618,17 @@ async function syncFromServer(){
 
 function makeKey(lessonId,set){ return lessonId+'__'+set; }
 function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
-function setStatusValue(lessonId,set,val){ const d=loadAll(); d[makeKey(lessonId,set)]=val; saveAll(d); }
+function setStatusValue(lessonId,set,val){
+  const d=loadAll(); const k=makeKey(lessonId,set);
+  d[k]=val;
+  if(!d.__updatedAt || typeof d.__updatedAt!=='object') d.__updatedAt={};
+  d.__updatedAt[k]=Date.now();
+  saveAll(d);
+}
+function getStatusUpdatedAt(lessonId,set){
+  const m=loadAll().__updatedAt;
+  return (m && typeof m==='object') ? (m[makeKey(lessonId,set)]||null) : null;
+}
 
 let _flashT;
 function flashSync(){
@@ -2897,10 +2907,45 @@ function getYearGroupHealth(yg, today){
   return {yg:Number(yg),pct,onPace,behindCt,nextAssess:nextA,concern};
 }
 
-// Placeholder: per-lesson "last updated" timestamps aren't tracked yet.
-// Returns [] so the UI degrades gracefully. When status timestamps are added
-// (e.g., a per-lessonId timestamp store), populate this list with stale classes.
-function getClassesWithStaleUpdates(){ return []; }
+// Walk `delta` school days (weekdays only) from `date`. Negative for past.
+function addSchoolDays(date, delta){
+  const d=new Date(date); d.setHours(0,0,0,0);
+  let n=Math.abs(delta); const step=delta<0?-1:1;
+  while(n>0){
+    d.setDate(d.getDate()+step);
+    const dow=d.getDay();
+    if(dow!==0 && dow!==6) n--;
+  }
+  return d;
+}
+
+// Returns one-line messages for classes whose most recent lesson-status
+// change is older than the stale threshold (10 school days). Classes that
+// have never been updated are intentionally excluded — those are caught by
+// the existing "0 completed lessons after teaching started" alert.
+function getClassesWithStaleUpdates(){
+  const STALE_SCHOOL_DAYS = 10;
+  const map = loadAll().__updatedAt;
+  if(!map || typeof map!=='object') return [];
+  const today=new Date(); today.setHours(0,0,0,0);
+  const staleBeforeMs = addSchoolDays(today, -STALE_SCHOOL_DAYS).getTime();
+  const stale=[];
+  allClassPairs().forEach(({yg,set})=>{
+    const sow=sowFor(yg,set); if(!sow) return;
+    let latest=0;
+    getTeachable(sow).forEach(l=>{
+      const ts=map[makeKey(l.id,set)];
+      if(ts && ts>latest) latest=ts;
+    });
+    if(latest>0 && latest < staleBeforeMs){
+      const teacher=(TEACHERS_BY_YG[yg]||TEACHERS)[set]||set;
+      const days=Math.max(1, Math.round((Date.now()-latest)/86400000));
+      stale.push({yg,set,teacher,latest,days});
+    }
+  });
+  stale.sort((a,b)=>a.latest-b.latest);
+  return stale.map(c=>`Year ${c.yg} ${c.set} (${c.teacher}) — no status updates in ${c.days} days`);
+}
 
 function renderHOD(){
   const hodSets    = SETS_BY_YG[hodYear]     || SETS;
@@ -3386,7 +3431,11 @@ function resetProgress(){
   const yg=parseInt(document.getElementById('sel-yg').value);
   const sow=sowFor(yg,set)||Y7_SOW;
   const d=loadAll();
-  sow.forEach(l=>delete d[makeKey(l.id,set)]);
+  sow.forEach(l=>{
+    const k=makeKey(l.id,set);
+    delete d[k];
+    if(d.__updatedAt && typeof d.__updatedAt==='object') delete d.__updatedAt[k];
+  });
   saveAll(d);
   renderTeacher();
 }

@@ -2897,12 +2897,12 @@ function renderHOD(){
       if(!sow) return;
       const prog=getProgress(set,sow);
       const plannedByToday=sow.filter(l=>{const d=parseStartDate(l.dates);return d&&d<=today;}).length;
-      const doneByToday=sow.filter(l=>{const d=parseStartDate(l.dates);return d&&d<=today&&getStatus(l.id,set)==='Done';}).length;
+      const doneByToday=sow.filter(l=>{const d=parseStartDate(l.dates);return d&&d<=today&&lessonStatus(set,l.id)==='done';}).length;
       const diff=Math.max(0,plannedByToday-doneByToday);
       const nextAssess=sow.filter(l=>l.type==='assessment').map(l=>parseStartDate(l.dates)).filter(d=>d&&d>=today).sort((a,b)=>a-b)[0];
       if(diff>0) behindRows.push({yg,set,teacher:(TEACHERS_BY_YG[yg]||{})[set]||set,plannedByToday,doneByToday,diff,nextAssess});
       if(plannedByToday>0&&doneByToday===0) noRecentUpdates.push(`Year ${yg} ${set} has 0 completed lessons after teaching started`);
-      lessonsDoneWeek += sow.filter(l=>{const d=parseStartDate(l.dates); return d && d>=new Date(today.getTime()-6*86400000) && d<=today && getStatus(l.id,set)==='Done';}).length;
+      lessonsDoneWeek += sow.filter(l=>{const d=parseStartDate(l.dates); return d && d>=new Date(today.getTime()-6*86400000) && d<=today && lessonStatus(set,l.id)==='done';}).length;
       sow.forEach(l=>{
         const d=parseStartDate(l.dates); if(!d||d<today||d>in14) return;
         const lower=(l.lessonName||'').toLowerCase();

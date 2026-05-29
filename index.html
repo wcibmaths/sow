@@ -117,26 +117,83 @@
   /* ── Stat tiles ── */
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:16px;margin-bottom:20px;}
-  #view-hod .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px;}
-  .stat{background:#FFFFFF;border-radius:12px;padding:18px 20px;
-    box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
-    border-left:4px solid var(--lavender);}
-  #view-hod .stat{position:relative;min-height:78px;padding:13px 14px 12px 54px;
-    display:flex;flex-direction:column;justify-content:center;}
-  #view-hod .stat::before{content:'•';position:absolute;left:14px;top:18px;width:28px;height:28px;
-    border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;
-    color:var(--dark-green);background:var(--mint-bg);line-height:1;}
-  #view-hod .stat.amber::before{color:var(--dark-amber);background:var(--blue-bg);}
-  #view-hod .stat.red::before{color:var(--blush-d);background:var(--blush-bg);}
-  #view-hod .stat:not(.green):not(.amber):not(.red)::before{color:var(--lavender-d);background:var(--lavender-bg);}
-  .stat.green{border-left-color:var(--green);}
-  .stat.amber{border-left-color:var(--amber);}
-  .stat.red{border-left-color:var(--accent);}
+  #view-hod .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:18px;}
+  .stat{background:#FFFFFF;border-radius:14px;padding:18px 20px;
+    box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);}
+  #view-hod .stat{position:relative;min-height:96px;padding:16px 18px 16px;
+    display:flex;align-items:flex-start;gap:14px;}
+  .stat-icon{width:46px;height:46px;border-radius:13px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;}
+  .stat-icon svg{width:24px;height:24px;stroke-width:1.9;}
+  .stat.green  .stat-icon{background:var(--mint-bg);color:var(--mint-d);}
+  .stat.amber  .stat-icon{background:var(--blush-bg);color:var(--blush-d);}
+  .stat.blue   .stat-icon{background:var(--blue-bg);color:var(--blue-d);}
+  .stat.slate  .stat-icon{background:var(--lavender-bg);color:var(--lavender-d);}
+  .stat-body{display:flex;flex-direction:column;min-width:0;flex:1;}
   .stat-num{font-size:34px;font-weight:800;color:var(--navy);line-height:1;
     font-family:var(--font-head);}
-  #view-hod .stat-num{font-size:26px;}
-  .stat-label{font-size:12px;color:var(--dark-gray);margin-top:5px;}
-  #view-hod .stat-label{font-size:11px;line-height:1.25;margin-top:4px;}
+  #view-hod .stat-num{font-size:30px;}
+  .stat-label{font-size:13px;font-weight:600;color:var(--navy);margin-top:6px;line-height:1.2;}
+  #view-hod .stat-label{font-size:12.5px;}
+  .stat-sub{font-size:11px;color:var(--dark-gray);margin-top:3px;line-height:1.25;}
+  .stat-trend{position:absolute;right:16px;bottom:14px;font-size:11px;font-weight:700;
+    display:inline-flex;align-items:center;gap:3px;white-space:nowrap;}
+  .stat-trend.up{color:var(--mint-d);}
+  .stat-trend.warn{color:var(--blush-d);}
+  .stat-trend .arr{font-size:9px;}
+
+  /* ── HoD term badge (header, right) ── */
+  .term-badge{display:flex;align-items:center;gap:10px;background:var(--accent);
+    color:white;border-radius:12px;padding:7px 14px;margin:0 16px;line-height:1.15;}
+  .term-badge .tb-year{font-size:13px;font-weight:800;letter-spacing:0.02em;}
+  .term-badge .tb-term{font-size:11px;font-weight:600;opacity:0.9;}
+  .term-badge .tb-chev{opacity:0.85;}
+
+  /* ── HoD dashboard grids ── */
+  .hod-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;align-items:start;}
+  .hod-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .hod-card-head .card-title{margin-bottom:0;display:flex;align-items:center;gap:7px;}
+  .hod-card-head .ct-icon{color:var(--lavender-d);display:inline-flex;}
+  .hod-attn .ct-icon{color:var(--blush-d);}
+  .hod-card-link{border:none;background:transparent;color:var(--blue-d);font:inherit;
+    font-size:11px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap;}
+  .hod-card-link:hover{text-decoration:underline;}
+
+  /* attention rows (mockup style) */
+  .attn-list{display:flex;flex-direction:column;gap:9px;}
+  .attn-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
+    background:#FFFFFF;border:1px solid var(--blush-bg);cursor:default;}
+  .attn-ic{width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;
+    align-items:center;justify-content:center;background:var(--blush-bg);color:var(--blush-d);}
+  .attn-ic svg{width:16px;height:16px;}
+  .attn-txt{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .attn-title{display:block;font-size:13px;font-weight:700;color:var(--navy);line-height:1.25;}
+  .attn-detail{display:block;font-size:11.5px;color:var(--dark-gray);margin-top:2px;line-height:1.3;}
+  .attn-chev{color:var(--blush);flex-shrink:0;}
+
+  /* type pills */
+  .type-pill{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;
+    border-radius:999px;letter-spacing:0.02em;white-space:nowrap;}
+  .tp-assessment{background:var(--blush-bg);color:var(--blush-d);}
+  .tp-mock{background:var(--blue-bg);color:var(--blue-d);}
+  .tp-holiday{background:var(--mint-bg);color:var(--mint-d);}
+  .tp-deadline{background:#F4E7D6;color:#B07D3E;}
+  .tp-note{background:var(--lavender-bg);color:var(--lavender-d);}
+  .tp-exam{background:var(--blush-bg);color:var(--blush-d);}
+
+  /* behind / pace pills + dots */
+  .behind-pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;
+    border-radius:999px;background:var(--blush-bg);color:var(--blush-d);white-space:nowrap;}
+  .dot{display:inline-flex;align-items:center;gap:5px;font-weight:600;}
+  .dot::before{content:'';width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .dot.green::before{background:var(--mint-d);}
+  .dot.red::before{background:var(--blush-d);}
+
+  /* footer */
+  .hod-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    flex-wrap:wrap;margin-top:6px;padding:10px 4px 0;font-size:11.5px;color:var(--dark-gray);}
+  .hod-footer .hf-refresh{display:inline-flex;align-items:center;gap:6px;}
+  @media(max-width:1000px){ .hod-row{grid-template-columns:1fr;} }
 
   /* ── Year-group tabs ── */
   .yg-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
@@ -155,21 +212,8 @@
   .hod-attn li{font-size:13px;color:#7A4A43;margin:4px 0;line-height:1.45;}
   .hod-section-title{font-size:11px;font-weight:700;color:var(--dark-amber);
     text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;}
-  .hod-insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
   .hod-card{padding:14px 16px;margin-bottom:0;min-width:0;}
   .hod-card .card-title{margin-bottom:10px;}
-  .hod-card-footer{margin-top:9px;font-size:11px;}
-  .hod-card-link{border:none;background:transparent;color:var(--dark-amber);font:inherit;
-    font-weight:700;padding:0;cursor:pointer;text-decoration:none;}
-  .hod-card-link:hover{text-decoration:underline;}
-  .attention-list{display:flex;flex-direction:column;gap:7px;}
-  .attention-row{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border-radius:8px;
-    background:rgba(255,255,255,0.58);border:1px solid #E8C9C4;color:#7A4A43;
-    font-size:12px;line-height:1.35;}
-  .attention-icon{width:18px;height:18px;border-radius:50%;background:var(--blush-bg);
-    color:var(--blush-d);display:inline-flex;align-items:center;justify-content:center;
-    font-size:11px;font-weight:800;flex-shrink:0;}
-  .more-note{font-size:11px;color:var(--dark-gray);font-weight:700;margin-top:8px;}
   .health-bar-wrap{height:5px;background:var(--track);border-radius:999px;overflow:hidden;min-width:70px;}
   .health-bar{height:100%;background:var(--green);border-radius:999px;}
   .health-bar.amber{background:var(--amber);}
@@ -494,7 +538,6 @@
   .scroll{overflow-x:auto;}
   @media(max-width:1000px){
     #view-hod .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .hod-insight-grid{grid-template-columns:1fr;}
     #view-hod .dash-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media(max-width:700px){
@@ -525,15 +568,49 @@
     <button class="nav-btn" data-view="assessments">Assessment Schedule</button>
     <button class="nav-btn" data-view="calendar">School Calendar</button>
   </nav>
-  <span class="badge">2026/27</span>
+  <div class="term-badge" id="term-badge">
+    <div>
+      <div class="tb-year">2026/27</div>
+      <div class="tb-term" id="tb-term">Michaelmas Term</div>
+    </div>
+    <svg class="tb-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </div>
 </header>
 
 <div id="view-hod" class="view active">
   <div class="stats-grid">
-    <div class="stat green"><div class="stat-num" id="stat-done">0</div><div class="stat-label" id="stat-done-lbl">Lessons completed this week</div></div>
-    <div class="stat amber"><div class="stat-num" id="stat-prog">0</div><div class="stat-label" id="stat-prog-lbl">Classes behind pace</div></div>
-    <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Assessments in next 14 days</div></div>
-    <div class="stat"><div class="stat-num" id="stat-assess">0</div><div class="stat-label" id="stat-assess-lbl">Internal events in next 14 days</div></div>
+    <div class="stat green">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
+      <div class="stat-body">
+        <div class="stat-num" id="stat-done">0</div>
+        <div class="stat-label" id="stat-done-lbl">Lessons completed this week</div>
+        <div class="stat-sub">Across all year groups</div>
+      </div>
+    </div>
+    <div class="stat amber">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+      <div class="stat-body">
+        <div class="stat-num" id="stat-prog">0</div>
+        <div class="stat-label" id="stat-prog-lbl">Classes behind pace</div>
+        <div class="stat-sub" id="stat-prog-sub">Across all year groups</div>
+      </div>
+    </div>
+    <div class="stat blue">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+      <div class="stat-body">
+        <div class="stat-num" id="stat-behind">0</div>
+        <div class="stat-label">Assessments in next 14 days</div>
+        <div class="stat-sub">Across all year groups</div>
+      </div>
+    </div>
+    <div class="stat slate">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></div>
+      <div class="stat-body">
+        <div class="stat-num" id="stat-assess">0</div>
+        <div class="stat-label" id="stat-assess-lbl">External exams coming soon</div>
+        <div class="stat-sub" id="stat-assess-sub">Next 30 days</div>
+      </div>
+    </div>
   </div>
   <div id="hod-content"></div>
   <div class="teacher-progress-panel">
@@ -1651,6 +1728,24 @@ const CALENDAR_EVENTS = [
   {term:'Summer',     label:'⚠️ Y7–9 Summer Exams',    dates:'31 May–4 Jun 2027',       type:'exams',   note:'No curriculum teaching S7A'},
   {term:'Summer',     label:'IAL External Exams',      dates:'May 2027 onwards',        type:'exams',   note:'Y12/Y13 study leave begins after S4B'},
   {term:'Summer',     label:'Term ends 12pm',          dates:'Wed 30 Jun 2027',         type:'partial', note:'S11A partial week'},
+];
+
+// ══════════════════════════════════════════════════════════════════
+//  External examination timetable (Pearson Edexcel summer 2027 series)
+//  PROVISIONAL — confirm each date against the official Pearson
+//  timetable before relying on it. Dates use ISO YYYY-MM-DD.
+// ══════════════════════════════════════════════════════════════════
+const EXTERNAL_EXAMS = [
+  {date:'2027-05-17', exam:'IGCSE Mathematics A', paper:'Paper 1 (4MA1/1H)',         yg:'Year 11'},
+  {date:'2027-05-19', exam:'IAL Mathematics',     paper:'P1 (Pure Mathematics 1)',   yg:'Year 12'},
+  {date:'2027-05-21', exam:'IAL Mathematics',     paper:'P3 (Pure Mathematics 3)',   yg:'Year 13'},
+  {date:'2027-05-25', exam:'IAL Further Maths',   paper:'FP1 (Further Pure 1)',      yg:'Year 13'},
+  {date:'2027-06-04', exam:'IGCSE Mathematics A', paper:'Paper 2 (4MA1/2H)',         yg:'Year 11'},
+  {date:'2027-06-07', exam:'IAL Mathematics',     paper:'P2 (Pure Mathematics 2)',   yg:'Year 12'},
+  {date:'2027-06-09', exam:'IAL Mathematics',     paper:'S1 (Statistics 1)',         yg:'Year 12'},
+  {date:'2027-06-11', exam:'IAL Mathematics',     paper:'M1 (Mechanics 1)',          yg:'Year 13'},
+  {date:'2027-06-14', exam:'IAL Mathematics',     paper:'P4 (Pure Mathematics 4)',   yg:'Year 13'},
+  {date:'2027-06-16', exam:'IAL Further Maths',   paper:'FP2 (Further Pure 2)',      yg:'Year 13'},
 ];
 
 // ══════════════════════════════════════════════════════════════════
@@ -3008,7 +3103,8 @@ function renderHOD(){
     document.getElementById('stat-assess').textContent='0';
     document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
     document.getElementById('stat-prog-lbl').textContent='Classes behind pace';
-    document.getElementById('stat-assess-lbl').textContent='Internal events in next 14 days';
+    document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
+    document.getElementById('stat-assess-sub').textContent='Next 30 days';
     return;
   }
   let cardsHtml='<div class="dash-grid">';
@@ -3118,92 +3214,148 @@ function renderHOD(){
 
   // Next 2 weeks internal events
   const events14=getInternalEvents(today,in14);
-  const internalEventsCount=events14.length;
 
   // Assessments in next 14 days (internal only; one per (date,scope,event) thanks to dedupe)
   const assessments14=events14.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
 
+  // Upcoming external examinations
+  const extAll=EXTERNAL_EXAMS.map(e=>({...e,d:new Date(e.date+'T00:00:00')}))
+    .filter(e=>!Number.isNaN(e.d.getTime())).sort((a,b)=>a.d-b.d);
+  const extUpcoming=extAll.filter(e=>e.d>=today);
+  const in30=new Date(today); in30.setDate(today.getDate()+30);
+  const extNext30=extUpcoming.filter(e=>e.d<=in30).length;
+  const extRows=extUpcoming.slice(0,5);
+
   // Classes behind pace
   const behindRows=paces.filter(p=>p.behindBy>=1).sort((a,b)=>b.behindBy-a.behindBy);
+  const behindYears=new Set(behindRows.map(p=>p.yg)).size;
 
   // Needs Attention items
   const stale=getClassesWithStaleUpdates();
   const attention=[];
   paces.filter(p=>p.behindBy>=2).forEach(p=>{
-    attention.push({
-      title:`${p.behindBy} lessons behind`,
-      detail:`Year ${p.yg} ${p.set} (${p.teacher}) is behind pace`
-    });
+    attention.push({title:`${p.behindBy} lessons behind pace`, detail:`Year ${p.yg} ${p.set} — ${p.teacher}`});
   });
   events14.filter(e=>e.date<=in7 && /Assessment|Mock/.test(e.type)).forEach(e=>{
-    attention.push({
-      title:'Assessment in next 7 days',
-      detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`
-    });
+    attention.push({title:'Assessment in the next 7 days', detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`});
   });
   paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
-    attention.push({
-      title:'No completed lessons',
-      detail:`Year ${p.yg} ${p.set} (${p.teacher}) after teaching started`
-    });
+    attention.push({title:'No completed lessons after teaching started', detail:`Year ${p.yg} ${p.set} — ${p.teacher}`});
   });
-  stale.slice(0,3).forEach(msg=>attention.push(msg));
+  stale.slice(0,3).forEach(msg=>attention.push({title:'No recent lesson updates', detail:String(msg)}));
   const attentionItems=attention.slice(0,4);
   const attentionMore=Math.max(0,attention.length-attentionItems.length);
   const eventRows=events14.slice(0,6);
-  const eventMore=Math.max(0,events14.length-eventRows.length);
-  const behindPreview=behindRows.slice(0,5);
-  const behindMore=Math.max(0,behindRows.length-behindPreview.length);
+  const behindPreview=behindRows.slice(0,6);
 
-  // ── Render compact HoD overview cards ───────────────────────────────
-  const calendarLink = `<button type="button" class="hod-card-link" onclick="showView('calendar')">View full calendar</button>`;
+  // ── Render helpers ──────────────────────────────────────────────────
+  const fmtY = d => d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const fmtWdY = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  const typePill = e => {
+    const t=e.type, ev=(e.event||'').toLowerCase();
+    if(/deadline/.test(ev)) return '<span class="type-pill tp-deadline">Deadline</span>';
+    if(t==='Mock Exam') return '<span class="type-pill tp-mock">Mock</span>';
+    if(t==='Internal Assessment') return '<span class="type-pill tp-assessment">Assessment</span>';
+    if(t==='Internal Exam Window') return '<span class="type-pill tp-exam">Exam</span>';
+    if(t==='Holiday') return '<span class="type-pill tp-holiday">Holiday</span>';
+    if(t==='Term Date') return '<span class="type-pill tp-holiday">Term Date</span>';
+    return '<span class="type-pill tp-note">Note</span>';
+  };
+  const ICN = {
+    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
+    cap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
+    warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+    chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>',
+  };
+  const chev = '<svg class="attn-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+
+  // ── Card: Next 2 weeks (upcoming events) ────────────────────────────
   const eventsHtml = eventRows.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Date</th><th>Event</th><th>Applies To</th><th>Type</th>
+         <th>Date</th><th>Year Group / Set</th><th>Event</th><th>Type</th>
        </tr></thead><tbody>${eventRows.map(e=>`<tr>
-         <td>${fmtDate(e.date)}</td><td>${e.event}${e.details?`<div style="font-size:10px;color:var(--dark-gray);margin-top:2px;">${e.details}</div>`:''}</td>
-         <td>${e.appliesTo}</td><td>${e.type}</td>
-       </tr>`).join('')}</tbody></table></div>
-       ${eventMore?`<div class="hod-card-footer">${calendarLink}</div>`:''}`
+         <td style="white-space:nowrap;">${fmtDate(e.date)}</td>
+         <td>${e.appliesTo}</td>
+         <td>${e.event}${e.details?`<div style="font-size:10px;color:var(--dark-gray);margin-top:2px;">${e.details}</div>`:''}</td>
+         <td>${typePill(e)}</td>
+       </tr>`).join('')}</tbody></table></div>`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No internal academic events in the next 2 weeks.</p>`;
 
+  // ── Card: Upcoming external exams ───────────────────────────────────
+  const extHtml = extRows.length
+    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
+         <th>Date</th><th>Exam</th><th>Paper</th><th>Year Group / Set</th>
+       </tr></thead><tbody>${extRows.map(e=>`<tr>
+         <td style="white-space:nowrap;">${fmtWdY(e.d)}</td>
+         <td>${e.exam}</td><td>${e.paper}</td><td>${e.yg}</td>
+       </tr>`).join('')}</tbody></table></div>
+       <div style="font-size:11px;color:var(--dark-gray);margin-top:8px;">Showing the next ${extRows.length} external exam date${extRows.length>1?'s':''}.</div>`
+    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No upcoming external exams scheduled.</p>`;
+
+  // ── Card: Needs attention ───────────────────────────────────────────
   const attentionHtml = attentionItems.length
-    ? `<div class="attention-list">${attentionItems.map(a=>`<div class="attention-row"><span class="attention-icon">!</span><span>${a}</span></div>`).join('')}</div>
-       ${attentionMore?`<div class="more-note">+ ${attentionMore} more</div>`:''}`
+    ? `<div class="attn-list">${attentionItems.map(a=>`
+         <div class="attn-item">
+           <span class="attn-ic">${ICN.warn}</span>
+           <span class="attn-txt"><span class="attn-title">${a.title}</span><span class="attn-detail">${a.detail}</span></span>
+           ${chev}
+         </div>`).join('')}</div>
+       ${attentionMore?`<div style="font-size:11px;color:var(--blush-d);font-weight:700;margin-top:9px;">+ ${attentionMore} more</div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Nothing currently needs attention.</p>`;
 
+  // ── Card: Classes behind pace ───────────────────────────────────────
   const behindHtml = behindPreview.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Year</th><th>Class</th><th>Teacher</th><th>Done / Planned</th><th>Behind</th>
+         <th>Year</th><th>Class / Set</th><th>Teacher</th><th>Planned</th><th>Completed</th><th>Behind</th><th>Next Assessment</th>
        </tr></thead><tbody>${behindPreview.map(r=>`<tr>
-         <td>Y${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
-         <td>${r.doneCt}/${r.plannedCt}</td>
-         <td style="font-weight:700;color:var(--blush-d);">${r.behindBy}</td>
-       </tr>`).join('')}</tbody></table></div>
-       ${behindMore?`<div class="hod-card-footer"><button type="button" class="hod-card-link" onclick="document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})">View all classes</button></div>`:''}`
+         <td style="white-space:nowrap;">Year ${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
+         <td>${r.plannedCt}</td><td>${r.doneCt}</td>
+         <td><span class="behind-pill">${r.behindBy} behind</span></td>
+         <td style="white-space:nowrap;">${r.nextAssess?fmtY(r.nextAssess.date):'—'}</td>
+       </tr>`).join('')}</tbody></table></div>`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">All classes are currently on pace.</p>`;
 
+  // ── Card: Year group health overview ────────────────────────────────
   const ygRows=Object.keys(SETS_BY_YG).map(yg=>getYearGroupHealth(yg,today)).filter(Boolean);
   const healthHtml = `<div class="scroll"><table class="hod-table compact"><thead><tr>
-       <th>Year</th><th>Progress</th><th>On pace</th><th>Behind</th><th>Next assessment</th>
+       <th>Year Group</th><th>% Lessons Completed</th><th>Classes On Pace</th><th>Classes Behind</th><th>Next Assessment</th><th>Main Concern</th>
      </tr></thead><tbody>${ygRows.map(r=>{
-       const pctColor=r.pct>=70?'var(--dark-green)':r.pct>=40?'var(--dark-amber)':'var(--blush-d)';
+       const pctColor=r.pct>=70?'var(--mint-d)':r.pct>=40?'var(--blue-d)':'var(--blush-d)';
        const bc=barClass(r.pct);
        return `<tr>
-         <td>Year ${r.yg}</td>
+         <td style="white-space:nowrap;">Year ${r.yg}</td>
          <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:${pctColor};font-weight:700;min-width:34px;">${r.pct}%</span><div class="health-bar-wrap"><div class="health-bar ${bc}" style="width:${r.pct}%"></div></div></div></td>
-         <td>${r.onPace}</td>
-         <td>${r.behindCt?`<span style="color:var(--blush-d);font-weight:700;">${r.behindCt}</span>`:'0'}</td>
-         <td>${r.nextAssess?fmtDate(r.nextAssess.date):'—'}</td>
+         <td><span class="dot green">${r.onPace}</span></td>
+         <td><span class="dot red">${r.behindCt}</span></td>
+         <td style="white-space:nowrap;">${r.nextAssess?fmtY(r.nextAssess.date):'—'}</td>
+         <td>${r.concern}</td>
        </tr>`;
      }).join('')}</tbody></table></div>`;
 
+  const card = (cls,icon,title,link,body) => `
+    <div class="card hod-card${cls?' '+cls:''}">
+      <div class="hod-card-head">
+        <div class="card-title"><span class="ct-icon">${icon}</span>${title}</div>
+        ${link||''}
+      </div>
+      ${body}
+    </div>`;
+  const lnk = (label,onclick) => `<button type="button" class="hod-card-link" onclick="${onclick}">${label} →</button>`;
+  const viewAllClasses = `document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})`;
+
   const insightsHtml = `
-    <div class="hod-insight-grid">
-      <div class="card hod-card"><div class="card-title">Next 2 Weeks — Internal Academic Events</div>${eventsHtml}</div>
-      <div class="card hod-card hod-attn"><div class="card-title">Needs Attention</div>${attentionHtml}</div>
-      <div class="card hod-card"><div class="card-title">Classes Behind Pace</div>${behindHtml}</div>
-      <div class="card hod-card"><div class="card-title">Year Group Health Overview</div>${healthHtml}</div>
+    <div class="hod-row">
+      ${card('',ICN.cal,'Next 2 Weeks (Upcoming Events)',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
+      ${card('',ICN.cap,'Upcoming External Exams',lnk('View full exam timetable',"showView('assessments')"),extHtml)}
+    </div>
+    <div class="hod-row">
+      ${card('hod-attn',ICN.warn,'Needs Attention','',attentionHtml)}
+      ${card('',ICN.chart,'Classes Behind Pace',lnk('View all classes',viewAllClasses),behindHtml)}
+    </div>
+    ${card('',ICN.chart,'Year Group Health Overview','',healthHtml)}
+    <div class="hod-footer">
+      <span>Data is based on lessons and assessments up to today (${fmtY(today)}).</span>
+      <span class="hf-refresh">Last updated: ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}, ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
     </div>`;
 
   document.getElementById('hod-content').innerHTML=insightsHtml;
@@ -3211,10 +3363,12 @@ function renderHOD(){
   document.getElementById('stat-done').textContent=lessonsDoneWeek;
   document.getElementById('stat-prog').textContent=behindRows.length;
   document.getElementById('stat-behind').textContent=assessments14;
-  document.getElementById('stat-assess').textContent=internalEventsCount;
+  document.getElementById('stat-assess').textContent=extNext30;
   document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
   document.getElementById('stat-prog-lbl').textContent='Classes behind pace';
-  document.getElementById('stat-assess-lbl').textContent='Internal events in next 14 days';
+  document.getElementById('stat-prog-sub').textContent=`Across ${behindYears} year group${behindYears===1?'':'s'}`;
+  document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
+  document.getElementById('stat-assess-sub').textContent='Next 30 days';
 }
 
 // ════════════════════════════════════════════════════════════════════

@@ -150,7 +150,7 @@
   .term-badge .tb-chev{opacity:0.85;}
 
   /* ── HoD dashboard grids ── */
-  .hod-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;align-items:start;}
+  .hod-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;align-items:stretch;}
   .hod-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
   .hod-card-head .card-title{margin-bottom:0;display:flex;align-items:center;gap:7px;}
   .hod-card-head .ct-icon{color:var(--lavender-d);display:inline-flex;}
@@ -212,14 +212,17 @@
   .hod-attn li{font-size:13px;color:#7A4A43;margin:4px 0;line-height:1.45;}
   .hod-section-title{font-size:11px;font-weight:700;color:var(--dark-amber);
     text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;}
-  .hod-card{padding:14px 16px;margin-bottom:0;min-width:0;}
+  .hod-card{padding:14px 16px;margin-bottom:0;min-width:0;height:100%;
+    display:flex;flex-direction:column;}
   .hod-card .card-title{margin-bottom:10px;}
+  .hod-card .scroll{flex:1;min-height:0;}
   .health-bar-wrap{height:5px;background:var(--track);border-radius:999px;overflow:hidden;min-width:70px;}
   .health-bar{height:100%;background:var(--green);border-radius:999px;}
   .health-bar.amber{background:var(--amber);}
   .health-bar.red{background:var(--accent);}
   .teacher-progress-panel{background:#FFFFFF;border:1px solid var(--mid-gray);border-radius:12px;
     box-shadow:var(--soft-shadow);padding:14px 16px;margin-top:16px;}
+  #hod-health-content{margin-top:16px;}
 
   /* ── HoD table ── */
   .hod-table{width:100%;border-collapse:collapse;}
@@ -618,6 +621,7 @@
     <div class="yg-tabs" id="yg-tabs"></div>
     <div id="teacher-progress-content"></div>
   </div>
+  <div id="hod-health-content"></div>
 </div>
 
 <div id="view-teacher" class="view">
@@ -1731,21 +1735,29 @@ const CALENDAR_EVENTS = [
 ];
 
 // ══════════════════════════════════════════════════════════════════
-//  External examination timetable (Pearson Edexcel summer 2027 series)
-//  PROVISIONAL — confirm each date against the official Pearson
-//  timetable before relying on it. Dates use ISO YYYY-MM-DD.
+//  External examination timetable placeholders
+//  Add official Pearson International Centres dates here manually once
+//  confirmed from:
+//  https://qualifications.pearson.com/en/support/support-topics/exams/exam-timetables.html#tab-Internationalcentres
+//
+//  Only October/November and May/June intakes are dashboard-eligible.
+//  Dates use ISO YYYY-MM-DD. Leave EXTERNAL_EXAMS empty rather than
+//  inventing provisional dates.
 // ══════════════════════════════════════════════════════════════════
+const EXTERNAL_EXAM_SERIES = [
+  {key:'may-june', label:'May/June', startMonth:4, endMonth:5},
+  {key:'oct-nov', label:'October/November', startMonth:9, endMonth:10},
+];
+const RELEVANT_EXTERNAL_PAPERS = [
+  'Edexcel International GCSE Mathematics A Higher',
+  'IAL P1','IAL P2','IAL P3','IAL P4',
+  'IAL S1','IAL S2','IAL S3',
+  'IAL M1','IAL M2',
+  'IAL D1',
+];
 const EXTERNAL_EXAMS = [
-  {date:'2027-05-17', exam:'IGCSE Mathematics A', paper:'Paper 1 (4MA1/1H)',         yg:'Year 11'},
-  {date:'2027-05-19', exam:'IAL Mathematics',     paper:'P1 (Pure Mathematics 1)',   yg:'Year 12'},
-  {date:'2027-05-21', exam:'IAL Mathematics',     paper:'P3 (Pure Mathematics 3)',   yg:'Year 13'},
-  {date:'2027-05-25', exam:'IAL Further Maths',   paper:'FP1 (Further Pure 1)',      yg:'Year 13'},
-  {date:'2027-06-04', exam:'IGCSE Mathematics A', paper:'Paper 2 (4MA1/2H)',         yg:'Year 11'},
-  {date:'2027-06-07', exam:'IAL Mathematics',     paper:'P2 (Pure Mathematics 2)',   yg:'Year 12'},
-  {date:'2027-06-09', exam:'IAL Mathematics',     paper:'S1 (Statistics 1)',         yg:'Year 12'},
-  {date:'2027-06-11', exam:'IAL Mathematics',     paper:'M1 (Mechanics 1)',          yg:'Year 13'},
-  {date:'2027-06-14', exam:'IAL Mathematics',     paper:'P4 (Pure Mathematics 4)',   yg:'Year 13'},
-  {date:'2027-06-16', exam:'IAL Further Maths',   paper:'FP2 (Further Pure 2)',      yg:'Year 13'},
+  // Example shape for future official entries:
+  // {date:'YYYY-MM-DD', series:'may-june', exam:'IAL Mathematics', paper:'IAL P1', yg:'Year 12'}
 ];
 
 // ══════════════════════════════════════════════════════════════════
@@ -2920,6 +2932,38 @@ function parseStartDate(raw){
 function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
 function sameDay(a,b){ return a.toDateString()===b.toDateString(); }
 
+function getExternalExamSeriesWindow(date){
+  const d=new Date(date); d.setHours(0,0,0,0);
+  const y=d.getFullYear();
+  const windows=[];
+  [y-1,y,y+1].forEach(year=>{
+    EXTERNAL_EXAM_SERIES.forEach(series=>{
+      const start=new Date(year,series.startMonth,1);
+      const end=new Date(year,series.endMonth+1,0);
+      windows.push({...series,year,start,end});
+    });
+  });
+  return windows
+    .filter(w=>d<=w.end)
+    .sort((a,b)=>a.start-b.start)[0]||null;
+}
+function isRelevantExternalExam(e){
+  const paper=String(e.paper||'');
+  const exam=String(e.exam||'');
+  const seriesOk=EXTERNAL_EXAM_SERIES.some(s=>s.key===e.series);
+  const paperOk=RELEVANT_EXTERNAL_PAPERS.some(p=>paper.includes(p) || exam.includes(p));
+  return seriesOk && paperOk;
+}
+function getUpcomingExternalExams(today){
+  const nextSeries=getExternalExamSeriesWindow(today);
+  const rows=(EXTERNAL_EXAMS||[]).map(e=>({...e,d:new Date(e.date+'T00:00:00')}))
+    .filter(e=>!Number.isNaN(e.d.getTime()) && e.d>=today)
+    .filter(isRelevantExternalExam)
+    .filter(e=>!nextSeries || e.series===nextSeries.key)
+    .sort((a,b)=>a.d-b.d);
+  return {series:nextSeries, rows};
+}
+
 // ── HoD insight helpers ───────────────────────────────────────────
 // External / public-exam labels we must NOT show on the dashboard
 const EXTERNAL_EVENT_RX = /external exam|igcse external|ial external|pearson edexcel|study leave|pearson timetable/i;
@@ -3097,6 +3141,8 @@ function renderHOD(){
     document.getElementById('hod-content').innerHTML =
       `<div class="coming-soon"><h3>Year ${hodYear} — Coming soon</h3>
        <p>No scheme of work has been added for Year ${hodYear} yet.</p></div>`;
+    document.getElementById('teacher-progress-content').innerHTML='';
+    document.getElementById('hod-health-content').innerHTML='';
     document.getElementById('stat-done').textContent='0';
     document.getElementById('stat-prog').textContent='0';
     document.getElementById('stat-behind').textContent='0';
@@ -3218,13 +3264,11 @@ function renderHOD(){
   // Assessments in next 14 days (internal only; one per (date,scope,event) thanks to dedupe)
   const assessments14=events14.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
 
-  // Upcoming external examinations
-  const extAll=EXTERNAL_EXAMS.map(e=>({...e,d:new Date(e.date+'T00:00:00')}))
-    .filter(e=>!Number.isNaN(e.d.getTime())).sort((a,b)=>a.d-b.d);
-  const extUpcoming=extAll.filter(e=>e.d>=today);
+  // Upcoming external examinations (Pearson Oct/Nov or May/June intakes only)
+  const externalSeries=getUpcomingExternalExams(today);
+  const extRows=externalSeries.rows.slice(0,5);
   const in30=new Date(today); in30.setDate(today.getDate()+30);
-  const extNext30=extUpcoming.filter(e=>e.d<=in30).length;
-  const extRows=extUpcoming.slice(0,5);
+  const extNext30=externalSeries.rows.filter(e=>e.d<=in30).length;
 
   // Classes behind pace
   const behindRows=paces.filter(p=>p.behindBy>=1).sort((a,b)=>b.behindBy-a.behindBy);
@@ -3246,7 +3290,7 @@ function renderHOD(){
   const attentionItems=attention.slice(0,4);
   const attentionMore=Math.max(0,attention.length-attentionItems.length);
   const eventRows=events14.slice(0,6);
-  const behindPreview=behindRows.slice(0,6);
+  const behindPreview=behindRows.slice(0,5);
 
   // ── Render helpers ──────────────────────────────────────────────────
   const fmtY = d => d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
@@ -3282,6 +3326,7 @@ function renderHOD(){
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No internal academic events in the next 2 weeks.</p>`;
 
   // ── Card: Upcoming external exams ───────────────────────────────────
+  const seriesLabel=externalSeries.series?externalSeries.series.label:'next Oct/Nov or May/June';
   const extHtml = extRows.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
          <th>Date</th><th>Exam</th><th>Paper</th><th>Year Group / Set</th>
@@ -3289,8 +3334,9 @@ function renderHOD(){
          <td style="white-space:nowrap;">${fmtWdY(e.d)}</td>
          <td>${e.exam}</td><td>${e.paper}</td><td>${e.yg}</td>
        </tr>`).join('')}</tbody></table></div>
-       <div style="font-size:11px;color:var(--dark-gray);margin-top:8px;">Showing the next ${extRows.length} external exam date${extRows.length>1?'s':''}.</div>`
-    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No upcoming external exams scheduled.</p>`;
+       <div style="font-size:11px;color:var(--dark-gray);margin-top:8px;">Showing ${seriesLabel} Pearson International exam dates.</div>`
+    : `<div class="scroll"><p style="color:var(--dark-gray);font-size:13px;margin:0;line-height:1.4;">External exam dates to be added from Pearson timetable.</p>
+       <p style="color:var(--dark-gray);font-size:11px;margin:8px 0 0;line-height:1.35;">Next intake checked: ${seriesLabel}. Only October/November and May/June Pearson International dates are shown here.</p></div>`;
 
   // ── Card: Needs attention ───────────────────────────────────────────
   const attentionHtml = attentionItems.length
@@ -3343,23 +3389,25 @@ function renderHOD(){
   const lnk = (label,onclick) => `<button type="button" class="hod-card-link" onclick="${onclick}">${label} →</button>`;
   const viewAllClasses = `document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})`;
 
+  const behindLink = behindRows.length>behindPreview.length ? lnk('View all classes',viewAllClasses) : '';
   const insightsHtml = `
     <div class="hod-row">
-      ${card('',ICN.cal,'Next 2 Weeks (Upcoming Events)',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
-      ${card('',ICN.cap,'Upcoming External Exams',lnk('View full exam timetable',"showView('assessments')"),extHtml)}
+      ${card('',ICN.cal,'Next 2 Weeks, Internal Academic Events',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
+      ${card('',ICN.cap,'Upcoming External Exams',lnk('View Pearson timetable',"window.open('https://qualifications.pearson.com/en/support/support-topics/exams/exam-timetables.html#tab-Internationalcentres','_blank')"),extHtml)}
     </div>
     <div class="hod-row">
       ${card('hod-attn',ICN.warn,'Needs Attention','',attentionHtml)}
-      ${card('',ICN.chart,'Classes Behind Pace',lnk('View all classes',viewAllClasses),behindHtml)}
+      ${card('',ICN.chart,'Classes Behind Pace',behindLink,behindHtml)}
     </div>
-    ${card('',ICN.chart,'Year Group Health Overview','',healthHtml)}
     <div class="hod-footer">
       <span>Data is based on lessons and assessments up to today (${fmtY(today)}).</span>
       <span class="hf-refresh">Last updated: ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}, ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
     </div>`;
+  const healthPanelHtml = card('',ICN.chart,'Year Group Health Overview','',healthHtml);
 
   document.getElementById('hod-content').innerHTML=insightsHtml;
   document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
+  document.getElementById('hod-health-content').innerHTML=healthPanelHtml;
   document.getElementById('stat-done').textContent=lessonsDoneWeek;
   document.getElementById('stat-prog').textContent=behindRows.length;
   document.getElementById('stat-behind').textContent=assessments14;

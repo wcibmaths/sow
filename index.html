@@ -106,7 +106,7 @@
 
   /* ── Layout ── */
   .view{display:none;padding:24px;max-width:1400px;margin:0 auto;}
-  #view-hod{padding:16px;}
+  #view-hod{padding:18px 20px;}
   .view.active{display:block;}
   .card{background:#FFFFFF;border-radius:12px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
@@ -117,19 +117,15 @@
   /* ── Stat tiles ── */
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:16px;margin-bottom:20px;}
-  #view-hod .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:14px;}
+  #view-hod .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px;}
   .stat{background:#FFFFFF;border-radius:12px;padding:18px 20px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
     border-left:4px solid var(--lavender);}
-  #view-hod .stat{position:relative;min-height:76px;padding:12px 14px 12px 52px;
+  #view-hod .stat{position:relative;min-height:78px;padding:13px 14px 12px 54px;
     display:flex;flex-direction:column;justify-content:center;}
-  #view-hod .stat::before{content:'•';position:absolute;left:14px;top:17px;width:28px;height:28px;
+  #view-hod .stat::before{content:'•';position:absolute;left:14px;top:18px;width:28px;height:28px;
     border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;
     color:var(--dark-green);background:var(--mint-bg);line-height:1;}
-  #view-hod .stat:nth-child(1)::before{content:'✓';}
-  #view-hod .stat:nth-child(2)::before{content:'!';}
-  #view-hod .stat:nth-child(3)::before{content:'▦';}
-  #view-hod .stat:nth-child(4)::before{content:'◆';}
   #view-hod .stat.amber::before{color:var(--dark-amber);background:var(--blue-bg);}
   #view-hod .stat.red::before{color:var(--blush-d);background:var(--blush-bg);}
   #view-hod .stat:not(.green):not(.amber):not(.red)::before{color:var(--lavender-d);background:var(--lavender-bg);}
@@ -159,39 +155,35 @@
   .hod-attn li{font-size:13px;color:#7A4A43;margin:4px 0;line-height:1.45;}
   .hod-section-title{font-size:11px;font-weight:700;color:var(--dark-amber);
     text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;}
-  .hod-insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-  .hod-card{padding:14px;margin-bottom:0;min-width:0;}
-  .hod-card .card-title{margin-bottom:0;}
-  .hod-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
-  .hod-card-footer{margin-top:8px;font-size:11px;}
+  .hod-insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .hod-card{padding:14px 16px;margin-bottom:0;min-width:0;}
+  .hod-card .card-title{margin-bottom:10px;}
+  .hod-card-footer{margin-top:9px;font-size:11px;}
   .hod-card-link{border:none;background:transparent;color:var(--dark-amber);font:inherit;
     font-weight:700;padding:0;cursor:pointer;text-decoration:none;}
   .hod-card-link:hover{text-decoration:underline;}
-  .attention-list{display:flex;flex-direction:column;gap:6px;}
-  .attention-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:9px;
-    padding:7px 9px;border-radius:8px;background:rgba(255,255,255,0.62);
-    border:1px solid #E8C9C4;color:#7A4A43;font-size:12px;line-height:1.25;}
-  .attention-icon{width:24px;height:24px;border-radius:50%;background:var(--blush-bg);
+  .attention-list{display:flex;flex-direction:column;gap:7px;}
+  .attention-row{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border-radius:8px;
+    background:rgba(255,255,255,0.58);border:1px solid #E8C9C4;color:#7A4A43;
+    font-size:12px;line-height:1.35;}
+  .attention-icon{width:18px;height:18px;border-radius:50%;background:var(--blush-bg);
     color:var(--blush-d);display:inline-flex;align-items:center;justify-content:center;
-    font-size:12px;font-weight:800;flex-shrink:0;}
-  .attention-title{display:block;font-weight:800;color:var(--navy);}
-  .attention-detail{display:block;font-size:11px;color:#7A4A43;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .attention-arrow{color:var(--blush-d);font-size:16px;font-weight:800;line-height:1;}
-  .more-note{font-size:11px;color:var(--dark-gray);font-weight:700;margin-top:7px;}
-  .health-bar-wrap{height:5px;background:var(--track);border-radius:999px;overflow:hidden;min-width:72px;max-width:140px;flex:1;}
+    font-size:11px;font-weight:800;flex-shrink:0;}
+  .more-note{font-size:11px;color:var(--dark-gray);font-weight:700;margin-top:8px;}
+  .health-bar-wrap{height:5px;background:var(--track);border-radius:999px;overflow:hidden;min-width:70px;}
   .health-bar{height:100%;background:var(--green);border-radius:999px;}
   .health-bar.amber{background:var(--amber);}
   .health-bar.red{background:var(--accent);}
   .teacher-progress-panel{background:#FFFFFF;border:1px solid var(--mid-gray);border-radius:12px;
-    box-shadow:var(--soft-shadow);padding:14px;margin-top:14px;}
+    box-shadow:var(--soft-shadow);padding:14px 16px;margin-top:16px;}
 
   /* ── HoD table ── */
   .hod-table{width:100%;border-collapse:collapse;}
   .hod-table th{background:var(--header-bg);color:white;padding:9px 14px;
     text-align:left;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;}
   .hod-table td{padding:9px 14px;border-bottom:1px solid var(--mid-gray);font-size:13px;color:var(--navy);}
-  .hod-card .hod-table th{padding:7px 10px;font-size:10px;}
-  .hod-card .hod-table td{padding:7px 10px;font-size:12px;line-height:1.25;}
+  .hod-card .hod-table th{padding:7px 9px;font-size:10px;}
+  .hod-card .hod-table td{padding:7px 9px;font-size:12px;line-height:1.25;}
   .hod-table tr:hover td{background:var(--gray);}
   .avatar{width:28px;height:28px;border-radius:50%;background:var(--green);
     color:var(--navy);font-size:10px;font-weight:700;display:inline-flex;
@@ -435,7 +427,7 @@
     overflow:hidden;transition:box-shadow 0.2s,transform 0.2s;}
   .teacher-card:hover{box-shadow:0 6px 18px rgba(47,54,64,0.08);transform:translateY(-2px);}
   .tc-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--mid-gray);}
-  #view-hod .tc-header{padding:11px 13px;gap:10px;}
+  #view-hod .tc-header{padding:12px 14px;gap:10px;}
   .tc-avatar{width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--navy);
     font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .tc-avatar.c-mint{background:var(--green);color:var(--dark-green);}
@@ -445,7 +437,7 @@
   .tc-name{font-size:15px;font-weight:700;color:var(--navy);}
   .tc-sub{font-size:12px;color:var(--dark-gray);}
   .tc-body{padding:14px 18px;}
-  #view-hod .tc-body{padding:11px 13px;}
+  #view-hod .tc-body{padding:12px 14px;}
   #view-hod .tc-avatar{width:38px;height:38px;font-size:12px;}
   .tc-overall{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
   .tc-pct{font-size:28px;font-weight:800;color:var(--dark-amber);min-width:56px;font-family:var(--font-head);}
@@ -474,7 +466,7 @@
   /* ── Dept summary ── */
   .dash-summary{background:var(--gray);border-radius:12px;padding:18px 22px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);margin-bottom:20px;}
-  #view-hod .dash-summary{padding:14px;margin-bottom:14px;}
+  #view-hod .dash-summary{padding:14px 16px;margin-bottom:14px;}
   .dash-summary-title{font-size:11px;font-weight:700;text-transform:uppercase;
     color:var(--dark-gray);letter-spacing:0.08em;margin-bottom:14px;}
   .term-summary-row{display:grid;grid-template-columns:120px 1fr 60px;align-items:center;
@@ -3155,7 +3147,7 @@ function renderHOD(){
       detail:`Year ${p.yg} ${p.set} (${p.teacher}) after teaching started`
     });
   });
-  stale.slice(0,3).forEach(msg=>attention.push({title:'Stale lesson updates',detail:msg}));
+  stale.slice(0,3).forEach(msg=>attention.push(msg));
   const attentionItems=attention.slice(0,4);
   const attentionMore=Math.max(0,attention.length-attentionItems.length);
   const eventRows=events14.slice(0,6);
@@ -3165,35 +3157,35 @@ function renderHOD(){
 
   // ── Render compact HoD overview cards ───────────────────────────────
   const calendarLink = `<button type="button" class="hod-card-link" onclick="showView('calendar')">View full calendar</button>`;
-  const classesLink = `<button type="button" class="hod-card-link" onclick="document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})">View all classes</button>`;
   const eventsHtml = eventRows.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Date</th><th>Event</th><th>Details</th><th>Applies To</th><th>Type</th>
+         <th>Date</th><th>Event</th><th>Applies To</th><th>Type</th>
        </tr></thead><tbody>${eventRows.map(e=>`<tr>
-         <td>${fmtDate(e.date)}</td><td>${e.event}</td><td>${e.details||'—'}</td>
+         <td>${fmtDate(e.date)}</td><td>${e.event}${e.details?`<div style="font-size:10px;color:var(--dark-gray);margin-top:2px;">${e.details}</div>`:''}</td>
          <td>${e.appliesTo}</td><td>${e.type}</td>
-       </tr>`).join('')}</tbody></table></div>`
+       </tr>`).join('')}</tbody></table></div>
+       ${eventMore?`<div class="hod-card-footer">${calendarLink}</div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No internal academic events in the next 2 weeks.</p>`;
 
   const attentionHtml = attentionItems.length
-    ? `<div class="attention-list">${attentionItems.map(a=>`<div class="attention-row"><span class="attention-icon">!</span><span><span class="attention-title">${a.title}</span><span class="attention-detail">${a.detail}</span></span><span class="attention-arrow">›</span></div>`).join('')}</div>
+    ? `<div class="attention-list">${attentionItems.map(a=>`<div class="attention-row"><span class="attention-icon">!</span><span>${a}</span></div>`).join('')}</div>
        ${attentionMore?`<div class="more-note">+ ${attentionMore} more</div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Nothing currently needs attention.</p>`;
 
   const behindHtml = behindPreview.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Year Group</th><th>Class / Set</th><th>Teacher</th><th>Planned</th><th>Completed</th><th>Behind</th><th>Next Assessment</th>
+         <th>Year</th><th>Class</th><th>Teacher</th><th>Done / Planned</th><th>Behind</th>
        </tr></thead><tbody>${behindPreview.map(r=>`<tr>
-         <td>Year ${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
-         <td>${r.plannedCt}</td><td>${r.doneCt}</td>
+         <td>Y${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
+         <td>${r.doneCt}/${r.plannedCt}</td>
          <td style="font-weight:700;color:var(--blush-d);">${r.behindBy}</td>
-         <td>${r.nextAssess?fmtDate(r.nextAssess.date):'—'}</td>
-       </tr>`).join('')}</tbody></table></div>`
+       </tr>`).join('')}</tbody></table></div>
+       ${behindMore?`<div class="hod-card-footer"><button type="button" class="hod-card-link" onclick="document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})">View all classes</button></div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">All classes are currently on pace.</p>`;
 
   const ygRows=Object.keys(SETS_BY_YG).map(yg=>getYearGroupHealth(yg,today)).filter(Boolean);
   const healthHtml = `<div class="scroll"><table class="hod-table compact"><thead><tr>
-       <th>Year Group</th><th>% Completed</th><th>On Pace</th><th>Behind</th><th>Next Assessment</th><th>Main Concern</th>
+       <th>Year</th><th>Progress</th><th>On pace</th><th>Behind</th><th>Next assessment</th>
      </tr></thead><tbody>${ygRows.map(r=>{
        const pctColor=r.pct>=70?'var(--dark-green)':r.pct>=40?'var(--dark-amber)':'var(--blush-d)';
        const bc=barClass(r.pct);
@@ -3203,16 +3195,15 @@ function renderHOD(){
          <td>${r.onPace}</td>
          <td>${r.behindCt?`<span style="color:var(--blush-d);font-weight:700;">${r.behindCt}</span>`:'0'}</td>
          <td>${r.nextAssess?fmtDate(r.nextAssess.date):'—'}</td>
-         <td style="color:var(--dark-gray);">${r.concern}</td>
        </tr>`;
      }).join('')}</tbody></table></div>`;
 
   const insightsHtml = `
     <div class="hod-insight-grid">
-      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Next 2 Weeks, Internal Academic Events</div>${eventMore?calendarLink:''}</div>${eventsHtml}${eventMore?`<div class="hod-card-footer">Showing 6 of ${events14.length} events.</div>`:''}</div>
-      <div class="card hod-card hod-attn"><div class="hod-card-head"><div class="card-title">Needs Attention</div></div>${attentionHtml}</div>
-      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Classes Behind Pace</div>${classesLink}</div>${behindHtml}</div>
-      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Year Group Health Overview</div></div>${healthHtml}</div>
+      <div class="card hod-card"><div class="card-title">Next 2 Weeks — Internal Academic Events</div>${eventsHtml}</div>
+      <div class="card hod-card hod-attn"><div class="card-title">Needs Attention</div>${attentionHtml}</div>
+      <div class="card hod-card"><div class="card-title">Classes Behind Pace</div>${behindHtml}</div>
+      <div class="card hod-card"><div class="card-title">Year Group Health Overview</div>${healthHtml}</div>
     </div>`;
 
   document.getElementById('hod-content').innerHTML=insightsHtml;

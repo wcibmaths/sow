@@ -121,30 +121,18 @@
   .stat{background:#FFFFFF;border-radius:12px;padding:18px 20px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
     border-left:4px solid var(--lavender);}
-  #view-hod .stat{position:relative;min-height:76px;padding:12px 14px 12px 52px;
-    display:flex;flex-direction:column;justify-content:center;}
-  #view-hod .stat::before{content:'•';position:absolute;left:14px;top:17px;width:28px;height:28px;
-    border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;
-    color:var(--dark-green);background:var(--mint-bg);line-height:1;}
-  #view-hod .stat:nth-child(1)::before{content:'✓';}
-  #view-hod .stat:nth-child(2)::before{content:'!';}
-  #view-hod .stat:nth-child(3)::before{content:'▦';}
-  #view-hod .stat:nth-child(4)::before{content:'◆';}
-  #view-hod .stat.amber::before{color:var(--dark-amber);background:var(--blue-bg);}
-  #view-hod .stat.red::before{color:var(--blush-d);background:var(--blush-bg);}
-  #view-hod .stat:not(.green):not(.amber):not(.red)::before{color:var(--lavender-d);background:var(--lavender-bg);}
   .stat.green{border-left-color:var(--green);}
   .stat.amber{border-left-color:var(--amber);}
   .stat.red{border-left-color:var(--accent);}
   .stat-num{font-size:34px;font-weight:800;color:var(--navy);line-height:1;
     font-family:var(--font-head);}
-  #view-hod .stat-num{font-size:26px;}
+  #view-hod .stat{padding:14px 16px;}
+  #view-hod .stat-num{font-size:28px;}
   .stat-label{font-size:12px;color:var(--dark-gray);margin-top:5px;}
-  #view-hod .stat-label{font-size:11px;line-height:1.25;margin-top:4px;}
+  #view-hod .stat-label{font-size:11px;line-height:1.25;}
 
   /* ── Year-group tabs ── */
   .yg-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-  #view-hod .yg-tabs{margin-bottom:14px;}
   .yg-tab{padding:6px 16px;border:1.5px solid var(--mid-gray);background:white;
     border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;color:var(--dark-gray);
     transition:all 0.15s;}
@@ -158,40 +146,19 @@
   .hod-attn ul{margin:0;padding-left:18px;}
   .hod-attn li{font-size:13px;color:#7A4A43;margin:4px 0;line-height:1.45;}
   .hod-section-title{font-size:11px;font-weight:700;color:var(--dark-amber);
-    text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;}
+    text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 10px;}
   .hod-insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-  .hod-card{padding:14px;margin-bottom:0;min-width:0;}
-  .hod-card .card-title{margin-bottom:0;}
-  .hod-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
-  .hod-card-footer{margin-top:8px;font-size:11px;}
-  .hod-card-link{border:none;background:transparent;color:var(--dark-amber);font:inherit;
-    font-weight:700;padding:0;cursor:pointer;text-decoration:none;}
-  .hod-card-link:hover{text-decoration:underline;}
-  .attention-list{display:flex;flex-direction:column;gap:6px;}
-  .attention-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:9px;
-    padding:7px 9px;border-radius:8px;background:rgba(255,255,255,0.62);
-    border:1px solid #E8C9C4;color:#7A4A43;font-size:12px;line-height:1.25;}
-  .attention-icon{width:24px;height:24px;border-radius:50%;background:var(--blush-bg);
-    color:var(--blush-d);display:inline-flex;align-items:center;justify-content:center;
-    font-size:12px;font-weight:800;flex-shrink:0;}
-  .attention-title{display:block;font-weight:800;color:var(--navy);}
-  .attention-detail{display:block;font-size:11px;color:#7A4A43;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .attention-arrow{color:var(--blush-d);font-size:16px;font-weight:800;line-height:1;}
-  .more-note{font-size:11px;color:var(--dark-gray);font-weight:700;margin-top:7px;}
-  .health-bar-wrap{height:5px;background:var(--track);border-radius:999px;overflow:hidden;min-width:72px;max-width:140px;flex:1;}
-  .health-bar{height:100%;background:var(--green);border-radius:999px;}
-  .health-bar.amber{background:var(--amber);}
-  .health-bar.red{background:var(--accent);}
-  .teacher-progress-panel{background:#FFFFFF;border:1px solid var(--mid-gray);border-radius:12px;
-    box-shadow:var(--soft-shadow);padding:14px;margin-top:14px;}
+  .hod-card{padding:14px;margin-bottom:0;}
+  .hod-card .card-title{margin-bottom:10px;}
+  .hod-card .hod-table th{padding:7px 10px;font-size:10px;}
+  .hod-card .hod-table td{padding:7px 10px;font-size:12px;line-height:1.25;}
+  .hod-card-footer{font-size:11px;color:var(--dark-gray);font-weight:600;margin-top:8px;}
 
   /* ── HoD table ── */
   .hod-table{width:100%;border-collapse:collapse;}
   .hod-table th{background:var(--header-bg);color:white;padding:9px 14px;
     text-align:left;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;}
   .hod-table td{padding:9px 14px;border-bottom:1px solid var(--mid-gray);font-size:13px;color:var(--navy);}
-  .hod-card .hod-table th{padding:7px 10px;font-size:10px;}
-  .hod-card .hod-table td{padding:7px 10px;font-size:12px;line-height:1.25;}
   .hod-table tr:hover td{background:var(--gray);}
   .avatar{width:28px;height:28px;border-radius:50%;background:var(--green);
     color:var(--navy);font-size:10px;font-weight:700;display:inline-flex;
@@ -435,7 +402,6 @@
     overflow:hidden;transition:box-shadow 0.2s,transform 0.2s;}
   .teacher-card:hover{box-shadow:0 6px 18px rgba(47,54,64,0.08);transform:translateY(-2px);}
   .tc-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--mid-gray);}
-  #view-hod .tc-header{padding:11px 13px;gap:10px;}
   .tc-avatar{width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--navy);
     font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .tc-avatar.c-mint{background:var(--green);color:var(--dark-green);}
@@ -445,8 +411,6 @@
   .tc-name{font-size:15px;font-weight:700;color:var(--navy);}
   .tc-sub{font-size:12px;color:var(--dark-gray);}
   .tc-body{padding:14px 18px;}
-  #view-hod .tc-body{padding:11px 13px;}
-  #view-hod .tc-avatar{width:38px;height:38px;font-size:12px;}
   .tc-overall{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
   .tc-pct{font-size:28px;font-weight:800;color:var(--dark-amber);min-width:56px;font-family:var(--font-head);}
   .tc-pct.done{color:var(--dark-green);}
@@ -458,7 +422,6 @@
   .tc-year-bar.red{background:var(--accent);}
   .tc-terms{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
   .tc-term{background:var(--gray);border-radius:8px;padding:8px 10px;text-align:center;}
-  #view-hod .tc-term{padding:6px 8px;}
   .tc-term-label{font-size:10px;font-weight:700;color:var(--dark-gray);
     text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
   .tc-term-pct{font-size:16px;font-weight:800;color:var(--dark-amber);}
@@ -479,7 +442,6 @@
     color:var(--dark-gray);letter-spacing:0.08em;margin-bottom:14px;}
   .term-summary-row{display:grid;grid-template-columns:120px 1fr 60px;align-items:center;
     gap:12px;padding:7px 0;border-bottom:1px solid var(--mid-gray);}
-  #view-hod .term-summary-row{grid-template-columns:110px 1fr 44px;gap:10px;padding:6px 0;}
   .term-summary-row:last-child{border-bottom:none;}
   .term-summary-label{font-size:12px;font-weight:600;color:var(--navy);}
   .term-summary-bar-wrap{background:var(--track);border-radius:4px;height:8px;overflow:hidden;}
@@ -507,7 +469,6 @@
   }
   @media(max-width:700px){
     nav{display:none;}
-    #view-hod{padding:16px;}
     #view-hod .stats-grid,#view-hod .dash-grid{grid-template-columns:1fr;}
     .lesson{grid-template-columns:28px 1fr auto;}
     .lesson .type-badge,.lesson .res-btn{display:none;}
@@ -543,11 +504,10 @@
     <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Assessments in next 14 days</div></div>
     <div class="stat"><div class="stat-num" id="stat-assess">0</div><div class="stat-label" id="stat-assess-lbl">Internal events in next 14 days</div></div>
   </div>
-  <div id="hod-content"></div>
-  <div class="teacher-progress-panel">
-    <div class="card-title">Teacher / Class Progress</div>
+  <div class="card">
+    <div class="card-title">Year Group</div>
     <div class="yg-tabs" id="yg-tabs"></div>
-    <div id="teacher-progress-content"></div>
+    <div id="hod-content"></div>
   </div>
 </div>
 
@@ -2821,39 +2781,14 @@ function renderYearTabs(){
 
 function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
 function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
-const ACADEMIC_YEAR_START = new Date(2026, 7, 27); // 27 Aug 2026 — first teaching date in this SoW dataset
-const ACADEMIC_YEAR_END   = new Date(2027, 5, 30); // 30 Jun 2027 — final school week in this SoW dataset
-const MONTH_INDEX = {
-  jan:0,january:0,feb:1,february:1,mar:2,march:2,apr:3,april:3,
-  may:4,jun:5,june:5,jul:6,july:6,aug:7,august:7,sep:8,sept:8,september:8,
-  oct:9,october:9,nov:10,november:10,dec:11,december:11
-};
-function academicYearForMonth(monthIndex){ return monthIndex>=7 ? 2026 : 2027; }
 function parseStartDate(raw){
   if(!raw) return null;
-  const clean=String(raw).replace(/–/g,'-').replace(/,/g,' ').replace(/\s+/g,' ').trim();
-  const explicitYear=clean.match(/\b(20\d{2})\b/);
-  // Ranges can be stored as "1-5 Feb 2027" (month only on the end date),
-  // so parse that as the first day in the shared month before falling back to
-  // simple "31 Aug" / "Sun 31 May" style strings.
-  const sharedMonthRange=clean.match(/(?:\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+)?(\d{1,2})(?:st|nd|rd|th)?\s*-\s*\d{1,2}(?:st|nd|rd|th)?\s+([A-Za-z]+)\b/i);
-  const dayMonth=sharedMonthRange || clean.match(/(?:\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\b/i);
-  if(dayMonth){
-    const day=Number(dayMonth[1]);
-    const month=MONTH_INDEX[dayMonth[2].toLowerCase()];
-    if(month==null) return null;
-    const year=explicitYear?Number(explicitYear[1]):academicYearForMonth(month);
-    const d=new Date(year,month,day); d.setHours(0,0,0,0);
-    return Number.isNaN(d.getTime())?null:d;
-  }
-  const monthOnly=clean.match(/\b([A-Za-z]+)\s+(20\d{2})\b/i);
-  if(monthOnly){
-    const month=MONTH_INDEX[monthOnly[1].toLowerCase()];
-    if(month==null) return null;
-    const d=new Date(Number(monthOnly[2]),month,1); d.setHours(0,0,0,0);
-    return Number.isNaN(d.getTime())?null:d;
-  }
-  return null;
+  const clean=String(raw).replace(/–/g,'-');
+  const first=clean.split('-')[0].trim();
+  const yearMatch=clean.match(/\b(20\d{2})\b/);
+  const year=yearMatch?yearMatch[1]:'2026';
+  const d=new Date(`${first} ${year}`);
+  return Number.isNaN(d.getTime())?null:d;
 }
 function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
 function sameDay(a,b){ return a.toDateString()===b.toDateString(); }
@@ -2874,37 +2809,6 @@ function allClassPairs(){
 // Internal academic events between [start, end] (inclusive) — combines
 // CALENDAR_EVENTS with SoW row alerts and internal assessment lessons.
 // External exam-board dates are filtered out.
-function getDashboardDateRange(){
-  const dates=[];
-  const teachableDates=[];
-  const collect=(d,bucket=dates)=>{ if(d && !Number.isNaN(d.getTime())) bucket.push(d); };
-  (CALENDAR_EVENTS||[]).forEach(r=>collect(parseStartDate(r.dates)));
-  Object.keys(SETS_BY_YG).forEach(yg=>{
-    (SETS_BY_YG[yg]||[]).forEach(set=>{
-      const sow=sowFor(yg,set);
-      if(!sow) return;
-      sow.forEach(l=>collect(parseStartDate(l.dates)));
-      getTeachable(sow).forEach(l=>collect(parseStartDate(l.dates),teachableDates));
-    });
-  });
-  if(!dates.length) return {start:ACADEMIC_YEAR_START,end:ACADEMIC_YEAR_END,preview:ACADEMIC_YEAR_START};
-  dates.sort((a,b)=>a-b);
-  teachableDates.sort((a,b)=>a-b);
-  return {start:dates[0],end:dates[dates.length-1],preview:teachableDates[0]||dates[0]};
-}
-
-function getDashboardToday(){
-  const realToday=new Date(); realToday.setHours(0,0,0,0);
-  const {start,end,preview}=getDashboardDateRange();
-  // The app data is for the 2026/27 academic year. When viewed before or
-  // after that range (for example during development), use the first
-  // available teachable school date as a preview anchor so HoD metrics and
-  // event cards still render from real SoW/calendar data rather than all
-  // falling to zero. This does not hard-code dashboard values.
-  if(realToday<start || realToday>end) return new Date(preview);
-  return realToday;
-}
-
 function getInternalEvents(start, end){
   // map: key -> {date,event,details,scopes:Set,type}
   const map=new Map();
@@ -3025,11 +2929,11 @@ function addSchoolDays(date, delta){
 // change is older than the stale threshold (10 school days). Classes that
 // have never been updated are intentionally excluded — those are caught by
 // the existing "0 completed lessons after teaching started" alert.
-function getClassesWithStaleUpdates(referenceDate){
+function getClassesWithStaleUpdates(){
   const STALE_SCHOOL_DAYS = 10;
   const map = loadAll().__updatedAt;
   if(!map || typeof map!=='object') return [];
-  const today=new Date(referenceDate||new Date()); today.setHours(0,0,0,0);
+  const today=new Date(); today.setHours(0,0,0,0);
   const staleBeforeMs = addSchoolDays(today, -STALE_SCHOOL_DAYS).getTime();
   const stale=[];
   allClassPairs().forEach(({yg,set})=>{
@@ -3054,7 +2958,7 @@ function renderHOD(){
   const hodTeachers= TEACHERS_BY_YG[hodYear] || TEACHERS;
   const hodSow     = SOW_BY_YG[hodYear]      || Y7_SOW;
 
-  const today=getDashboardToday();
+  const today=new Date(); today.setHours(0,0,0,0);
   const in14=new Date(today); in14.setDate(today.getDate()+14);
   const in7=new Date(today); in7.setDate(today.getDate()+7);
   const weekAgo=new Date(today); weekAgo.setDate(today.getDate()-6);
@@ -3191,71 +3095,57 @@ function renderHOD(){
   const behindRows=paces.filter(p=>p.behindBy>=1).sort((a,b)=>b.behindBy-a.behindBy);
 
   // Needs Attention items
-  const stale=getClassesWithStaleUpdates(today);
+  const stale=getClassesWithStaleUpdates();
   const attention=[];
   paces.filter(p=>p.behindBy>=2).forEach(p=>{
-    attention.push({
-      title:`${p.behindBy} lessons behind`,
-      detail:`Year ${p.yg} ${p.set} (${p.teacher}) is behind pace`
-    });
+    attention.push(`Year ${p.yg} ${p.set} (${p.teacher}) is ${p.behindBy} lessons behind`);
   });
   events14.filter(e=>e.date<=in7 && /Assessment|Mock/.test(e.type)).forEach(e=>{
-    attention.push({
-      title:'Assessment in next 7 days',
-      detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`
-    });
+    attention.push(`${fmtDate(e.date)}: ${e.appliesTo} — ${e.event}`);
   });
   paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
-    attention.push({
-      title:'No completed lessons',
-      detail:`Year ${p.yg} ${p.set} (${p.teacher}) after teaching started`
-    });
+    attention.push(`Year ${p.yg} ${p.set} (${p.teacher}) has 0 completed lessons after teaching started`);
   });
-  stale.slice(0,3).forEach(msg=>attention.push({title:'Stale lesson updates',detail:msg}));
+  stale.slice(0,3).forEach(msg=>attention.push(msg));
   const attentionItems=attention.slice(0,4);
-  const attentionMore=Math.max(0,attention.length-attentionItems.length);
   const eventRows=events14.slice(0,6);
-  const eventMore=Math.max(0,events14.length-eventRows.length);
-  const behindPreview=behindRows.slice(0,5);
-  const behindMore=Math.max(0,behindRows.length-behindPreview.length);
+  const behindRowsTop=behindRows.slice(0,5);
 
-  // ── Render compact HoD overview cards ───────────────────────────────
-  const calendarLink = `<button type="button" class="hod-card-link" onclick="showView('calendar')">View full calendar</button>`;
-  const classesLink = `<button type="button" class="hod-card-link" onclick="document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})">View all classes</button>`;
-  const eventsHtml = eventRows.length
-    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
+  // ── Render cards ─────────────────────────────────────────────────
+  const eventsHtml = events14.length
+    ? `<div class="scroll"><table class="hod-table"><thead><tr>
          <th>Date</th><th>Event</th><th>Details</th><th>Applies To</th><th>Type</th>
        </tr></thead><tbody>${eventRows.map(e=>`<tr>
          <td>${fmtDate(e.date)}</td><td>${e.event}</td><td>${e.details||'—'}</td>
          <td>${e.appliesTo}</td><td>${e.type}</td>
-       </tr>`).join('')}</tbody></table></div>`
+       </tr>`).join('')}</tbody></table></div>${events14.length>eventRows.length?`<div class="hod-card-footer">Showing ${eventRows.length} of ${events14.length} events · View full calendar in School Calendar</div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No internal academic events in the next 2 weeks.</p>`;
 
   const attentionHtml = attentionItems.length
-    ? `<div class="attention-list">${attentionItems.map(a=>`<div class="attention-row"><span class="attention-icon">!</span><span><span class="attention-title">${a.title}</span><span class="attention-detail">${a.detail}</span></span><span class="attention-arrow">›</span></div>`).join('')}</div>
-       ${attentionMore?`<div class="more-note">+ ${attentionMore} more</div>`:''}`
+    ? `<ul>${attentionItems.map(a=>`<li>${a}</li>`).join('')}</ul>`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Nothing currently needs attention.</p>`;
 
-  const behindHtml = behindPreview.length
-    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Year Group</th><th>Class / Set</th><th>Teacher</th><th>Planned</th><th>Completed</th><th>Behind</th><th>Next Assessment</th>
-       </tr></thead><tbody>${behindPreview.map(r=>`<tr>
+  const behindHtml = behindRows.length
+    ? `<div class="scroll"><table class="hod-table"><thead><tr>
+         <th>Year Group</th><th>Class / Set</th><th>Teacher</th>
+         <th>Planned to date</th><th>Completed to date</th><th>Behind</th><th>Next assessment</th>
+       </tr></thead><tbody>${behindRowsTop.map(r=>`<tr>
          <td>Year ${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
          <td>${r.plannedCt}</td><td>${r.doneCt}</td>
          <td style="font-weight:700;color:var(--blush-d);">${r.behindBy}</td>
          <td>${r.nextAssess?fmtDate(r.nextAssess.date):'—'}</td>
-       </tr>`).join('')}</tbody></table></div>`
+       </tr>`).join('')}</tbody></table></div>${behindRows.length>behindRowsTop.length?`<div class="hod-card-footer">Showing top ${behindRowsTop.length} of ${behindRows.length} classes behind pace</div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">All classes are currently on pace.</p>`;
 
   const ygRows=Object.keys(SETS_BY_YG).map(yg=>getYearGroupHealth(yg,today)).filter(Boolean);
-  const healthHtml = `<div class="scroll"><table class="hod-table compact"><thead><tr>
-       <th>Year Group</th><th>% Completed</th><th>On Pace</th><th>Behind</th><th>Next Assessment</th><th>Main Concern</th>
+  const healthHtml = `<div class="scroll"><table class="hod-table"><thead><tr>
+       <th>Year Group</th><th>% Lessons Completed</th><th>Classes On Pace</th>
+       <th>Classes Behind</th><th>Next Assessment</th><th>Main Concern</th>
      </tr></thead><tbody>${ygRows.map(r=>{
        const pctColor=r.pct>=70?'var(--dark-green)':r.pct>=40?'var(--dark-amber)':'var(--blush-d)';
-       const bc=barClass(r.pct);
        return `<tr>
          <td>Year ${r.yg}</td>
-         <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:${pctColor};font-weight:700;min-width:34px;">${r.pct}%</span><div class="health-bar-wrap"><div class="health-bar ${bc}" style="width:${r.pct}%"></div></div></div></td>
+         <td style="color:${pctColor};font-weight:700;">${r.pct}%</td>
          <td>${r.onPace}</td>
          <td>${r.behindCt?`<span style="color:var(--blush-d);font-weight:700;">${r.behindCt}</span>`:'0'}</td>
          <td>${r.nextAssess?fmtDate(r.nextAssess.date):'—'}</td>
@@ -3265,14 +3155,14 @@ function renderHOD(){
 
   const insightsHtml = `
     <div class="hod-insight-grid">
-      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Next 2 Weeks, Internal Academic Events</div>${eventMore?calendarLink:''}</div>${eventsHtml}${eventMore?`<div class="hod-card-footer">Showing 6 of ${events14.length} events.</div>`:''}</div>
-      <div class="card hod-card hod-attn"><div class="hod-card-head"><div class="card-title">Needs Attention</div></div>${attentionHtml}</div>
-      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Classes Behind Pace</div>${classesLink}</div>${behindHtml}</div>
-      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Year Group Health Overview</div></div>${healthHtml}</div>
-    </div>`;
+      <div class="card hod-card"><div class="card-title">Next 2 Weeks, Internal Academic Events</div>${eventsHtml}</div>
+      <div class="card hod-card hod-attn"><div class="card-title">Needs Attention</div>${attentionHtml}</div>
+      <div class="card hod-card"><div class="card-title">Classes Behind Pace</div>${behindHtml}</div>
+      <div class="card hod-card"><div class="card-title">Year Group Health Overview</div>${healthHtml}</div>
+    </div>
+    <div class="hod-section-title">Teacher / Class Progress — Year ${hodYear}</div>`;
 
-  document.getElementById('hod-content').innerHTML=insightsHtml;
-  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
+  document.getElementById('hod-content').innerHTML=insightsHtml+summaryHtml+cardsHtml;
   document.getElementById('stat-done').textContent=lessonsDoneWeek;
   document.getElementById('stat-prog').textContent=behindRows.length;
   document.getElementById('stat-behind').textContent=assessments14;

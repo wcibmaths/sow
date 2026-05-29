@@ -2813,19 +2813,6 @@ function renderYearTabs(){
 
 function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
 function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
-const EXTERNAL_EXAMS = [
-  { date:'2027-05-12', paper:'Edexcel IGCSE Mathematics A Higher', type:'External Exam' },
-  { date:'2027-05-17', paper:'IAL P1', type:'External Exam' },
-  { date:'2027-05-20', paper:'IAL S1', type:'External Exam' },
-  { date:'2027-05-25', paper:'IAL P2', type:'External Exam' },
-  { date:'2027-06-02', paper:'IAL M1', type:'External Exam' },
-  { date:'2027-06-07', paper:'IAL P3', type:'External Exam' },
-  { date:'2027-06-10', paper:'IAL D1', type:'External Exam' },
-  { date:'2027-06-14', paper:'IAL P4', type:'External Exam' },
-  { date:'2027-06-18', paper:'IAL S2', type:'External Exam' },
-  { date:'2027-06-22', paper:'IAL M2', type:'External Exam' },
-  { date:'2027-06-25', paper:'IAL S3', type:'External Exam' }
-];
 function parseStartDate(raw){
   if(!raw) return null;
   const clean=String(raw).replace(/–/g,'-');
@@ -3143,13 +3130,22 @@ function renderHOD(){
   const stale=getClassesWithStaleUpdates();
   const attention=[];
   paces.filter(p=>p.behindBy>=2).forEach(p=>{
-    attention.push(`Year ${p.yg} ${p.set} (${p.teacher}) is ${p.behindBy} lessons behind`);
+    attention.push({
+      title:`${p.behindBy} lessons behind`,
+      detail:`Year ${p.yg} ${p.set} (${p.teacher}) is behind pace`
+    });
   });
   events14.filter(e=>e.date<=in7 && /Assessment|Mock/.test(e.type)).forEach(e=>{
-    attention.push(`${fmtDate(e.date)}: ${e.appliesTo} — ${e.event}`);
+    attention.push({
+      title:'Assessment in next 7 days',
+      detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`
+    });
   });
   paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
-    attention.push(`Year ${p.yg} ${p.set} (${p.teacher}) has 0 completed lessons after teaching started`);
+    attention.push({
+      title:'No completed lessons',
+      detail:`Year ${p.yg} ${p.set} (${p.teacher}) after teaching started`
+    });
   });
   stale.slice(0,3).forEach(msg=>attention.push(msg));
   const attentionItems=attention.slice(0,4);

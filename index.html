@@ -106,6 +106,7 @@
 
   /* ── Layout ── */
   .view{display:none;padding:24px;max-width:1400px;margin:0 auto;}
+  #view-hod{padding:16px;}
   .view.active{display:block;}
   .card{background:#FFFFFF;border-radius:12px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
@@ -116,18 +117,34 @@
   /* ── Stat tiles ── */
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:16px;margin-bottom:20px;}
+  #view-hod .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:14px;}
   .stat{background:#FFFFFF;border-radius:12px;padding:18px 20px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
     border-left:4px solid var(--lavender);}
+  #view-hod .stat{position:relative;min-height:76px;padding:12px 14px 12px 52px;
+    display:flex;flex-direction:column;justify-content:center;}
+  #view-hod .stat::before{content:'•';position:absolute;left:14px;top:17px;width:28px;height:28px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;
+    color:var(--dark-green);background:var(--mint-bg);line-height:1;}
+  #view-hod .stat:nth-child(1)::before{content:'✓';}
+  #view-hod .stat:nth-child(2)::before{content:'!';}
+  #view-hod .stat:nth-child(3)::before{content:'▦';}
+  #view-hod .stat:nth-child(4)::before{content:'◆';}
+  #view-hod .stat.amber::before{color:var(--dark-amber);background:var(--blue-bg);}
+  #view-hod .stat.red::before{color:var(--blush-d);background:var(--blush-bg);}
+  #view-hod .stat:not(.green):not(.amber):not(.red)::before{color:var(--lavender-d);background:var(--lavender-bg);}
   .stat.green{border-left-color:var(--green);}
   .stat.amber{border-left-color:var(--amber);}
   .stat.red{border-left-color:var(--accent);}
   .stat-num{font-size:34px;font-weight:800;color:var(--navy);line-height:1;
     font-family:var(--font-head);}
+  #view-hod .stat-num{font-size:26px;}
   .stat-label{font-size:12px;color:var(--dark-gray);margin-top:5px;}
+  #view-hod .stat-label{font-size:11px;line-height:1.25;margin-top:4px;}
 
   /* ── Year-group tabs ── */
   .yg-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  #view-hod .yg-tabs{margin-bottom:14px;}
   .yg-tab{padding:6px 16px;border:1.5px solid var(--mid-gray);background:white;
     border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;color:var(--dark-gray);
     transition:all 0.15s;}
@@ -142,12 +159,39 @@
   .hod-attn li{font-size:13px;color:#7A4A43;margin:4px 0;line-height:1.45;}
   .hod-section-title{font-size:11px;font-weight:700;color:var(--dark-amber);
     text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;}
+  .hod-insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .hod-card{padding:14px;margin-bottom:0;min-width:0;}
+  .hod-card .card-title{margin-bottom:0;}
+  .hod-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+  .hod-card-footer{margin-top:8px;font-size:11px;}
+  .hod-card-link{border:none;background:transparent;color:var(--dark-amber);font:inherit;
+    font-weight:700;padding:0;cursor:pointer;text-decoration:none;}
+  .hod-card-link:hover{text-decoration:underline;}
+  .attention-list{display:flex;flex-direction:column;gap:6px;}
+  .attention-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:9px;
+    padding:7px 9px;border-radius:8px;background:rgba(255,255,255,0.62);
+    border:1px solid #E8C9C4;color:#7A4A43;font-size:12px;line-height:1.25;}
+  .attention-icon{width:24px;height:24px;border-radius:50%;background:var(--blush-bg);
+    color:var(--blush-d);display:inline-flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:800;flex-shrink:0;}
+  .attention-title{display:block;font-weight:800;color:var(--navy);}
+  .attention-detail{display:block;font-size:11px;color:#7A4A43;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .attention-arrow{color:var(--blush-d);font-size:16px;font-weight:800;line-height:1;}
+  .more-note{font-size:11px;color:var(--dark-gray);font-weight:700;margin-top:7px;}
+  .health-bar-wrap{height:5px;background:var(--track);border-radius:999px;overflow:hidden;min-width:72px;max-width:140px;flex:1;}
+  .health-bar{height:100%;background:var(--green);border-radius:999px;}
+  .health-bar.amber{background:var(--amber);}
+  .health-bar.red{background:var(--accent);}
+  .teacher-progress-panel{background:#FFFFFF;border:1px solid var(--mid-gray);border-radius:12px;
+    box-shadow:var(--soft-shadow);padding:14px;margin-top:14px;}
 
   /* ── HoD table ── */
   .hod-table{width:100%;border-collapse:collapse;}
   .hod-table th{background:var(--header-bg);color:white;padding:9px 14px;
     text-align:left;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;}
   .hod-table td{padding:9px 14px;border-bottom:1px solid var(--mid-gray);font-size:13px;color:var(--navy);}
+  .hod-card .hod-table th{padding:7px 10px;font-size:10px;}
+  .hod-card .hod-table td{padding:7px 10px;font-size:12px;line-height:1.25;}
   .hod-table tr:hover td{background:var(--gray);}
   .avatar{width:28px;height:28px;border-radius:50%;background:var(--green);
     color:var(--navy);font-size:10px;font-weight:700;display:inline-flex;
@@ -385,11 +429,13 @@
 
   /* ── Dashboard teacher cards ── */
   .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-bottom:20px;}
+  #view-hod .dash-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:0;}
   .teacher-card{background:#FFFFFF;border-radius:12px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);
     overflow:hidden;transition:box-shadow 0.2s,transform 0.2s;}
   .teacher-card:hover{box-shadow:0 6px 18px rgba(47,54,64,0.08);transform:translateY(-2px);}
   .tc-header{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--mid-gray);}
+  #view-hod .tc-header{padding:11px 13px;gap:10px;}
   .tc-avatar{width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--navy);
     font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .tc-avatar.c-mint{background:var(--green);color:var(--dark-green);}
@@ -399,6 +445,8 @@
   .tc-name{font-size:15px;font-weight:700;color:var(--navy);}
   .tc-sub{font-size:12px;color:var(--dark-gray);}
   .tc-body{padding:14px 18px;}
+  #view-hod .tc-body{padding:11px 13px;}
+  #view-hod .tc-avatar{width:38px;height:38px;font-size:12px;}
   .tc-overall{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
   .tc-pct{font-size:28px;font-weight:800;color:var(--dark-amber);min-width:56px;font-family:var(--font-head);}
   .tc-pct.done{color:var(--dark-green);}
@@ -410,6 +458,7 @@
   .tc-year-bar.red{background:var(--accent);}
   .tc-terms{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
   .tc-term{background:var(--gray);border-radius:8px;padding:8px 10px;text-align:center;}
+  #view-hod .tc-term{padding:6px 8px;}
   .tc-term-label{font-size:10px;font-weight:700;color:var(--dark-gray);
     text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
   .tc-term-pct{font-size:16px;font-weight:800;color:var(--dark-amber);}
@@ -425,10 +474,12 @@
   /* ── Dept summary ── */
   .dash-summary{background:var(--gray);border-radius:12px;padding:18px 22px;
     box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);margin-bottom:20px;}
+  #view-hod .dash-summary{padding:14px;margin-bottom:14px;}
   .dash-summary-title{font-size:11px;font-weight:700;text-transform:uppercase;
     color:var(--dark-gray);letter-spacing:0.08em;margin-bottom:14px;}
   .term-summary-row{display:grid;grid-template-columns:120px 1fr 60px;align-items:center;
     gap:12px;padding:7px 0;border-bottom:1px solid var(--mid-gray);}
+  #view-hod .term-summary-row{grid-template-columns:110px 1fr 44px;gap:10px;padding:6px 0;}
   .term-summary-row:last-child{border-bottom:none;}
   .term-summary-label{font-size:12px;font-weight:600;color:var(--navy);}
   .term-summary-bar-wrap{background:var(--track);border-radius:4px;height:8px;overflow:hidden;}
@@ -449,8 +500,15 @@
   .banner{background:var(--gray);border:1px solid var(--mid-gray);border-radius:10px;
     padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;color:var(--navy);}
   .scroll{overflow-x:auto;}
+  @media(max-width:1000px){
+    #view-hod .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .hod-insight-grid{grid-template-columns:1fr;}
+    #view-hod .dash-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
   @media(max-width:700px){
     nav{display:none;}
+    #view-hod{padding:16px;}
+    #view-hod .stats-grid,#view-hod .dash-grid{grid-template-columns:1fr;}
     .lesson{grid-template-columns:28px 1fr auto;}
     .lesson .type-badge,.lesson .res-btn{display:none;}
   }
@@ -485,10 +543,11 @@
     <div class="stat red"><div class="stat-num" id="stat-behind">0</div><div class="stat-label">Assessments in next 14 days</div></div>
     <div class="stat"><div class="stat-num" id="stat-assess">0</div><div class="stat-label" id="stat-assess-lbl">Internal events in next 14 days</div></div>
   </div>
-  <div class="card">
-    <div class="card-title">Year Group</div>
+  <div id="hod-content"></div>
+  <div class="teacher-progress-panel">
+    <div class="card-title">Teacher / Class Progress</div>
     <div class="yg-tabs" id="yg-tabs"></div>
-    <div id="hod-content"></div>
+    <div id="teacher-progress-content"></div>
   </div>
 </div>
 
@@ -2762,19 +2821,6 @@ function renderYearTabs(){
 
 function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
 function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
-const EXTERNAL_EXAMS = [
-  { date:'2027-05-12', paper:'Edexcel IGCSE Mathematics A Higher', type:'External Exam' },
-  { date:'2027-05-17', paper:'IAL P1', type:'External Exam' },
-  { date:'2027-05-20', paper:'IAL S1', type:'External Exam' },
-  { date:'2027-05-25', paper:'IAL P2', type:'External Exam' },
-  { date:'2027-06-02', paper:'IAL M1', type:'External Exam' },
-  { date:'2027-06-07', paper:'IAL P3', type:'External Exam' },
-  { date:'2027-06-10', paper:'IAL D1', type:'External Exam' },
-  { date:'2027-06-14', paper:'IAL P4', type:'External Exam' },
-  { date:'2027-06-18', paper:'IAL S2', type:'External Exam' },
-  { date:'2027-06-22', paper:'IAL M2', type:'External Exam' },
-  { date:'2027-06-25', paper:'IAL S3', type:'External Exam' }
-];
 function parseStartDate(raw){
   if(!raw) return null;
   const clean=String(raw).replace(/–/g,'-');
@@ -3092,36 +3138,52 @@ function renderHOD(){
   const stale=getClassesWithStaleUpdates();
   const attention=[];
   paces.filter(p=>p.behindBy>=2).forEach(p=>{
-    attention.push(`Year ${p.yg} ${p.set} (${p.teacher}) is ${p.behindBy} lessons behind`);
+    attention.push({
+      title:`${p.behindBy} lessons behind`,
+      detail:`Year ${p.yg} ${p.set} (${p.teacher}) is behind pace`
+    });
   });
   events14.filter(e=>e.date<=in7 && /Assessment|Mock/.test(e.type)).forEach(e=>{
-    attention.push(`${fmtDate(e.date)}: ${e.appliesTo} — ${e.event}`);
+    attention.push({
+      title:'Assessment in next 7 days',
+      detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`
+    });
   });
   paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
-    attention.push(`Year ${p.yg} ${p.set} (${p.teacher}) has 0 completed lessons after teaching started`);
+    attention.push({
+      title:'No completed lessons',
+      detail:`Year ${p.yg} ${p.set} (${p.teacher}) after teaching started`
+    });
   });
-  stale.slice(0,3).forEach(msg=>attention.push(msg));
-  const attentionItems=attention.slice(0,8);
+  stale.slice(0,3).forEach(msg=>attention.push({title:'Stale lesson updates',detail:msg}));
+  const attentionItems=attention.slice(0,4);
+  const attentionMore=Math.max(0,attention.length-attentionItems.length);
+  const eventRows=events14.slice(0,6);
+  const eventMore=Math.max(0,events14.length-eventRows.length);
+  const behindPreview=behindRows.slice(0,5);
+  const behindMore=Math.max(0,behindRows.length-behindPreview.length);
 
-  // ── Render cards ─────────────────────────────────────────────────
-  const eventsHtml = events14.length
-    ? `<div class="scroll"><table class="hod-table"><thead><tr>
+  // ── Render compact HoD overview cards ───────────────────────────────
+  const calendarLink = `<button type="button" class="hod-card-link" onclick="showView('calendar')">View full calendar</button>`;
+  const classesLink = `<button type="button" class="hod-card-link" onclick="document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})">View all classes</button>`;
+  const eventsHtml = eventRows.length
+    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
          <th>Date</th><th>Event</th><th>Details</th><th>Applies To</th><th>Type</th>
-       </tr></thead><tbody>${events14.map(e=>`<tr>
+       </tr></thead><tbody>${eventRows.map(e=>`<tr>
          <td>${fmtDate(e.date)}</td><td>${e.event}</td><td>${e.details||'—'}</td>
          <td>${e.appliesTo}</td><td>${e.type}</td>
        </tr>`).join('')}</tbody></table></div>`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No internal academic events in the next 2 weeks.</p>`;
 
   const attentionHtml = attentionItems.length
-    ? `<ul>${attentionItems.map(a=>`<li>${a}</li>`).join('')}</ul>`
+    ? `<div class="attention-list">${attentionItems.map(a=>`<div class="attention-row"><span class="attention-icon">!</span><span><span class="attention-title">${a.title}</span><span class="attention-detail">${a.detail}</span></span><span class="attention-arrow">›</span></div>`).join('')}</div>
+       ${attentionMore?`<div class="more-note">+ ${attentionMore} more</div>`:''}`
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Nothing currently needs attention.</p>`;
 
-  const behindHtml = behindRows.length
-    ? `<div class="scroll"><table class="hod-table"><thead><tr>
-         <th>Year Group</th><th>Class / Set</th><th>Teacher</th>
-         <th>Planned to date</th><th>Completed to date</th><th>Behind</th><th>Next assessment</th>
-       </tr></thead><tbody>${behindRows.map(r=>`<tr>
+  const behindHtml = behindPreview.length
+    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
+         <th>Year Group</th><th>Class / Set</th><th>Teacher</th><th>Planned</th><th>Completed</th><th>Behind</th><th>Next Assessment</th>
+       </tr></thead><tbody>${behindPreview.map(r=>`<tr>
          <td>Year ${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
          <td>${r.plannedCt}</td><td>${r.doneCt}</td>
          <td style="font-weight:700;color:var(--blush-d);">${r.behindBy}</td>
@@ -3130,14 +3192,14 @@ function renderHOD(){
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">All classes are currently on pace.</p>`;
 
   const ygRows=Object.keys(SETS_BY_YG).map(yg=>getYearGroupHealth(yg,today)).filter(Boolean);
-  const healthHtml = `<div class="scroll"><table class="hod-table"><thead><tr>
-       <th>Year Group</th><th>% Lessons Completed</th><th>Classes On Pace</th>
-       <th>Classes Behind</th><th>Next Assessment</th><th>Main Concern</th>
+  const healthHtml = `<div class="scroll"><table class="hod-table compact"><thead><tr>
+       <th>Year Group</th><th>% Completed</th><th>On Pace</th><th>Behind</th><th>Next Assessment</th><th>Main Concern</th>
      </tr></thead><tbody>${ygRows.map(r=>{
        const pctColor=r.pct>=70?'var(--dark-green)':r.pct>=40?'var(--dark-amber)':'var(--blush-d)';
+       const bc=barClass(r.pct);
        return `<tr>
          <td>Year ${r.yg}</td>
-         <td style="color:${pctColor};font-weight:700;">${r.pct}%</td>
+         <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:${pctColor};font-weight:700;min-width:34px;">${r.pct}%</span><div class="health-bar-wrap"><div class="health-bar ${bc}" style="width:${r.pct}%"></div></div></div></td>
          <td>${r.onPace}</td>
          <td>${r.behindCt?`<span style="color:var(--blush-d);font-weight:700;">${r.behindCt}</span>`:'0'}</td>
          <td>${r.nextAssess?fmtDate(r.nextAssess.date):'—'}</td>
@@ -3146,13 +3208,15 @@ function renderHOD(){
      }).join('')}</tbody></table></div>`;
 
   const insightsHtml = `
-    <div class="card"><div class="card-title">Next 2 Weeks — Internal Academic Events</div>${eventsHtml}</div>
-    <div class="card hod-attn"><div class="card-title">Needs Attention</div>${attentionHtml}</div>
-    <div class="card"><div class="card-title">Classes Behind Pace</div>${behindHtml}</div>
-    <div class="card"><div class="card-title">Year Group Health Overview</div>${healthHtml}</div>
-    <div class="hod-section-title">Teacher / Class Progress — Year ${hodYear}</div>`;
+    <div class="hod-insight-grid">
+      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Next 2 Weeks, Internal Academic Events</div>${eventMore?calendarLink:''}</div>${eventsHtml}${eventMore?`<div class="hod-card-footer">Showing 6 of ${events14.length} events.</div>`:''}</div>
+      <div class="card hod-card hod-attn"><div class="hod-card-head"><div class="card-title">Needs Attention</div></div>${attentionHtml}</div>
+      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Classes Behind Pace</div>${classesLink}</div>${behindHtml}</div>
+      <div class="card hod-card"><div class="hod-card-head"><div class="card-title">Year Group Health Overview</div></div>${healthHtml}</div>
+    </div>`;
 
-  document.getElementById('hod-content').innerHTML=insightsHtml+summaryHtml+cardsHtml;
+  document.getElementById('hod-content').innerHTML=insightsHtml;
+  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
   document.getElementById('stat-done').textContent=lessonsDoneWeek;
   document.getElementById('stat-prog').textContent=behindRows.length;
   document.getElementById('stat-behind').textContent=assessments14;

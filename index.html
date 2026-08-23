@@ -688,6 +688,54 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!--  FIREBASE — shared progress storage for the whole department      -->
+<!--  See the setup guide: create a Firebase project, then paste the   -->
+<!--  six settings below. Nothing else in this file needs changing.    -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+/* ═════ PASTE YOUR FIREBASE SETTINGS BETWEEN THE BRACES BELOW ═════ */
+const firebaseConfig = {
+  
+  apiKey: "AIzaSyDJ2yimQL5wD-dh-QvXdBh7op8v8wFP9OI",
+  authDomain: "wcib-sow.firebaseapp.com",
+  projectId: "wcib-sow",
+  storageBucket: "wcib-sow.firebasestorage.app",
+  messagingSenderId: "738888595401",
+  appId: "1:738888595401:web:720961c2af99f03b745a18",
+  measurementId: "G-MV7T6Y1WJ1"
+};
+/* ═════ nothing below this line needs changing ═════ */
+
+window.WCIB_DB = null;
+try{
+  if(firebaseConfig.projectId && firebaseConfig.projectId !== 'PASTE_HERE'){
+    firebase.initializeApp(firebaseConfig);
+    window.WCIB_DB = firebase.firestore().collection('sow').doc('progress');
+  }
+}catch(e){
+  console.warn('Firebase did not start:', e);
+}
+
+// Visible warning if shared saving is not switched on, so nobody ticks a
+// term's worth of lessons into a browser that is only saving to itself.
+if(!window.WCIB_DB){
+  console.warn('Firebase not configured — progress is saving to this browser only.');
+  const showBanner = function(){
+    const bar = document.createElement('div');
+    bar.textContent = 'Shared saving is not switched on — progress on this page is only being saved on this device.';
+    bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#F27D00;color:#fff;'
+      + 'font:600 13px/1.4 Poppins,system-ui,sans-serif;padding:10px 16px;text-align:center;pointer-events:none;';
+    document.body.appendChild(bar);
+  };
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', showBanner)
+    : showBanner();
+}
+</script>
+
 <script>
 'use strict';
 
@@ -2732,8 +2780,17 @@ function validateIalSow(yg, set){
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  STORAGE  (server-backed, in-memory cache, localStorage cross-tab)
+//  STORAGE  (Firebase Firestore — ONE shared copy for every teacher)
 // ════════════════════════════════════════════════════════════════════
+// Everything teachers tick lives in a single Firestore document:
+//     collection "sow"  →  document "progress"
+// Shape stored in Firestore:
+//   { entries:   { "<lessonId>__<set>": "Done", ... },
+//     updatedAt: { "<lessonId>__<set>": 1712345678901, ... } }
+//
+// If Firebase has not been configured yet, the page still works and
+// quietly falls back to this browser's own storage (the old behaviour).
+
 let _cache = {};
 
 function loadAll(){ return _cache; }
@@ -2742,46 +2799,92 @@ function _lsLoad(){
   try{ const r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):{}; }
   catch(e){ return {}; }
 }
-
-function saveAll(data){
-  _cache = data;
-  // Cross-tab ping (same-browser sync)
+function _lsSave(data){
   try{
     localStorage.setItem(STORE_KEY, JSON.stringify(data));
     localStorage.setItem(PING_KEY, String(Date.now()));
   }catch(e){}
+}
+
+// Firestore document  →  the flat shape the rest of the app expects
+function _fromDoc(d){
+  d = d || {};
+  const out = Object.assign({}, d.entries || {});
+  out.__updatedAt = Object.assign({}, d.updatedAt || {});
+  return out;
+}
+// flat shape  →  Firestore document
+function _toDoc(data){
+  data = data || {};
+  const entries = {};
+  Object.keys(data).forEach(k=>{ if(k!=='__updatedAt') entries[k]=data[k]; });
+  return { entries: entries, updatedAt: Object.assign({}, data.__updatedAt || {}) };
+}
+
+// Save the WHOLE map. Used by "Reset progress", where deletions must stick.
+function saveAll(data){
+  _cache = data;
+  _lsSave(data);
   flashSync();
-  // Async server save — central storage for all devices
-  fetch('/api/data',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(data)
-  }).catch(e=>console.warn('Server save failed',e));
+  if(window.WCIB_DB){
+    window.WCIB_DB.set(_toDoc(data)).catch(e=>console.warn('Firebase save failed',e));
+  }
+}
+
+// Save ONE tick. Only that one field is sent, so two teachers ticking at
+// the same moment can never wipe out each other's work.
+function _saveOne(key, val, ts){
+  _lsSave(_cache);
+  flashSync();
+  if(window.WCIB_DB){
+    const patch = { entries:{}, updatedAt:{} };
+    patch.entries[key] = val;
+    patch.updatedAt[key] = ts;
+    window.WCIB_DB.set(patch, {merge:true}).catch(e=>console.warn('Firebase save failed',e));
+  }
 }
 
 async function syncFromServer(){
+  if(!window.WCIB_DB){ _cache=_lsLoad(); return; }
   try{
-    const r=await fetch('/api/data');
-    if(r.ok){
-      const serverData=await r.json();
-      _cache=serverData;
-      try{ localStorage.setItem(STORE_KEY,JSON.stringify(serverData)); }catch(e){}
+    const snap = await window.WCIB_DB.get();
+    if(!snap.exists){
+      // First ever run: if this browser already holds ticks from before
+      // Firebase was switched on, seed the shared copy with them.
+      const local=_lsLoad();
+      const hasLocal=Object.keys(local).some(k=>k!=='__updatedAt');
+      _cache = hasLocal ? local : {};
+      if(hasLocal) await window.WCIB_DB.set(_toDoc(local));
     } else {
-      _cache=_lsLoad();
+      _cache = _fromDoc(snap.data());
     }
+    _lsSave(_cache);
   }catch(e){
-    _cache=_lsLoad();
+    console.warn('Firebase read failed — falling back to this browser\'s copy',e);
+    _cache = _lsLoad();
   }
+  // Live updates: another teacher's tick shows up here within a second,
+  // on any device. This replaces the old 30-second polling.
+  try{
+    window.WCIB_DB.onSnapshot(snap=>{
+      const incoming = _fromDoc(snap.exists ? snap.data() : {});
+      if(JSON.stringify(incoming)===JSON.stringify(_cache)) return;
+      _cache = incoming;
+      _lsSave(_cache);
+      refreshActiveView();
+    }, e=>console.warn('Firebase live sync stopped',e));
+  }catch(e){}
 }
 
 function makeKey(lessonId,set){ return lessonId+'__'+set; }
 function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
 function setStatusValue(lessonId,set,val){
-  const d=loadAll(); const k=makeKey(lessonId,set);
+  const d=loadAll(); const k=makeKey(lessonId,set); const ts=Date.now();
   d[k]=val;
   if(!d.__updatedAt || typeof d.__updatedAt!=='object') d.__updatedAt={};
-  d.__updatedAt[k]=Date.now();
-  saveAll(d);
+  d.__updatedAt[k]=ts;
+  _cache=d;
+  _saveOne(k,val,ts);
 }
 function getStatusUpdatedAt(lessonId,set){
   const m=loadAll().__updatedAt;
@@ -2797,27 +2900,14 @@ function flashSync(){
   _flashT=setTimeout(()=>el.classList.remove('show'),1200);
 }
 
-// Cross-tab sync (same browser)
+// Cross-tab sync in the same browser (also keeps the offline fallback honest)
 window.addEventListener('storage',e=>{
   if(e.key===PING_KEY){
+    if(window.WCIB_DB) return; // Firestore's live listener already handles this
     _cache=_lsLoad();
     refreshActiveView();
   }
 });
-
-// Cross-device polling every 30 s
-setInterval(async()=>{
-  try{
-    const r=await fetch('/api/data');
-    if(!r.ok)return;
-    const serverData=await r.json();
-    if(JSON.stringify(serverData)!==JSON.stringify(_cache)){
-      _cache=serverData;
-      try{ localStorage.setItem(STORE_KEY,JSON.stringify(serverData)); }catch(e){}
-      refreshActiveView();
-    }
-  }catch(e){}
-},30000);
 
 // ════════════════════════════════════════════════════════════════════
 //  HELPERS

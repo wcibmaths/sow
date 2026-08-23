@@ -695,17 +695,16 @@
 <!-- ══════════════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script>
 /* ═════ PASTE YOUR FIREBASE SETTINGS BETWEEN THE BRACES BELOW ═════ */
 const firebaseConfig = {
-  
-  apiKey: "AIzaSyDJ2yimQL5wD-dh-QvXdBh7op8v8wFP9OI",
-  authDomain: "wcib-sow.firebaseapp.com",
-  projectId: "wcib-sow",
-  storageBucket: "wcib-sow.firebasestorage.app",
-  messagingSenderId: "738888595401",
-  appId: "1:738888595401:web:720961c2af99f03b745a18",
-  measurementId: "G-MV7T6Y1WJ1"
+  apiKey:            "PASTE_HERE",
+  authDomain:        "PASTE_HERE",
+  projectId:         "PASTE_HERE",
+  storageBucket:     "PASTE_HERE",
+  messagingSenderId: "PASTE_HERE",
+  appId:             "PASTE_HERE"
 };
 /* ═════ nothing below this line needs changing ═════ */
 
@@ -734,6 +733,171 @@ if(!window.WCIB_DB){
     ? document.addEventListener('DOMContentLoaded', showBanner)
     : showBanner();
 }
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!--  SIGN-IN — only teachers on the allowed list can change progress  -->
+<!--  Passwordless: teacher enters their school email, clicks the link -->
+<!--  in their inbox, and stays signed in on that device.              -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<style>
+  #wcib-auth{
+    position:fixed; right:16px; bottom:16px; z-index:9998;
+    width:min(340px, calc(100vw - 32px));
+    background:#fff; color:#16181C; border:1px solid #DFE4E5; border-radius:12px;
+    box-shadow:0 2px 4px rgba(20,24,28,.06), 0 12px 32px -14px rgba(20,24,28,.35);
+    padding:14px 16px; display:none; flex-direction:column; gap:10px;
+    font:500 13.5px/1.5 Poppins, system-ui, sans-serif;
+  }
+  #wcib-auth.show{display:flex;}
+  #wcib-auth.quiet{padding:9px 13px; width:auto; right:16px;}
+  #wcib-auth p{margin:0;}
+  #wcib-auth .wcib-note{font-weight:400; color:#5C666D; font-size:12.5px;}
+  #wcib-auth form{display:flex; gap:8px;}
+  #wcib-auth input{
+    flex:1; min-width:0; padding:8px 10px; border:1px solid #DFE4E5; border-radius:7px;
+    font:400 13px/1.4 Poppins, system-ui, sans-serif; color:#16181C; background:#fff;
+  }
+  #wcib-auth input:focus-visible{outline:2px solid #F27D00; outline-offset:1px; border-color:#F27D00;}
+  #wcib-auth button{
+    border:none; border-radius:7px; padding:8px 13px; cursor:pointer;
+    font:600 13px/1.4 Poppins, system-ui, sans-serif;
+    background:#F27D00; color:#fff; white-space:nowrap;
+  }
+  #wcib-auth button.ghost{background:transparent; color:#5C666D; padding:4px 6px; font-weight:500;}
+  #wcib-auth button.ghost:hover{color:#16181C; text-decoration:underline;}
+  #wcib-auth button:focus-visible{outline:2px solid #16181C; outline-offset:2px;}
+  #wcib-auth .wcib-row{display:flex; align-items:center; gap:10px; justify-content:space-between;}
+  #wcib-auth .wcib-who{font-weight:400; color:#5C666D; font-size:12.5px; overflow:hidden; text-overflow:ellipsis;}
+
+  /* Locked = viewing only. Progress dropdowns and Reset are inert. */
+  body.wcib-locked .status-sel,
+  body.wcib-locked #btn-reset{opacity:.5; pointer-events:none;}
+</style>
+<script>
+(function(){
+  if(!window.WCIB_DB) return;              // Firebase not set up yet
+  if(!firebase.auth) return;               // auth SDK missing
+
+  var auth = firebase.auth();
+  var EMAIL_KEY = 'wcib_signin_email';
+  var canEdit = false, user = null, box = null, sent = false;
+
+  window.WCIB_CAN_EDIT = function(){ return canEdit; };
+
+  function build(){
+    box = document.createElement('div');
+    box.id = 'wcib-auth';
+    document.body.appendChild(box);
+  }
+
+  function esc2(s){ return String(s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function render(){
+    if(!box) return;
+    document.body.classList.toggle('wcib-locked', !canEdit);
+    box.className = 'show';
+
+    if(sent){
+      box.innerHTML = '<p>Check your inbox</p>'
+        + '<p class="wcib-note">We sent a sign-in link to <strong>' + esc2(sent) + '</strong>. '
+        + 'Open it on this device and you will stay signed in here.</p>'
+        + '<div class="wcib-row"><span></span><button class="ghost" id="wcib-again">Use a different address</button></div>';
+      box.querySelector('#wcib-again').onclick = function(){ sent = false; render(); };
+      return;
+    }
+
+    if(!user){
+      box.innerHTML = '<p>Viewing only</p>'
+        + '<p class="wcib-note">Sign in with your school email to update progress. No password needed.</p>'
+        + '<form id="wcib-form"><input id="wcib-email" type="email" required '
+        + 'placeholder="your.name@school.ac.th" autocomplete="email"><button type="submit">Send link</button></form>'
+        + '<p class="wcib-note" id="wcib-err" style="display:none;color:#B4470B"></p>';
+      box.querySelector('#wcib-form').onsubmit = function(e){
+        e.preventDefault();
+        var email = box.querySelector('#wcib-email').value.trim();
+        if(!email) return;
+        var btn = box.querySelector('button[type=submit]');
+        btn.disabled = true; btn.textContent = 'Sending…';
+        auth.sendSignInLinkToEmail(email, {
+          url: window.location.origin + window.location.pathname,
+          handleCodeInApp: true
+        }).then(function(){
+          try{ localStorage.setItem(EMAIL_KEY, email); }catch(e){}
+          sent = email; render();
+        }).catch(function(err){
+          btn.disabled = false; btn.textContent = 'Send link';
+          var p = box.querySelector('#wcib-err');
+          p.style.display = 'block';
+          p.textContent = err && err.code === 'auth/unauthorized-continue-uri'
+            ? 'This web address is not on the Firebase authorised list yet — see the "Authorise your website" step of the setup guide.'
+            : 'Could not send the link: ' + (err && err.message ? err.message : 'unknown error');
+        });
+      };
+      return;
+    }
+
+    if(!canEdit){
+      box.innerHTML = '<p>Not on the teacher list</p>'
+        + '<p class="wcib-note">You are signed in as ' + esc2(user.email) + ', but that address has not been '
+        + 'added to the maths department list, so progress is read-only. Ask the Head of Maths to add you.</p>'
+        + '<div class="wcib-row"><span></span><button class="ghost" id="wcib-out">Sign out</button></div>';
+      box.querySelector('#wcib-out').onclick = signOut;
+      return;
+    }
+
+    box.classList.add('quiet');
+    box.innerHTML = '<div class="wcib-row"><span class="wcib-who">' + esc2(user.email) + '</span>'
+      + '<button class="ghost" id="wcib-out">Sign out</button></div>';
+    box.querySelector('#wcib-out').onclick = signOut;
+  }
+
+  function signOut(){
+    auth.signOut().then(function(){
+      try{ localStorage.removeItem(EMAIL_KEY); }catch(e){}
+    });
+  }
+
+  // Is this signed-in address on the department list?
+  function checkAllowed(u){
+    if(!u || !u.email) return Promise.resolve(false);
+    return firebase.firestore().collection('teachers').doc(u.email.toLowerCase()).get()
+      .then(function(d){ return d.exists; })
+      .catch(function(){ return false; });
+  }
+
+  // Coming back from the emailed link?
+  function completeLinkSignIn(){
+    if(!auth.isSignInWithEmailLink(window.location.href)) return;
+    var email = '';
+    try{ email = localStorage.getItem(EMAIL_KEY) || ''; }catch(e){}
+    if(!email) email = window.prompt('Please confirm the email address you asked for the link with:') || '';
+    if(!email) return;
+    auth.signInWithEmailLink(email, window.location.href).then(function(){
+      try{ localStorage.removeItem(EMAIL_KEY); }catch(e){}
+      history.replaceState(null, '', window.location.origin + window.location.pathname);
+    }).catch(function(err){
+      alert('That sign-in link did not work (' + (err && err.code ? err.code : 'error')
+        + '). Links expire and can only be used once — please request a new one.');
+    });
+  }
+
+  function start(){
+    build();
+    completeLinkSignIn();
+    auth.onAuthStateChanged(function(u){
+      user = u;
+      sent = false;                       // clear the "check your inbox" notice
+      if(!u){ canEdit = false; render(); return; }
+      checkAllowed(u).then(function(ok){ canEdit = ok; render(); });
+    });
+  }
+
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', start)
+    : start();
+})();
 </script>
 
 <script>
@@ -2879,6 +3043,7 @@ async function syncFromServer(){
 function makeKey(lessonId,set){ return lessonId+'__'+set; }
 function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
 function setStatusValue(lessonId,set,val){
+  if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return;  // viewing only
   const d=loadAll(); const k=makeKey(lessonId,set); const ts=Date.now();
   d[k]=val;
   if(!d.__updatedAt || typeof d.__updatedAt!=='object') d.__updatedAt={};
@@ -3773,6 +3938,7 @@ function handleChange(e){
 }
 
 function resetProgress(){
+  if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return;  // viewing only
   if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
   const set=document.getElementById('sel-set').value;
   const yg=parseInt(document.getElementById('sel-yg').value);

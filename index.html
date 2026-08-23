@@ -101,6 +101,11 @@
   .nav-btn:hover{background:rgba(255,255,255,0.10);color:white;}
   .nav-btn.active{background:var(--header-active);color:white;font-weight:600;
     border-bottom-color:var(--accent);}
+  .hub-link{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+    border:1px solid rgba(255,255,255,0.35);background:transparent;
+    color:rgba(255,255,255,0.9);font-size:13px;font-family:var(--font);
+    border-radius:6px;text-decoration:none;white-space:nowrap;transition:all 0.15s;}
+  .hub-link:hover{background:rgba(255,255,255,0.10);color:white;}
   .badge{background:var(--accent);color:white;font-size:11px;font-weight:700;
     padding:4px 12px;border-radius:20px;margin:0 16px;letter-spacing:0.03em;}
 
@@ -550,6 +555,10 @@
     .lesson{grid-template-columns:28px 1fr auto;}
     .lesson .type-badge,.lesson .res-btn{display:none;}
   }
+  @media(max-width:767px){
+    .hub-link{padding:8px 10px;}
+    .hub-link span{display:none;}
+  }
 
 
 </style>
@@ -571,6 +580,15 @@
     <button class="nav-btn" data-view="assessments">Assessment Schedule</button>
     <button class="nav-btn" data-view="calendar">School Calendar</button>
   </nav>
+  <a class="hub-link" href="https://wcibmaths.github.io/teacher-hub/"
+     title="Back to WCIB Maths Department Hub">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <span>Maths Hub</span>
+  </a>
   <div class="term-badge" id="term-badge">
     <div>
       <div class="tb-year">2026/27</div>
@@ -902,6 +920,10 @@ if(!window.WCIB_DB){
 })();
 </script>
 
+<!-- External examination dates (Pearson International timetables).
+     Kept in its own file so it can be updated without touching this one. -->
+<script src="./exam-dates.js"></script>
+
 <script>
 'use strict';
 
@@ -928,6 +950,30 @@ const TEACHERS = TEACHERS_BY_YG[7];
 const SETS = SETS_BY_YG[7];
 const STORE_KEY = 'wcib_sow_v1';
 const PING_KEY  = 'wcib_sow_ping';
+
+// ── Academic year ─────────────────────────────────────────────────
+// Many SoW rows carry a month with no year ('11-15 Jan'). These two
+// constants are what resolve them, and what stops the dashboard
+// reporting classes as behind before term has started.
+const ACADEMIC_YEAR_START = 2026;                   // Michaelmas 2026
+const FIRST_TEACHING_DAY  = new Date(2026, 7, 27);  // Thu 27 Aug 2026
+
+// Shared whole-school key dates, published from the teacher-hub repo.
+const KEY_DATES_URL =
+  'https://wcibmaths.github.io/teacher-hub/data/wcib_academic_key_dates_2026_27.csv';
+const KEY_DATES_CACHE_KEY = 'wcib_key_dates_2026_27';
+const KEY_DATES_CACHE_MS  = 24 * 60 * 60 * 1000;    // 24 hours
+let KEY_DATES = [];
+
+// Unit codes this department actually enters students for.
+const RELEVANT_EXTERNAL_CODES = new Set([
+  '4MA1',                                              // IGCSE Mathematics A
+  'WMA11','WMA12','WMA13','WMA14',                     // IAL Pure 1-4
+  'WST01','WST02','WST03',                             // IAL Statistics 1-3
+  'WME01','WME02','WME03',                             // IAL Mechanics 1-3
+  'WFM01','WFM02','WFM03',                             // IAL Further Pure 1-3
+  'WDM11',                                             // IAL Decision 1
+]);
 
 // ── Unit folder links (SharePoint) ────────────────────────────────
 const UNIT_FOLDERS = {
@@ -1958,21 +2004,9 @@ const CALENDAR_EVENTS = [
 //  Dates use ISO YYYY-MM-DD. Leave EXTERNAL_EXAMS empty rather than
 //  inventing provisional dates.
 // ══════════════════════════════════════════════════════════════════
-const EXTERNAL_EXAM_SERIES = [
-  {key:'may-june', label:'May/June', startMonth:4, endMonth:5},
-  {key:'oct-nov', label:'October/November', startMonth:9, endMonth:10},
-];
-const RELEVANT_EXTERNAL_PAPERS = [
-  'Edexcel International GCSE Mathematics A Higher',
-  'IAL P1','IAL P2','IAL P3','IAL P4',
-  'IAL S1','IAL S2','IAL S3',
-  'IAL M1','IAL M2',
-  'IAL D1',
-];
-const EXTERNAL_EXAMS = [
-  // Example shape for future official entries:
-  // {date:'YYYY-MM-DD', series:'may-june', exam:'IAL Mathematics', paper:'IAL P1', yg:'Year 12'}
-];
+// EXTERNAL_EXAM_SERIES and EXTERNAL_EXAMS now live in exam-dates.js,
+// loaded just above this script. RELEVANT_EXTERNAL_CODES is declared
+// with the other academic-year constants near the top.
 
 // ══════════════════════════════════════════════════════════════════
 //  IAL Y12/Y13 SoW Data (fortnight-block model)
@@ -3163,6 +3197,8 @@ function refreshActiveView(){
 //  HOD / DASHBOARD
 // ════════════════════════════════════════════════════════════════════
 let hodYear = 7;
+let hodEventsYearOnly = false;
+function setHodEventsYearFilter(v){ hodEventsYearOnly = !!v; renderHOD(); }
 
 function renderYearTabs(){
   const yrs=['7','8','9','10','11','12','13'];
@@ -3177,49 +3213,92 @@ function renderYearTabs(){
 
 function termPctClass(pct){ return pct>=100?'done':pct>=70?'':pct>=40?'amber':'red'; }
 function barClass(pct){ return pct>=70?'':pct>=40?'amber':'red'; }
+// ── Academic-year-aware date parsing ──────────────────────────────
+// SoW `dates` values come in several shapes and many carry no year at
+// all ('11-15 Jan', '10-14 May'). A bare month is resolved against the
+// academic year: Aug-Dec -> ACADEMIC_YEAR_START, Jan-Jul -> the year
+// after. An explicit year in the string always wins.
+const MONTHS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const MONTH_RX=/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sept?(?:ember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b/i;
+function parseLocalDate(year,month,day){
+  const d=new Date(Number(year),Number(month),Number(day));
+  return Number.isNaN(d.getTime())?null:d;
+}
+function monthIndexFrom(text){
+  const m=String(text||'').match(MONTH_RX);
+  return m ? MONTHS.indexOf(m[1].slice(0,3).toLowerCase()) : -1;
+}
+function dayFrom(text){
+  const m=String(text||'').match(/\b(\d{1,2})\b/);
+  return m ? Number(m[1]) : null;
+}
+function dateParts(raw){
+  const clean=String(raw||'').replace(/[\u2013\u2014]/g,'-').trim();
+  const yearMatch=clean.match(/\b(20\d{2})\b/);
+  const parts=clean.split(/\s*-\s*/);
+  const firstText=parts[0].trim();
+  const lastText=parts.length>1 ? parts[parts.length-1].trim() : firstText;
+  // '11-15 Jan': the opening half carries no month, so it inherits the closing half's.
+  const firstMonth=monthIndexFrom(firstText);
+  const lastMonth=monthIndexFrom(lastText);
+  const startMonth=firstMonth>=0?firstMonth:lastMonth;
+  const endMonth=lastMonth>=0?lastMonth:firstMonth;
+  const yearFor=m=>yearMatch?Number(yearMatch[1])
+                 :(m>=7?ACADEMIC_YEAR_START:ACADEMIC_YEAR_START+1);
+  return {clean,firstText,lastText,startMonth,endMonth,yearFor};
+}
 function parseStartDate(raw){
   if(!raw) return null;
-  const clean=String(raw).replace(/–/g,'-');
-  const first=clean.split('-')[0].trim();
-  const yearMatch=clean.match(/\b(20\d{2})\b/);
-  const year=yearMatch?yearMatch[1]:'2026';
-  const d=new Date(`${first} ${year}`);
-  return Number.isNaN(d.getTime())?null:d;
+  const p=dateParts(raw);
+  if(p.startMonth<0) return null;
+  const day=dayFrom(p.firstText);
+  return parseLocalDate(p.yearFor(p.startMonth),p.startMonth,day===null?1:day);
+}
+function parseEndDate(raw){
+  if(!raw) return null;
+  const p=dateParts(raw);
+  if(p.endMonth<0) return null;
+  const day=dayFrom(p.lastText);
+  return parseLocalDate(p.yearFor(p.endMonth),p.endMonth,day===null?1:day);
+}
+function parseIsoDate(raw){
+  const m=String(raw||'').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? parseLocalDate(m[1],Number(m[2])-1,m[3]) : null;
 }
 function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
 function sameDay(a,b){ return a.toDateString()===b.toDateString(); }
 
-function getExternalExamSeriesWindow(date){
-  const d=new Date(date); d.setHours(0,0,0,0);
-  const y=d.getFullYear();
-  const windows=[];
-  [y-1,y,y+1].forEach(year=>{
-    EXTERNAL_EXAM_SERIES.forEach(series=>{
-      const start=new Date(year,series.startMonth,1);
-      const end=new Date(year,series.endMonth+1,0);
-      windows.push({...series,year,start,end});
+// ── External examination series ───────────────────────────────────
+// Returns the next `count` exam windows in date order, so the dashboard
+// can offer them as tabs rather than showing only the very next one.
+function externalSeriesList(){
+  return (typeof EXTERNAL_EXAM_SERIES!=='undefined') ? EXTERNAL_EXAM_SERIES : [];
+}
+function externalExamList(){
+  return (typeof EXTERNAL_EXAMS!=='undefined') ? EXTERNAL_EXAMS : [];
+}
+function getExternalExamSeriesWindows(referenceDate, count){
+  count = count || 3;
+  const today=new Date(referenceDate); today.setHours(0,0,0,0);
+  const out=[];
+  for(let year=today.getFullYear(); year<=today.getFullYear()+2; year++){
+    externalSeriesList().forEach(s=>{
+      const start=parseLocalDate(year,s.startMonth,1);
+      const end=parseLocalDate(year,s.endMonth+1,0);
+      if(!start||!end) return;
+      end.setHours(23,59,59,999);
+      if(end>=today) out.push({id:`${s.key}-${year}`, seriesKey:s.key,
+                               label:`${s.label} ${year}`, year, start, end});
     });
-  });
-  return windows
-    .filter(w=>d<=w.end)
-    .sort((a,b)=>a.start-b.start)[0]||null;
+  }
+  return out.sort((a,b)=>a.start-b.start).slice(0,count);
 }
-function isRelevantExternalExam(e){
-  const paper=String(e.paper||'');
-  const exam=String(e.exam||'');
-  const seriesOk=EXTERNAL_EXAM_SERIES.some(s=>s.key===e.series);
-  const paperOk=RELEVANT_EXTERNAL_PAPERS.some(p=>paper.includes(p) || exam.includes(p));
-  return seriesOk && paperOk;
+// Match on the unit code, not on free text in the paper name.
+function isRelevantExternalExam(exam){
+  return !!exam && RELEVANT_EXTERNAL_CODES.has(String(exam.code||'').toUpperCase());
 }
-function getUpcomingExternalExams(today){
-  const nextSeries=getExternalExamSeriesWindow(today);
-  const rows=(EXTERNAL_EXAMS||[]).map(e=>({...e,d:new Date(e.date+'T00:00:00')}))
-    .filter(e=>!Number.isNaN(e.d.getTime()) && e.d>=today)
-    .filter(isRelevantExternalExam)
-    .filter(e=>!nextSeries || e.series===nextSeries.key)
-    .sort((a,b)=>a.d-b.d);
-  return {series:nextSeries, rows};
-}
+let selectedExternalSeriesId='';
+function setExternalExamSeries(id){ selectedExternalSeriesId=id; renderHOD(); }
 
 // ── HoD insight helpers ───────────────────────────────────────────
 // External / public-exam labels we must NOT show on the dashboard
@@ -3234,19 +3313,85 @@ function allClassPairs(){
   return pairs;
 }
 
-// Internal academic events between [start, end] (inclusive) — combines
-// CALENDAR_EVENTS with SoW row alerts and internal assessment lessons.
-// External exam-board dates are filtered out.
-function getInternalEvents(start, end){
+// ── Shared whole-school key dates (CSV) ───────────────────────────
+// Minimal RFC-4180 parser: handles quoted fields and embedded commas.
+function parseCsv(text){
+  const rows=[]; let row=[], cur='', quoted=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i], next=text[i+1];
+    if(ch==='"' && quoted && next==='"'){ cur+='"'; i++; }
+    else if(ch==='"'){ quoted=!quoted; }
+    else if(ch===',' && !quoted){ row.push(cur); cur=''; }
+    else if((ch==='\n'||ch==='\r') && !quoted){
+      if(ch==='\r' && next==='\n') i++;
+      row.push(cur); cur='';
+      if(row.some(c=>c!=='')) rows.push(row);
+      row=[];
+    }
+    else cur+=ch;
+  }
+  row.push(cur);
+  if(row.some(c=>c!=='')) rows.push(row);
+  if(!rows.length) return [];
+  const headers=rows.shift().map(h=>String(h).replace(/^\uFEFF/,'').trim());
+  return rows.map(vals=>Object.fromEntries(
+    headers.map((h,i)=>[h, String(vals[i]==null?'':vals[i]).trim()])));
+}
+
+async function loadKeyDates(){
+  try{
+    const raw=localStorage.getItem(KEY_DATES_CACHE_KEY);
+    const cached=raw?JSON.parse(raw):null;
+    if(cached && Array.isArray(cached.rows) && (Date.now()-cached.savedAt)<KEY_DATES_CACHE_MS){
+      KEY_DATES=cached.rows;
+      return;
+    }
+  }catch(e){ /* unreadable cache — just refetch */ }
+  try{
+    const res=await fetch(KEY_DATES_URL,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows=parseCsv(await res.text()).filter(r=>r.event_id);
+    if(!rows.length) throw new Error('empty CSV');
+    KEY_DATES=rows;
+    try{ localStorage.setItem(KEY_DATES_CACHE_KEY,
+      JSON.stringify({savedAt:Date.now(),rows})); }catch(e){}
+  }catch(err){
+    KEY_DATES=[];
+    console.warn('Key dates unavailable — using the built-in calendar instead:',err);
+  }
+}
+
+function keyDateType(row){
+  const c=String(row.category||'').toLowerCase();
+  if(/holiday|break|closed/.test(c))       return 'Holiday';
+  if(/term|orientation/.test(c))            return 'Term Date';
+  if(/mock/.test(c))                        return 'Mock Exam';
+  if(/exam|assessment|testing|progress/.test(c)) return 'Internal Exam Window';
+  if(/deadline|reporting|data/.test(c))     return 'Deadline';
+  return 'Whole-school';
+}
+
+// Internal academic events between [start, end] (inclusive).
+//
+// Whole-school dates come from the shared CSV, de-duplicated on event_id.
+// Per-class rows come from SoW assessments only. SoW `alert` text is
+// deliberately NOT included: those are week-banner teaching notes shown
+// in Teacher View, they restate the same whole-school dates, and they are
+// worded differently per class — which is what produced five near-identical
+// rows for one INSET day. External exam-board dates are filtered out.
+function getInternalEvents(start, end, yearFilter){
   // map: key -> {date,event,details,scopes:Set,type}
   const map=new Map();
-  const add=(date,event,details,scope,type)=>{
+  const yearPrefix = yearFilter ? `Year ${yearFilter} ` : null;
+  const add=(date,event,details,scope,type,dedupeKey)=>{
     if(!date) return;
     if(date<start || date>end) return;
     if(EXTERNAL_EVENT_RX.test(event+' '+details)) return;
-    // Assessments are class-specific (keep per-scope); other notes merge across sets
+    if(yearPrefix && scope!=='Whole school' && !scope.startsWith(yearPrefix)) return;
+    // Assessments are class-specific (keep per-scope); everything else merges.
     const perScope = (type==='Internal Assessment' || type==='Mock Exam');
-    const key=`${date.toISOString().slice(0,10)}|${event}|${perScope?scope:''}`;
+    const key = dedupeKey ||
+      `${date.toISOString().slice(0,10)}|${event}|${perScope?scope:''}`;
     let row=map.get(key);
     if(!row){
       row={date,event,details,scopes:new Set(),type};
@@ -3255,31 +3400,46 @@ function getInternalEvents(start, end){
     row.scopes.add(scope);
     if(!row.details && details) row.details=details;
   };
-  // Whole-school calendar entries
-  (CALENDAR_EVENTS||[]).forEach(r=>{
-    const d=parseStartDate(r.dates); if(!d) return;
-    const typeLbl = r.type==='break'?'Holiday'
-                  : r.type==='holiday'?'Holiday'
-                  : r.type==='partial'?'Term Date'
-                  : r.type==='inset'?'Whole-school'
-                  : r.type==='exams'?'Internal Exam Window'
-                  : r.type==='adventure'?'Whole-school'
-                  : 'Whole-school';
-    add(d, r.label, r.note||'', 'Whole school', typeLbl);
-  });
-  // SoW-level events per (yg,set)
+
+  // Whole-school dates — from the shared CSV, keyed on event_id so wording
+  // can never split one event into several rows.
+  if(KEY_DATES.length){
+    KEY_DATES.forEach(r=>{
+      if(!r.start_date) return;                       // undated / TBC-only rows
+      const d=parseIsoDate(r.start_date); if(!d) return;
+      const name=String(r.event||'').trim(); if(!name) return;
+      const isTbc=String(r.is_tbc||'').toUpperCase()==='TRUE';
+      add(d, name + (isTbc?' (TBC)':''), r.notes||'',
+          'Whole school', keyDateType(r), `key|${r.event_id}`);
+    });
+  } else {
+    // Offline fallback so the panel still works if the CSV can't be fetched.
+    (CALENDAR_EVENTS||[]).forEach(r=>{
+      const d=parseStartDate(r.dates); if(!d) return;
+      const typeLbl = r.type==='break'?'Holiday'
+                    : r.type==='holiday'?'Holiday'
+                    : r.type==='partial'?'Term Date'
+                    : r.type==='exams'?'Internal Exam Window'
+                    : 'Whole-school';
+      add(d, r.label, r.note||'', 'Whole school', typeLbl,
+          `fallback|${r.label}|${d.toISOString().slice(0,10)}`);
+    });
+  }
+
+  // Per-class rows: internal assessments and mocks only.
   allClassPairs().forEach(({yg,set})=>{
     const sow=sowFor(yg,set); if(!sow) return;
     const scope=`Year ${yg} ${set}`;
     sow.forEach(l=>{
+      if(l.type!=='assessment') return;
       const d=parseStartDate(l.dates); if(!d) return;
-      if(l.type==='assessment'){
-        const nm=l.lessonName||'Assessment';
-        add(d, nm, l.unitName||l.obj||'', scope, /mock/i.test(nm)?'Mock Exam':'Internal Assessment');
-      }
-      if(l.alert){
-        add(d, l.alert, '', scope, 'Academic Note');
-      }
+      const nm=l.lessonName||'Assessment';
+      // Don't repeat the unit name underneath when the title already says it.
+      const flat=t=>String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+      const detail=l.unitName||l.obj||'';
+      const sub=(detail && flat(nm).indexOf(flat(detail))===-1) ? detail : '';
+      add(d, nm, sub, scope,
+          /mock/i.test(nm)?'Mock Exam':'Internal Assessment');
     });
   });
   // Render-friendly rows: collapse scopes nicely
@@ -3311,10 +3471,16 @@ function getClassPace(yg, set, today){
   const sow=sowFor(yg,set);
   if(!sow) return null;
   const teachable=getTeachable(sow);
-  const planned=teachable.filter(l=>{const d=parseStartDate(l.dates); return d && d<=today;});
+  const beforeStart = today < FIRST_TEACHING_DAY;
+  // A lesson only counts as "should be done" once its teaching week has
+  // finished — not from the Monday it starts.
+  const planned = beforeStart ? [] : teachable.filter(l=>{
+    const end=parseEndDate(l.dates)||parseStartDate(l.dates);
+    return end && end<today;
+  });
   const done=planned.filter(l=>getStatus(l.id,set)==='Done').length;
   const plannedCt=planned.length;
-  const behindBy=Math.max(0, plannedCt-done);
+  const behindBy = beforeStart ? 0 : Math.max(0, plannedCt-done);
   const overall=getProgress(set,sow);
   const nextAssess=sow.filter(l=>l.type==='assessment' && !EXTERNAL_EVENT_RX.test(l.lessonName||''))
                       .map(l=>({date:parseStartDate(l.dates),name:l.lessonName}))
@@ -3357,11 +3523,12 @@ function addSchoolDays(date, delta){
 // change is older than the stale threshold (10 school days). Classes that
 // have never been updated are intentionally excluded — those are caught by
 // the existing "0 completed lessons after teaching started" alert.
-function getClassesWithStaleUpdates(){
+function getClassesWithStaleUpdates(todayOverride){
   const STALE_SCHOOL_DAYS = 10;
   const map = loadAll().__updatedAt;
   if(!map || typeof map!=='object') return [];
-  const today=new Date(); today.setHours(0,0,0,0);
+  const today = todayOverride ? new Date(todayOverride) : new Date();
+  today.setHours(0,0,0,0);
   const staleBeforeMs = addSchoolDays(today, -STALE_SCHOOL_DAYS).getTime();
   const stale=[];
   allClassPairs().forEach(({yg,set})=>{
@@ -3516,23 +3683,35 @@ function renderHOD(){
   });
 
   // Next 2 weeks internal events
-  const events14=getInternalEvents(today,in14);
+  const events14=getInternalEvents(today,in14,hodEventsYearOnly?hodYear:null);
 
   // Assessments in next 14 days (internal only; one per (date,scope,event) thanks to dedupe)
   const assessments14=events14.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
 
-  // Upcoming external examinations (Pearson Oct/Nov or May/June intakes only)
-  const externalSeries=getUpcomingExternalExams(today);
-  const extRows=externalSeries.rows.slice(0,5);
+  // Upcoming external examinations — from exam-dates.js
+  const extAll=externalExamList()
+    .filter(isRelevantExternalExam)
+    .map(e=>({...e, d:parseIsoDate(e.date)}))
+    .filter(e=>e.d)
+    .sort((a,b)=>a.d-b.d);
   const in30=new Date(today); in30.setDate(today.getDate()+30);
-  const extNext30=externalSeries.rows.filter(e=>e.d<=in30).length;
+  const extNext30=extAll.filter(e=>e.d>=today && e.d<=in30).length;
+  const externalWindows=getExternalExamSeriesWindows(today,3);
+  const selectedWindow=externalWindows.find(w=>w.id===selectedExternalSeriesId)
+                    || externalWindows[0] || null;
+  if(selectedWindow) selectedExternalSeriesId=selectedWindow.id;
+  const extRows=selectedWindow
+    ? extAll.filter(e=>e.series===selectedWindow.seriesKey
+                    && e.d>=selectedWindow.start && e.d<=selectedWindow.end)
+    : [];
 
   // Classes behind pace
   const behindRows=paces.filter(p=>p.behindBy>=1).sort((a,b)=>b.behindBy-a.behindBy);
   const behindYears=new Set(behindRows.map(p=>p.yg)).size;
 
   // Needs Attention items
-  const stale=getClassesWithStaleUpdates();
+  const beforeFirstTeachingDay = today < FIRST_TEACHING_DAY;
+  const stale = beforeFirstTeachingDay ? [] : getClassesWithStaleUpdates(today);
   const attention=[];
   paces.filter(p=>p.behindBy>=2).forEach(p=>{
     attention.push({title:`${p.behindBy} lessons behind pace`, detail:`Year ${p.yg} ${p.set} — ${p.teacher}`});
@@ -3540,10 +3719,12 @@ function renderHOD(){
   events14.filter(e=>e.date<=in7 && /Assessment|Mock/.test(e.type)).forEach(e=>{
     attention.push({title:'Assessment in the next 7 days', detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`});
   });
-  paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
-    attention.push({title:'No completed lessons after teaching started', detail:`Year ${p.yg} ${p.set} — ${p.teacher}`});
-  });
-  stale.slice(0,3).forEach(msg=>attention.push({title:'No recent lesson updates', detail:String(msg)}));
+  if(!beforeFirstTeachingDay){
+    paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
+      attention.push({title:'No completed lessons after teaching started', detail:`Year ${p.yg} ${p.set} — ${p.teacher}`});
+    });
+    stale.slice(0,3).forEach(msg=>attention.push({title:'No recent lesson updates', detail:String(msg)}));
+  }
   const attentionItems=attention.slice(0,4);
   const attentionMore=Math.max(0,attention.length-attentionItems.length);
   const eventRows=events14.slice(0,6);
@@ -3558,6 +3739,7 @@ function renderHOD(){
     if(t==='Mock Exam') return '<span class="type-pill tp-mock">Mock</span>';
     if(t==='Internal Assessment') return '<span class="type-pill tp-assessment">Assessment</span>';
     if(t==='Internal Exam Window') return '<span class="type-pill tp-exam">Exam</span>';
+    if(t==='Deadline') return '<span class="type-pill tp-deadline">Deadline</span>';
     if(t==='Holiday') return '<span class="type-pill tp-holiday">Holiday</span>';
     if(t==='Term Date') return '<span class="type-pill tp-holiday">Term Date</span>';
     return '<span class="type-pill tp-note">Note</span>';
@@ -3571,7 +3753,15 @@ function renderHOD(){
   const chev = '<svg class="attn-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
 
   // ── Card: Next 2 weeks (upcoming events) ────────────────────────────
-  const eventsHtml = eventRows.length
+  const eventsToggle = `<div class="assess-tog-wrap">
+      <span class="assess-tog-lbl">Show events for:</span>
+      <button class="assess-tog-btn${!hodEventsYearOnly?' active':''}" onclick="setHodEventsYearFilter(false)">All years</button>
+      <button class="assess-tog-btn${hodEventsYearOnly?' active':''}" onclick="setHodEventsYearFilter(true)">Year ${hodYear} only</button>
+    </div>`;
+  const eventsEmpty = hodEventsYearOnly
+    ? `No Year ${hodYear} academic events in the next 2 weeks.`
+    : `No internal academic events in the next 2 weeks.`;
+  const eventsHtml = eventsToggle + (eventRows.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
          <th>Date</th><th>Year Group / Set</th><th>Event</th><th>Type</th>
        </tr></thead><tbody>${eventRows.map(e=>`<tr>
@@ -3580,20 +3770,25 @@ function renderHOD(){
          <td>${e.event}${e.details?`<div style="font-size:10px;color:var(--dark-gray);margin-top:2px;">${e.details}</div>`:''}</td>
          <td>${typePill(e)}</td>
        </tr>`).join('')}</tbody></table></div>`
-    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">No internal academic events in the next 2 weeks.</p>`;
+    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">${eventsEmpty}</p>`);
 
   // ── Card: Upcoming external exams ───────────────────────────────────
-  const seriesLabel=externalSeries.series?externalSeries.series.label:'next Oct/Nov or May/June';
-  const extHtml = extRows.length
+  const extTabs = externalWindows.length
+    ? `<div class="assess-tog-wrap">${externalWindows.map(w=>
+        `<button class="assess-tog-btn${w.id===selectedExternalSeriesId?' active':''}" onclick="setExternalExamSeries('${w.id}')">${w.label}</button>`
+      ).join('')}</div>`
+    : '';
+  const extHtml = extTabs + (extRows.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Date</th><th>Exam</th><th>Paper</th><th>Year Group / Set</th>
+         <th>Date</th><th>Exam</th><th>Paper</th><th>Session</th><th>Year Group / Set</th>
        </tr></thead><tbody>${extRows.map(e=>`<tr>
          <td style="white-space:nowrap;">${fmtWdY(e.d)}</td>
-         <td>${e.exam}</td><td>${e.paper}</td><td>${e.yg}</td>
+         <td>${e.exam}</td>
+         <td>${e.paper}${e.code?` <span style="color:var(--dark-gray);">(${e.code})</span>`:''}</td>
+         <td>${e.session||'—'}</td><td>${e.yg}</td>
        </tr>`).join('')}</tbody></table></div>
-       <div style="font-size:11px;color:var(--dark-gray);margin-top:8px;">Showing ${seriesLabel} Pearson International exam dates.</div>`
-    : `<div class="scroll"><p style="color:var(--dark-gray);font-size:13px;margin:0;line-height:1.4;">External exam dates to be added from Pearson timetable.</p>
-       <p style="color:var(--dark-gray);font-size:11px;margin:8px 0 0;line-height:1.35;">Next intake checked: ${seriesLabel}. Only October/November and May/June Pearson International dates are shown here.</p></div>`;
+       <div style="font-size:11px;color:var(--dark-gray);margin-top:8px;">Pearson International — ${selectedWindow?selectedWindow.label:''} series.</div>`
+    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;line-height:1.4;">No Maths or Further Maths papers are scheduled for the ${selectedWindow?selectedWindow.label:'selected'} series.</p>`);
 
   // ── Card: Needs attention ───────────────────────────────────────────
   const attentionHtml = attentionItems.length
@@ -3607,7 +3802,10 @@ function renderHOD(){
     : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Nothing currently needs attention.</p>`;
 
   // ── Card: Classes behind pace ───────────────────────────────────────
-  const behindHtml = behindPreview.length
+  const noPlannedPace = paces.length>0 && paces.every(p=>p.plannedCt===0);
+  const behindHtml = noPlannedPace
+    ? `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Academic year has not started yet — pace tracking begins Thu 27 Aug 2026.</p>`
+    : behindPreview.length
     ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
          <th>Year</th><th>Class / Set</th><th>Teacher</th><th>Planned</th><th>Completed</th><th>Behind</th><th>Next Assessment</th>
        </tr></thead><tbody>${behindPreview.map(r=>`<tr>
@@ -3666,12 +3864,14 @@ function renderHOD(){
   document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
   document.getElementById('hod-health-content').innerHTML=healthPanelHtml;
   document.getElementById('stat-done').textContent=lessonsDoneWeek;
-  document.getElementById('stat-prog').textContent=behindRows.length;
+  document.getElementById('stat-prog').textContent = noPlannedPace ? '0' : behindRows.length;
   document.getElementById('stat-behind').textContent=assessments14;
   document.getElementById('stat-assess').textContent=extNext30;
   document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
   document.getElementById('stat-prog-lbl').textContent='Classes behind pace';
-  document.getElementById('stat-prog-sub').textContent=`Across ${behindYears} year group${behindYears===1?'':'s'}`;
+  document.getElementById('stat-prog-sub').textContent = noPlannedPace
+    ? 'Pace tracking begins Thu 27 Aug 2026'
+    : `Across ${behindYears} year group${behindYears===1?'':'s'}`;
   document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
   document.getElementById('stat-assess-sub').textContent='Next 30 days';
 }
@@ -4332,7 +4532,7 @@ async function init(){
   document.getElementById('tv-search').addEventListener('input',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('sel-assess-yg').addEventListener('change',()=>{saveTvFilters();renderAssessments();});
   document.getElementById('btn-reset').addEventListener('click',resetProgress);
-  await syncFromServer();
+  await Promise.all([syncFromServer(), loadKeyDates()]);
   restoreTvFilters();
   renderYearTabs();
   renderHOD();

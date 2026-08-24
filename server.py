@@ -56,6 +56,10 @@ def index():
 def wellington_logo():
     return send_file('attached_assets/wellington-logo.png', mimetype='image/png')
 
+@app.route('/exam-dates.js')
+def exam_dates():
+    return send_file('exam-dates.js', mimetype='application/javascript')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())

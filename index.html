@@ -7,6 +7,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WCIB Maths Department — Scheme of Work 2026/27</title>
+<link rel="icon" type="image/png" href="./wellington-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -930,7 +931,7 @@ if(!window.WCIB_DB){
 const TEACHERS_BY_YG = {
   7:  { Ma1:'MKM', Ma2:'HPA', Ma3:'ADE', Ma4:'FTA' },
   8:  { Ma1:'ADE', Ma2:'MKM', Ma3:'FTA', Ma4:'HPA' },
-  9:  { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
+  9:  { Ma1:'FTA', Ma2:'HPA', Ma3:'MKM', Ma4:'SSW' },
   10: { Ma1:'SSW', Ma2:'ADE', Ma3:'HPA', Ma4:'FTA' },
   11: { Ma1:'SSW', Ma2:'FTA', Ma3:'ADE', Ma4:'MKM' },
   12: { Ma1P12:'SSW', Ma2P12:'FTA', Ma1S1:'SSW', Ma2S1:'ADE', FMP1234:'MKM', FMS1:'SSW, HPA', FMM1:'XLN' },
@@ -4318,7 +4319,7 @@ function renderTeacher(){
     html += `<div class="card" style="border-left:4px solid var(--navy);padding:12px 16px;margin-bottom:14px;background:#f4f7fb;">
       <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--navy);">Accelerated class — IGCSE pathway begins early</div>
       <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
-        Year 9 Ma1 (SSW) starts the Pearson Edexcel IGCSE Higher (4MA1) course a year early. It now has its own scheme of work, paced for the Year 9 timetable, rather than mirroring Year 10 Ma1's.
+        Year 9 Ma1 (FTA) starts the Pearson Edexcel IGCSE Higher (4MA1) course a year early. It now has its own scheme of work, paced for the Year 9 timetable, rather than mirroring Year 10 Ma1's.
       </div>
     </div>`;
   }
@@ -4451,18 +4452,11 @@ function renderTeacher(){
         const seqLabel=isA?'★':lessonSeqNo[lesson.id]||'';
         const noLabel=seqLabel?`<span class="lesson-no">${esc(seqLabel)}</span>`:'';
 
-        // Y12/Y13 IAL lesson titles: strip leading unit prefix like "P1.", "S1.", "FP1."
-        // so "P1.1.1 Index Laws" → "1.1 Index Laws". When two lessons are paired on the
-        // same day (e.g. "P1.1.1 X + P1.1.2 Y"), also strip the prefix after the "+".
-        // Exception: Y13 P3/P4 (set P34) and Y13 FM FP1/FP2 (set FMFP12) keep prefixes
-        // because their students need the full unit code on screen.
-        let displayName = lesson.lessonName;
-        const stripPrefix = (yg===12 && set!=='FMP1234') || (yg===13 && set!=='P34' && set!=='FMFP12');
-        if(stripPrefix){
-          displayName = displayName
-            .replace(/^(?:FP\d|FM\w+|P\d|S\d|M\d|D\d)\.(?=\d+\.\d+\s)/, '')
-            .replace(/(\+\s+)(?:FP\d|FM\w+|P\d|S\d|M\d|D\d)\.(?=\d+\.\d+\s)/g, '$1');
-        }
+        // IAL lesson names carry the full module/topic code (for example
+        // P1.1.1, S1.1.1, FP1.1.1, D1.1.1 or M1.1.1). Keep that code
+        // visible in Teacher View; this is display-only and does not alter
+        // the underlying SoW row or lesson order.
+        const displayName = lesson.lessonName;
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">
             <div class="lesson-name-row">
@@ -4572,8 +4566,8 @@ function renderAssessments(){
   if(ygInt === 9){
     toggleHtml = `<div class="assess-tog-wrap">
       <span class="assess-tog-lbl">Schedule for:</span>
-      <button class="assess-tog-btn${assessY9Filter==='ma24'?' active':''}" onclick="setAssessFilter('ma24')">Ma2–Ma4 (FTA / HPA / MKM)</button>
-      <button class="assess-tog-btn${assessY9Filter==='ma1'?' active':''}" onclick="setAssessFilter('ma1')">Ma1 — SSW</button>
+       <button class="assess-tog-btn${assessY9Filter==='ma24'?' active':''}" onclick="setAssessFilter('ma24')">Ma2–Ma4 (HPA / MKM / SSW)</button>
+       <button class="assess-tog-btn${assessY9Filter==='ma1'?' active':''}" onclick="setAssessFilter('ma1')">Ma1 — FTA</button>
     </div>`;
   }
   if(ygInt === 10){

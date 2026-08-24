@@ -933,7 +933,7 @@ const TEACHERS_BY_YG = {
   9:  { Ma1:'SSW', Ma2:'FTA', Ma3:'HPA', Ma4:'MKM' },
   10: { Ma1:'SSW', Ma2:'ADE', Ma3:'HPA', Ma4:'FTA' },
   11: { Ma1:'SSW', Ma2:'FTA', Ma3:'ADE', Ma4:'MKM' },
-  12: { Ma1P12:'SSW', Ma2P12:'FTA', Ma1S1:'SSW', Ma2S1:'ADE', FMP1234:'MKM', FMM1:'XLN' },
+  12: { Ma1P12:'SSW', Ma2P12:'FTA', Ma1S1:'SSW', Ma2S1:'ADE', FMP1234:'MKM', FMS1:'SSW, HPA', FMM1:'XLN' },
   13: { P34:'ADE', M1:'ADE', D1:'XLN', FMFP12:'HPA', FMS23:'SSW', FMM2:'XLN' },
 };
 const SETS_BY_YG = {
@@ -942,9 +942,16 @@ const SETS_BY_YG = {
   9:  ['Ma1','Ma2','Ma3','Ma4'],
   10: ['Ma1','Ma2','Ma3','Ma4'],
   11: ['Ma1','Ma2','Ma3','Ma4'],
-  12: ['Ma1P12','Ma2P12','Ma1S1','Ma2S1','FMP1234','FMM1'],
+  12: ['Ma1P12','Ma2P12','Ma1S1','Ma2S1','FMP1234','FMS1','FMM1'],
   13: ['P34','M1','D1','FMFP12','FMS23','FMM2'],
 };
+// Year 10 set-code relabel (2026-27): internal keys, SoW routing and TEACHERS_BY_YG
+// above are UNCHANGED — no data moved. Only what Year 10 teachers/HoD see on screen
+// changes: the former top set "Ma1" (SSW) now reads "FM"; Ma2/Ma3/Ma4 each shift down
+// one label (old Ma2→"Ma1", old Ma3→"Ma2", old Ma4→"Ma3"). Year 11 is unaffected —
+// Ma1-Ma4 there keep their existing labels.
+const Y10_DISPLAY_SET = { Ma1:'FM', Ma2:'Ma1', Ma3:'Ma2', Ma4:'Ma3' };
+function displaySet(yg, set){ return (yg===10 && Y10_DISPLAY_SET[set]) ? Y10_DISPLAY_SET[set] : set; }
 const SOW_BY_YG = {};  // populated after SOW arrays are defined
 const TEACHERS = TEACHERS_BY_YG[7];
 const SETS = SETS_BY_YG[7];
@@ -2017,6 +2024,7 @@ const IAL_INFO = {
     Ma2P12: {label:'Ma2 · P1/P2 (FTA)', course:'P1/P2', teacher:'FTA', expectedPerFortnight:8, classNote:'Pearson Edexcel IAL — Pure 1 / Pure 2. 4 lessons per teaching week.'},
     Ma1S1:  {label:'Ma1 · S1 (SSW)',    course:'S1',    teacher:'SSW', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL — Statistics 1. 2 lessons in Cycle A weeks, 1 in Cycle B.'},
     Ma2S1:  {label:'Ma2 · S1 (ADE)',    course:'S1',    teacher:'ADE', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL — Statistics 1. 2 lessons in Cycle A weeks, 1 in Cycle B.'},
+    FMS1:   {label:'FM · S1 (SSW, HPA)', course:'S1',   teacher:'SSW, HPA', expectedPerFortnight:3, classNote:'Pearson Edexcel IAL — Statistics 1. Co-taught by SSW and HPA. Shares the S1 scheme of work with Ma1/Ma2.'},
     FMP1234:{label:'FM P1-P4 (MKM)',     course:'FM P1-P4', teacher:'MKM', expectedPerFortnight:14, classNote:'Pearson Edexcel IAL Further Maths — Pure 1-4. 7 lessons per teaching week.'},
     FMM1:   {label:'FM M1 (XLN)',        course:'M1',       teacher:'XLN', expectedPerFortnight:3,  classNote:'Pearson Edexcel IAL Further Maths — Mechanics 1. 2 lessons in Cycle A weeks, 1 in Cycle B. Shares the M1 SoW with Year 13.'},
   },
@@ -2899,6 +2907,7 @@ const IAL_SOW_BY_SET = {
     Ma1S1:   Y12_S1_SOW,
     Ma2S1:   Y12_S1_SOW,
     FMP1234: Y13_FM_P1234_SOW,
+    FMS1:    Y12_S1_SOW,
     FMM1:    Y13_M1_SOW,
   },
   13: {
@@ -3586,7 +3595,7 @@ function renderHOD(){
         <div class="tc-header">
           <div class="tc-avatar">${tcName}</div>
           <div>
-            <div class="tc-name">${tcName} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${set}</span></div>
+            <div class="tc-name">${tcName} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${displaySet(hodYear,set)}</span></div>
             <div class="tc-sub">Year ${hodYear} · SoW coming soon</div>
           </div>
           <div style="margin-left:auto;font-size:12px;color:var(--dark-gray);font-weight:600;">COMING SOON</div>
@@ -3621,7 +3630,7 @@ function renderHOD(){
     // For IAL classes show e.g. "SSW · Ma1 P1/P2" (no internal key); for KS3 keep "· Ma2"
     const setDisplay = ialInfo
       ? ialInfo.label.replace(/\s*\([^)]*\)\s*$/, '')
-      : set;
+      : displaySet(hodYear,set);
     const subLine = `Year ${hodYear} · ${p.done} of ${p.total} lessons done`;
     cardsHtml+=`<div class="teacher-card">
       <div class="tc-header">
@@ -3888,9 +3897,10 @@ function renderTeacher(){
   // Y10 Ma1 / Y11 Ma1 — coming soon
   if((yg===10||yg===11) && set==='Ma1'){
     const tname=(TEACHERS_BY_YG[yg]||{})[set]||set;
+    const dset=displaySet(yg,set);
     document.getElementById('teacher-content').innerHTML=
-      `<div class="coming-soon"><h3>Year ${yg} ${set} — ${tname}</h3>
-       <p>Year ${yg} ${set} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
+      `<div class="coming-soon"><h3>Year ${yg} ${dset} — ${tname}</h3>
+       <p>Year ${yg} ${dset} follows a different scheme of work. The teacher view will be enabled once the SoW has been added.</p></div>`;
     return;
   }
   // Route to the correct SOW (IAL-aware via sowFor helper)
@@ -3915,7 +3925,7 @@ function renderTeacher(){
   const unitLabel = `lessons completed (${p.pct}%)`;
   let html=`<div class="card"><div class="tv-header">
     <div>
-      <div class="tv-title">${teachers[set]||set} — Year ${yg} ${ialInfo?ialInfo.label.replace(/\s*\([^)]*\)\s*$/,''):set}</div>
+      <div class="tv-title">${teachers[set]||set} — Year ${yg} ${ialInfo?ialInfo.label.replace(/\s*\([^)]*\)\s*$/,''):displaySet(yg,set)}</div>
       <div id="tv-lbl" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">
         ${p.done} of ${p.total} ${unitLabel}</div>
     </div>
@@ -3938,7 +3948,7 @@ function renderTeacher(){
     html += `<div class="card" style="border-left:4px solid var(--navy);padding:12px 16px;margin-bottom:14px;background:#f4f7fb;">
       <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--navy);">Accelerated class — IGCSE pathway begins early</div>
       <div style="font-size:12.5px;color:var(--dark-gray);line-height:1.55;">
-        Year 9 Ma1 (SSW) follows the Pearson Edexcel IGCSE Higher Linear A scheme of work — the same plan as the Year 10 regular class (Ma2 / ADE). The Michaelmas content below is therefore identical to Year 10 Ma2.
+        Year 9 Ma1 (SSW) follows the Pearson Edexcel IGCSE Higher Linear A scheme of work — the same plan as the Year 10 regular class (Ma1 / ADE). The Michaelmas content below is therefore identical to Year 10 Ma1.
       </div>
     </div>`;
   }
@@ -4199,9 +4209,9 @@ function renderAssessments(){
   if(ygInt === 10){
     toggleHtml = `<div class="assess-tog-wrap">
       <span class="assess-tog-lbl">Schedule for:</span>
-      <button class="assess-tog-btn${assessY10Filter==='ma23'?' active':''}" onclick="setAssessY10Filter('ma23')">Ma2–Ma3 (ADE / HPA)</button>
-      <button class="assess-tog-btn${assessY10Filter==='ma1'?' active':''}" onclick="setAssessY10Filter('ma1')">Ma1 — SSW</button>
-      <button class="assess-tog-btn${assessY10Filter==='ma4'?' active':''}" onclick="setAssessY10Filter('ma4')">Ma4 — FTA</button>
+      <button class="assess-tog-btn${assessY10Filter==='ma23'?' active':''}" onclick="setAssessY10Filter('ma23')">Ma1–Ma2 (ADE / HPA)</button>
+      <button class="assess-tog-btn${assessY10Filter==='ma1'?' active':''}" onclick="setAssessY10Filter('ma1')">FM — SSW</button>
+      <button class="assess-tog-btn${assessY10Filter==='ma4'?' active':''}" onclick="setAssessY10Filter('ma4')">Ma3 — FTA</button>
     </div>`;
   }
   if(ygInt === 11){
@@ -4218,6 +4228,7 @@ function renderAssessments(){
       <button class="assess-tog-btn${assessY12Filter==='P12'?' active':''}" onclick="setAssessY12Filter('P12')">Ma1 / Ma2 · P1/P2 (SSW · FTA)</button>
       <button class="assess-tog-btn${assessY12Filter==='S1'?' active':''}" onclick="setAssessY12Filter('S1')">Ma1 / Ma2 · S1 (SSW · ADE)</button>
       <button class="assess-tog-btn${assessY12Filter==='FMP1234'?' active':''}" onclick="setAssessY12Filter('FMP1234')">FM P1-P4 — MKM</button>
+      <button class="assess-tog-btn${assessY12Filter==='FMS1'?' active':''}" onclick="setAssessY12Filter('FMS1')">FM S1 — SSW, HPA</button>
       <button class="assess-tog-btn${assessY12Filter==='FMM1'?' active':''}" onclick="setAssessY12Filter('FMM1')">FM M1 — XLN</button>
     </div>`;
   }
@@ -4236,7 +4247,7 @@ function renderAssessments(){
   // Y12 / Y13 IAL — derive from SoW, render as term-grouped cards (same layout as Y7-Y11).
   if(ygInt === 12 || ygInt === 13){
     // Y12 toggle keys are SoW groups (P12 / S1 / FMP1234 / FMM1); resolve to a representative set key.
-    const Y12_GROUP_REP = { P12:'Ma1P12', S1:'Ma1S1', FMP1234:'FMP1234', FMM1:'FMM1' };
+    const Y12_GROUP_REP = { P12:'Ma1P12', S1:'Ma1S1', FMP1234:'FMP1234', FMS1:'FMS1', FMM1:'FMM1' };
     const Y12_GROUP_HEADER = {
       P12:    {label:'Ma1 & Ma2 · P1/P2', teachers:'SSW · FTA', course:'IAL Pure 1 / Pure 2',
                note:'Two classes following the same scheme of work. Both sit the same assessments on the same week.'},
@@ -4244,6 +4255,8 @@ function renderAssessments(){
                note:'Two classes following the same scheme of work. Both sit the same assessments on the same week.'},
       FMP1234:{label:'FM P1-P4',          teachers:'MKM',       course:'IAL Further Maths · Pure 1-4',
                note:'Further Maths Pure 1-4. 7 lessons per teaching week.'},
+      FMS1:   {label:'FM S1',              teachers:'SSW · HPA', course:'IAL Further Maths · Statistics 1',
+               note:'Co-taught by SSW and HPA. Shares the S1 scheme of work with Ma1/Ma2 (Statistics 1).'},
       FMM1:   {label:'FM M1',              teachers:'XLN',       course:'IAL Further Maths · Mechanics 1',
                note:'Further Maths Mechanics 1. Shares the M1 scheme of work with Year 13.'},
     };
@@ -4307,7 +4320,7 @@ function renderAssessments(){
 
   // Y10 Ma1 / Y11 Ma1 — coming soon
   if((ygInt === 10 && assessY10Filter === 'ma1') || (ygInt === 11 && assessY11Filter === 'ma1')){
-    const setLabel = 'Ma1 — SSW';
+    const setLabel = ygInt === 10 ? 'FM — SSW' : 'Ma1 — SSW';
     contentEl.innerHTML = toggleHtml +
       `<div class="coming-soon" style="margin-top:8px;"><h3>${setLabel} — Assessment Schedule</h3>
        <p>This scheme of work is not yet available. The assessment schedule will appear here once the SoW has been added.</p></div>`;
@@ -4317,7 +4330,7 @@ function renderAssessments(){
   // Y10 Ma4 (FTA) / Y11 Ma4 (MKM) — use ASSESSMENTS_MA4
   if((ygInt === 10 && assessY10Filter === 'ma4') || (ygInt === 11 && assessY11Filter === 'ma4')){
     const ma4data = ASSESSMENTS_MA4[ygInt] || [];
-    const teacherLabel = ygInt === 10 ? 'Ma4 — FTA' : 'Ma4 — MKM';
+    const teacherLabel = ygInt === 10 ? 'Ma3 — FTA' : 'Ma4 — MKM';
     const terms=['Michaelmas','Lent','Summer'];
     let html = toggleHtml;
     terms.forEach(term=>{
@@ -4493,7 +4506,7 @@ function updateSetDropdown(){
   const ialMap = IAL_INFO[yg] || {};
   sel.innerHTML=sets.map(s=>{
     const ial = ialMap[s];
-    const label = ial ? ial.label : `${s} — ${teachers[s]||s}`;
+    const label = ial ? ial.label : `${displaySet(yg,s)} — ${teachers[s]||s}`;
     return `<option value="${s}"${s===cur?' selected':''}>${label}</option>`;
   }).join('');
 }

@@ -187,6 +187,20 @@
   .tp-note{background:var(--lavender-bg);color:var(--lavender-d);}
   .tp-exam{background:var(--blush-bg);color:var(--blush-d);}
 
+  /* grouped Dashboard event lists */
+  .dash-date-groups{display:flex;flex-direction:column;gap:11px;max-height:350px;overflow-y:auto;padding-right:3px;}
+  .dash-date-group{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px;padding-bottom:10px;border-bottom:1px solid var(--mid-gray);}
+  .dash-date-group:last-child{border-bottom:0;padding-bottom:0;}
+  .dash-date-label{font-size:11px;font-weight:800;line-height:1.2;color:var(--navy);text-transform:uppercase;letter-spacing:.03em;padding-top:2px;}
+  .dash-event-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .dash-event-list li{display:flex;align-items:flex-start;gap:6px;min-width:0;}
+  .dash-event-bullet{color:var(--lavender-d);font-weight:800;line-height:1.25;}
+  .dash-event-content{min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .dash-event-name{font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.28;}
+  .dash-event-meta{font-size:10.5px;color:var(--dark-gray);line-height:1.35;}
+  .dash-event-meta .type-pill{margin-left:3px;vertical-align:1px;}
+  .dash-tentative{display:inline-block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--dark-amber);background:#F4E7D6;padding:1px 5px;border-radius:999px;vertical-align:2px;}
+
   /* behind / pace pills + dots */
   .behind-pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;
     border-radius:999px;background:var(--blush-bg);color:var(--blush-d);white-space:nowrap;}
@@ -630,7 +644,7 @@
       <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
       <div class="stat-body">
         <div class="stat-num" id="stat-behind">0</div>
-        <div class="stat-label">Assessments in next 14 days</div>
+        <div class="stat-label">Assessments in next 7 days</div>
         <div class="stat-sub">Across all year groups</div>
       </div>
     </div>
@@ -3338,6 +3352,85 @@ function assessmentsFromSow(sow){
   }));
 }
 
+function assessmentClassLabel(yg, set){
+  const info=(IAL_INFO[yg]||{})[set];
+  if(info && info.label) return `Year ${yg} ${info.label.replace(/\s*\([^)]*\)\s*$/,'')}`;
+  return `Year ${yg} ${displaySet(yg,set)}`;
+}
+
+// One source of truth for every assessment card shown by Assessment Schedule.
+// The schedule has a mixture of shared year-group tables, accelerated SoWs,
+// bottom-set tables and IAL groupings, so this normalises them into one list
+// without inventing a second Dashboard-only assessment list.
+function assessmentScheduleEntries(){
+  const rows=[];
+  const add=(yg, sets, items, source)=>{
+    (items||[]).forEach((a,index)=>{
+      const start=parseStartDate(a.dates);
+      if(!start || !a.name) return;
+      const name=String(a.name);
+      const sub=String(a.sub||'');
+      const rawStatus=String(a.status||'').toLowerCase();
+      const tentative=!!(a.tentative || a.is_tentative ||
+        /tentative|tbc/.test(rawStatus) || /\btbc\b|tentative/i.test(`${name} ${a.dates}`));
+      rows.push({
+        yg:Number(yg), setScopes:(sets||[]).map(set=>assessmentClassLabel(Number(yg),set)),
+        name, sub, week:a.week||'', dates:a.dates||'', term:a.term||'',
+        start, tentative, source,
+        dedupeKey:`assessment|${yg}|${start.toISOString().slice(0,10)}|${name}|${sub}|${a.week||''}|${index}`
+      });
+    });
+  };
+
+  // These are the same shared schedules selected by the standard
+  // Year 7–11 Assessment Schedule controls.
+  add(7,['Ma1','Ma2','Ma3','Ma4'],ASSESSMENTS[7],'standard');
+  add(8,['Ma2','Ma3','Ma4'],ASSESSMENTS[8],'standard');
+  add(9,['Ma2','Ma3','Ma4'],ASSESSMENTS[9],'standard');
+  add(10,['Ma2','Ma3'],ASSESSMENTS[10],'standard');
+  add(11,['Ma2','Ma3'],ASSESSMENTS[11],'standard');
+
+  // Accelerated classes are the alternate schedule controls for Y8, Y9,
+  // Y10 FM and Y11 Ma1.
+  add(8,['Ma1'],ASSESSMENTS_MA1[8],'accelerated');
+  add(9,['Ma1'],ASSESSMENTS_MA1[9],'accelerated');
+  add(10,['Ma1'],assessmentsFromSow(sowFor(10,'Ma1')),'accelerated');
+  add(11,['Ma1'],assessmentsFromSow(sowFor(11,'Ma1')),'accelerated');
+
+  // Bottom-set schedules are the Ma3 display class in Y10 and Ma4 in Y11.
+  add(10,['Ma4'],ASSESSMENTS_MA4[10],'bottom-set');
+  add(11,['Ma4'],ASSESSMENTS_MA4[11],'bottom-set');
+
+  // IAL Assessment Schedule groupings. Shared S1 rows are represented once
+  // and labelled with every class that follows that same assessment plan.
+  add(12,['Ma1P12','Ma2P12'],ialAssessmentsFor(12,'Ma1P12'),'ial');
+  add(12,['Ma1S1','Ma2S1','FMS1'],ialAssessmentsFor(12,'Ma1S1'),'ial');
+  add(12,['FMP1234'],ialAssessmentsFor(12,'FMP1234'),'ial');
+  add(12,['FMM1'],ialAssessmentsFor(12,'FMM1'),'ial');
+  ['P34','M1','D1','FMFP12','FMS23','FMM2'].forEach(set=>{
+    add(13,[set],ialAssessmentsFor(13,set),'ial');
+  });
+
+  // A shared schedule can be present through more than one class/group
+  // control. Merge those rows by their displayed assessment identity.
+  const merged=new Map();
+  rows.forEach(row=>{
+    const key=`${row.yg}|${row.start.toISOString().slice(0,10)}|${row.name}|${row.sub}|${row.week}|${row.tentative}`;
+    let existing=merged.get(key);
+    if(!existing){
+      existing={...row,setScopes:new Set(row.setScopes)};
+      merged.set(key,existing);
+    }else{
+      row.setScopes.forEach(scope=>existing.setScopes.add(scope));
+    }
+  });
+  return [...merged.values()].map(row=>({
+    ...row,
+    scopes:[...row.setScopes],
+    appliesTo:formatEventScopes([...row.setScopes])
+  })).sort((a,b)=>a.start-b.start||a.yg-b.yg||a.name.localeCompare(b.name));
+}
+
 // Derive a flat assessment list for IAL classes from their per-sublesson SoW rows.
 // Each unit test, mock week and past-paper block becomes a separate assessment row.
 function ialAssessmentsFor(yg, set){
@@ -3613,8 +3706,6 @@ function refreshActiveView(){
 //  HOD / DASHBOARD
 // ════════════════════════════════════════════════════════════════════
 let hodYear = 7;
-let hodEventsYearOnly = false;
-function setHodEventsYearFilter(v){ hodEventsYearOnly = !!v; renderHOD(); }
 
 function renderYearTabs(){
   const yrs=['7','8','9','10','11','12','13'];
@@ -3645,7 +3736,8 @@ function monthIndexFrom(text){
   return m ? MONTHS.indexOf(m[1].slice(0,3).toLowerCase()) : -1;
 }
 function dayFrom(text){
-  const m=String(text||'').match(/\b(\d{1,2})\b/);
+  // Do not mistake the year in values such as "May 2027 onwards" for a day.
+  const m=String(text||'').match(/(?<!\d)(\d{1,2})(?!\d)/);
   return m ? Number(m[1]) : null;
 }
 function dateParts(raw){
@@ -3807,15 +3899,45 @@ function keyDateType(row){
 // in Teacher View, they restate the same whole-school dates, and they are
 // worded differently per class — which is what produced five near-identical
 // rows for one INSET day. External exam-board dates are filtered out.
-function getInternalEvents(start, end, yearFilter){
+function formatEventAudience(audience, eventText){
+  const source=String(audience||'').trim();
+  const text=`${source} ${eventText||''}`;
+  const years=[...text.matchAll(/\b(?:y|year)\s*(\d{1,2})\b/gi)]
+    .map(m=>Number(m[1])).filter(y=>y>=7 && y<=13);
+  if(years.length) return [...new Set(years)].sort((a,b)=>a-b).map(y=>`Year ${y}`).join(', ');
+  return 'Whole school';
+}
+
+function formatEventScopes(scopes){
+  const clean=[...new Set((scopes||[]).filter(Boolean))];
+  if(clean.includes('Whole school')) return 'Whole school';
+  const byYear={};
+  clean.forEach(scope=>{
+    const text=String(scope);
+    const yearMatches=[...text.matchAll(/\bYear\s+(\d+)\b/g)];
+    if(yearMatches.length>1){
+      yearMatches.forEach(m=>(byYear[m[1]]=byYear[m[1]]||[]).push(''));
+      return;
+    }
+    const m=text.match(/^Year (\d+)\s*(.*)$/);
+    if(m) (byYear[m[1]]=byYear[m[1]]||[]).push(m[2].trim());
+  });
+  return Object.keys(byYear).sort((a,b)=>+a-+b).map(year=>{
+    const sets=byYear[year].filter(Boolean);
+    const allSets=(SETS_BY_YG[year]||[]).map(set=>assessmentClassLabel(Number(year),set).replace(`Year ${year} `,''));
+    return sets.length && allSets.length && allSets.every(set=>sets.includes(set))
+      ? `Year ${year} (all sets)`
+      : `Year ${year}${sets.length?` ${sets.join(', ')}`:''}`;
+  }).join('; ') || clean.join('; ') || 'Whole school';
+}
+
+function getInternalEvents(start, end){
   // map: key -> {date,event,details,scopes:Set,type}
   const map=new Map();
-  const yearPrefix = yearFilter ? `Year ${yearFilter} ` : null;
   const add=(date,event,details,scope,type,dedupeKey)=>{
     if(!date) return;
     if(date<start || date>end) return;
-    if(EXTERNAL_EVENT_RX.test(event+' '+details)) return;
-    if(yearPrefix && scope!=='Whole school' && !scope.startsWith(yearPrefix)) return;
+    if(type!=='Internal Assessment' && type!=='Mock Exam' && EXTERNAL_EVENT_RX.test(event+' '+details)) return;
     // Assessments are class-specific (keep per-scope); everything else merges.
     const perScope = (type==='Internal Assessment' || type==='Mock Exam');
     const key = dedupeKey ||
@@ -3838,7 +3960,7 @@ function getInternalEvents(start, end, yearFilter){
       const name=String(r.event||'').trim(); if(!name) return;
       const isTbc=String(r.is_tbc||'').toUpperCase()==='TRUE';
       add(d, name + (isTbc?' (TBC)':''), r.notes||'',
-          'Whole school', keyDateType(r), `key|${r.event_id}`);
+          formatEventAudience(r.audience,name+' '+(r.notes||'')), keyDateType(r), `key|${r.event_id}`);
     });
   } else {
     // Offline fallback so the panel still works if the CSV can't be fetched.
@@ -3849,25 +3971,17 @@ function getInternalEvents(start, end, yearFilter){
                     : r.type==='partial'?'Term Date'
                     : r.type==='exams'?'Internal Exam Window'
                     : 'Whole-school';
-      add(d, r.label, r.note||'', 'Whole school', typeLbl,
+      add(d, r.label, r.note||'', formatEventAudience('',`${r.label} ${r.note||''}`), typeLbl,
           `fallback|${r.label}|${d.toISOString().slice(0,10)}`);
     });
   }
 
-  // Per-class rows: internal assessments and mocks only.
-  allClassPairs().forEach(({yg,set})=>{
-    const sow=sowFor(yg,set); if(!sow) return;
-    const scope=`Year ${yg} ${set}`;
-    sow.forEach(l=>{
-      if(l.type!=='assessment') return;
-      const d=parseStartDate(l.dates); if(!d) return;
-      const nm=l.lessonName||'Assessment';
-      // Don't repeat the unit name underneath when the title already says it.
-      const flat=t=>String(t||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
-      const detail=l.unitName||l.obj||'';
-      const sub=(detail && flat(nm).indexOf(flat(detail))===-1) ? detail : '';
-      add(d, nm, sub, scope,
-          /mock/i.test(nm)?'Mock Exam':'Internal Assessment');
+  // Assessment rows come from the exact same derived schedule used by the
+  // Assessment Schedule page, so a schedule edit updates both views.
+  assessmentScheduleEntries().forEach(a=>{
+    const type=/mock|exam/i.test(a.name)?'Mock Exam':'Internal Assessment';
+    a.scopes.forEach(scope=>{
+      add(a.start, a.name, a.sub, scope, type, a.dedupeKey);
     });
   });
   // Render-friendly rows: collapse scopes nicely
@@ -3875,20 +3989,7 @@ function getInternalEvents(start, end, yearFilter){
     const scopes=[...r.scopes];
     // If event spans many sets in same year, summarise as "Year X (all sets)"
     let appliesTo;
-    if(scopes.includes('Whole school')) appliesTo='Whole school';
-    else {
-      const byYear={};
-      scopes.forEach(s=>{
-        const m=s.match(/^Year (\d+)\s*(.*)$/);
-        if(m){ (byYear[m[1]]=byYear[m[1]]||[]).push(m[2]); }
-      });
-      appliesTo=Object.keys(byYear).sort((a,b)=>+a-+b).map(y=>{
-        const sets=byYear[y].filter(Boolean);
-        const allSets=(SETS_BY_YG[y]||[]).length;
-        return sets.length>=allSets ? `Year ${y} (all sets)`
-             : `Year ${y} ${sets.join(', ')}`;
-      }).join('; ') || scopes.join('; ');
-    }
+    appliesTo=formatEventScopes(scopes);
     return {date:r.date,event:r.event,details:r.details,appliesTo,type:r.type};
   }).sort((a,b)=>a.date-b.date);
   return out;
@@ -3904,7 +4005,7 @@ function weekCodeVariants(week, term){
 
 function eventAudienceApplies(audience, yg){
   const text=String(audience||'').toLowerCase();
-  const years=[...text.matchAll(/\by(\d{1,2})\b/gi)].map(m=>Number(m[1]));
+  const years=[...text.matchAll(/\b(?:y|year)\s*(\d{1,2})\b/gi)].map(m=>Number(m[1]));
   if(years.length) return years.includes(Number(yg));
   return /all staff|school|staff/.test(text);
 }
@@ -4032,7 +4133,8 @@ function renderHOD(){
 
   const today=new Date(); today.setHours(0,0,0,0);
   const in14=new Date(today); in14.setDate(today.getDate()+14);
-  const in7=new Date(today); in7.setDate(today.getDate()+7);
+  // A seven-day window is today plus the following six calendar days.
+  const in7=new Date(today); in7.setDate(today.getDate()+6);
   const weekAgo=new Date(today); weekAgo.setDate(today.getDate()-6);
   const terms=['Michaelmas','Lent','Summer'];
   const termShort={Michaelmas:'Mich.',Lent:'Lent',Summer:'Sum.'};
@@ -4141,11 +4243,16 @@ function renderHOD(){
     });
   });
 
-  // Next 2 weeks internal events
-  const events14=getInternalEvents(today,in14,hodEventsYearOnly?hodYear:null);
+  // Dashboard event windows are department-wide; the old year toggle is
+  // intentionally gone so every year group is always represented.
+  const events7=getInternalEvents(today,in7);
 
-  // Assessments in next 14 days (internal only; one per (date,scope,event) thanks to dedupe)
-  const assessments14=events14.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
+  const assessments7=events7.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
+  const upcomingAssessmentRows=assessmentScheduleEntries().map(a=>({
+    date:a.start, event:a.name, details:a.sub, appliesTo:a.appliesTo,
+    type:/mock|exam/i.test(a.name)?'Mock Exam':'Internal Assessment',
+    tentative:a.tentative
+  })).filter(a=>a.date>=today);
 
   // Upcoming external examinations — from exam-dates.js
   const extAll=externalExamList()
@@ -4175,7 +4282,7 @@ function renderHOD(){
   paces.filter(p=>p.behindBy>=2).forEach(p=>{
     attention.push({title:`${p.behindBy} lessons behind pace`, detail:`Year ${p.yg} ${p.set} — ${p.teacher}`});
   });
-  events14.filter(e=>e.date<=in7 && /Assessment|Mock/.test(e.type)).forEach(e=>{
+  events7.filter(e=>/Assessment|Mock/.test(e.type)).forEach(e=>{
     attention.push({title:'Assessment in the next 7 days', detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`});
   });
   if(!beforeFirstTeachingDay){
@@ -4186,7 +4293,7 @@ function renderHOD(){
   }
   const attentionItems=attention.slice(0,4);
   const attentionMore=Math.max(0,attention.length-attentionItems.length);
-  const eventRows=events14.slice(0,6);
+  const eventRows=events7;
   const behindPreview=behindRows.slice(0,5);
 
   // ── Render helpers ──────────────────────────────────────────────────
@@ -4211,43 +4318,33 @@ function renderHOD(){
   };
   const chev = '<svg class="attn-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
 
-  // ── Card: Next 2 weeks (upcoming events) ────────────────────────────
-  const eventsToggle = `<div class="assess-tog-wrap">
-      <span class="assess-tog-lbl">Show events for:</span>
-      <button class="assess-tog-btn${!hodEventsYearOnly?' active':''}" onclick="setHodEventsYearFilter(false)">All years</button>
-      <button class="assess-tog-btn${hodEventsYearOnly?' active':''}" onclick="setHodEventsYearFilter(true)">Year ${hodYear} only</button>
-    </div>`;
-  const eventsEmpty = hodEventsYearOnly
-    ? `No Year ${hodYear} academic events in the next 2 weeks.`
-    : `No internal academic events in the next 2 weeks.`;
-  const eventsHtml = eventsToggle + (eventRows.length
-    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Date</th><th>Year Group / Set</th><th>Event</th><th>Type</th>
-       </tr></thead><tbody>${eventRows.map(e=>`<tr>
-         <td style="white-space:nowrap;">${fmtDate(e.date)}</td>
-         <td>${e.appliesTo}</td>
-         <td>${e.event}${e.details?`<div style="font-size:10px;color:var(--dark-gray);margin-top:2px;">${e.details}</div>`:''}</td>
-         <td>${typePill(e)}</td>
-       </tr>`).join('')}</tbody></table></div>`
-    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">${eventsEmpty}</p>`);
+  const renderGroupedDates=(rows,emptyText)=>{
+    if(!rows.length) return `<p style="color:var(--dark-gray);font-size:13px;margin:0;">${emptyText}</p>`;
+    const groups=new Map();
+    rows.forEach(row=>{
+      const key=row.date.toISOString().slice(0,10);
+      if(!groups.has(key)) groups.set(key,[]);
+      groups.get(key).push(row);
+    });
+    return `<div class="dash-date-groups">${[...groups.values()].map(group=>`
+      <section class="dash-date-group">
+        <div class="dash-date-label">${group[0].date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
+        <ul class="dash-event-list">${group.map(e=>`
+          <li>
+            <span class="dash-event-bullet">•</span>
+            <span class="dash-event-content">
+              <span class="dash-event-name">${esc(e.event)}${e.tentative?` <span class="dash-tentative">Tentative</span>`:''}</span>
+              <span class="dash-event-meta">${esc(e.appliesTo)}${e.details?` · ${esc(e.details)}`:''} ${typePill(e)}</span>
+            </span>
+          </li>`).join('')}</ul>
+      </section>`).join('')}</div>`;
+  };
 
-  // ── Card: Upcoming external exams ───────────────────────────────────
-  const extTabs = externalWindows.length
-    ? `<div class="assess-tog-wrap">${externalWindows.map(w=>
-        `<button class="assess-tog-btn${w.id===selectedExternalSeriesId?' active':''}" onclick="setExternalExamSeries('${w.id}')">${w.label}</button>`
-      ).join('')}</div>`
-    : '';
-  const extHtml = extTabs + (extRows.length
-    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Date</th><th>Exam</th><th>Paper</th><th>Session</th><th>Year Group / Set</th>
-       </tr></thead><tbody>${extRows.map(e=>`<tr>
-         <td style="white-space:nowrap;">${fmtWdY(e.d)}</td>
-         <td>${e.exam}</td>
-         <td>${e.paper}${e.code?` <span style="color:var(--dark-gray);">(${e.code})</span>`:''}</td>
-         <td>${e.session||'—'}</td><td>${e.yg}</td>
-       </tr>`).join('')}</tbody></table></div>
-       <div style="font-size:11px;color:var(--dark-gray);margin-top:8px;">Pearson International — ${selectedWindow?selectedWindow.label:''} series.</div>`
-    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;line-height:1.4;">No Maths or Further Maths papers are scheduled for the ${selectedWindow?selectedWindow.label:'selected'} series.</p>`);
+  // ── Card: Next 7 days ──────────────────────────────────────────────
+  const eventsHtml=renderGroupedDates(eventRows,'No school events or assessments in the next 7 days.');
+
+  // ── Card: Upcoming exams ──────────────────────────────────────────
+  const extHtml=renderGroupedDates(upcomingAssessmentRows,'No scheduled or tentative assessments found.');
 
   // ── Card: Needs attention ───────────────────────────────────────────
   const attentionHtml = attentionItems.length
@@ -4306,8 +4403,8 @@ function renderHOD(){
   const behindLink = behindRows.length>behindPreview.length ? lnk('View all classes',viewAllClasses) : '';
   const insightsHtml = `
     <div class="hod-row">
-      ${card('',ICN.cal,'Next 2 Weeks, Internal Academic Events',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
-      ${card('',ICN.cap,'Upcoming External Exams',lnk('View Pearson timetable',"window.open('https://qualifications.pearson.com/en/support/support-topics/exams/exam-timetables.html#tab-Internationalcentres','_blank')"),extHtml)}
+      ${card('',ICN.cal,'Next 7 Days',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
+      ${card('',ICN.cap,'Upcoming Exams',lnk('View assessment schedule',"showView('assessments')"),extHtml)}
     </div>
     <div class="hod-row">
       ${card('hod-attn',ICN.warn,'Needs Attention','',attentionHtml)}
@@ -4324,7 +4421,7 @@ function renderHOD(){
   document.getElementById('hod-health-content').innerHTML=healthPanelHtml;
   document.getElementById('stat-done').textContent=lessonsDoneWeek;
   document.getElementById('stat-prog').textContent = noPlannedPace ? '0' : behindRows.length;
-  document.getElementById('stat-behind').textContent=assessments14;
+  document.getElementById('stat-behind').textContent=assessments7;
   document.getElementById('stat-assess').textContent=extNext30;
   document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
   document.getElementById('stat-prog-lbl').textContent='Classes behind pace';

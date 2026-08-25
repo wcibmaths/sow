@@ -946,7 +946,7 @@ if(!window.WCIB_DB){
 
 <!-- External examination dates (Pearson International timetables).
      Kept in its own file so it can be updated without touching this one. -->
-<script src="./exam-dates.js"></script>
+<script src="./exam-dates.js?v=pearson-final-2026-11"></script>
 
 <script>
 'use strict';
@@ -999,6 +999,7 @@ let KEY_DATES = [];
 // Unit codes this department actually enters students for.
 const RELEVANT_EXTERNAL_CODES = new Set([
   '4MA1',                                              // IGCSE Mathematics A
+  '4PM1',                                              // IGCSE Further Pure Mathematics
   'WMA11','WMA12','WMA13','WMA14',                     // IAL Pure 1-4
   'WST01','WST02','WST03',                             // IAL Statistics 1-3
   'WME01','WME02','WME03',                             // IAL Mechanics 1-3
@@ -3805,7 +3806,7 @@ function externalExamQualification(exam){
   const supplied=String(exam && (exam.qualification||exam.qual||'')).trim();
   if(supplied) return supplied;
   const code=String(exam && exam.code||'').toUpperCase();
-  if(code==='4MA1') return 'International GCSE';
+  if(code==='4MA1'||code==='4PM1') return 'International GCSE';
   if(/^W(?:MA|ST|ME|FM|DM)/.test(code)) return 'International A Level';
   return '';
 }
@@ -3813,7 +3814,7 @@ function externalExamQualification(exam){
 function externalExamFamily(exam){
   const code=String(exam && exam.code||'').toUpperCase();
   const qualification=externalExamQualification(exam).toLowerCase();
-  if(code==='4MA1' && /igcse|international gcse/.test(qualification)) return 'igcse';
+  if((code==='4MA1'||code==='4PM1') && /igcse|international gcse/.test(qualification)) return 'igcse';
   if(/^W(?:MA|ST|ME|FM|DM)/.test(code) && /ial|international a level/.test(qualification)) return 'ial';
   return '';
 }
@@ -3833,9 +3834,10 @@ function externalExamBelongsToWindow(exam, window){
   const family=externalExamFamily(exam);
   const month=d.getMonth();
   if(window.seriesKey==='oct-nov'){
-    // Pearson IAL October + Pearson International GCSE November form one
-    // dashboard tab, even though their source series names differ.
-    return (family==='ial' && month===9) || (family==='igcse' && month===10);
+    // Pearson IAL October + Pearson International GCSE October/November form
+    // one dashboard tab, even though their source series names differ.
+    return (family==='ial' && month===9) ||
+      (family==='igcse' && (month===9 || month===10));
   }
   if(window.seriesKey==='jan-feb') return month===0 || month===1;
   if(window.seriesKey==='may-june') return month===4 || month===5;

@@ -13,13 +13,13 @@ const EXTERNAL_EXAMS = [
   // The source series name is intentionally provider-specific; the Dashboard
   // maps this with the separate International GCSE series to its Oct/Nov tab.
   {date:'2026-10-09', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA11', paper:'P1 Pure Mathematics 1',  yg:'Year 12', session:'AM'},
-  {date:'2026-10-13', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME01', paper:'M1 Mechanics 1',              yg:'Year 12', session:'AM'},
+  {date:'2026-10-13', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME01', paper:'M1 Mechanics 1',              yg:'Year 12', session:'PM'},
   {date:'2026-10-15', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA12', paper:'P2 Pure Mathematics 2',      yg:'Year 12', session:'AM'},
   {date:'2026-10-19', series:'IAL October 2026', exam:'IAL Mathematics', code:'WST01', paper:'S1 Statistics 1',             yg:'Year 12', session:'AM'},
-  {date:'2026-10-21', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA13', paper:'P3 Pure Mathematics 3',      yg:'Year 13', session:'AM'},
+  {date:'2026-10-21', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA13', paper:'P3 Pure Mathematics 3',      yg:'Year 13', session:'PM'},
   {date:'2026-10-22', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME02', paper:'M2 Mechanics 2',              yg:'Year 13', session:'AM'},
   {date:'2026-10-26', series:'IAL October 2026', exam:'IAL Mathematics', code:'WST02', paper:'S2 Statistics 2',             yg:'Year 13', session:'AM'},
-  {date:'2026-10-28', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA14', paper:'P4 Pure Mathematics 4',      yg:'Year 13', session:'AM'},
+  {date:'2026-10-28', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA14', paper:'P4 Pure Mathematics 4',      yg:'Year 13', session:'PM'},
 
   // Pearson Edexcel International GCSE October/November 2026 final timetable.
   {date:'2026-10-30', series:'International GCSE October/November 2026', exam:'IGCSE Further Pure Mathematics', code:'4PM1', paper:'Paper 1',           yg:'Year 11', session:''},

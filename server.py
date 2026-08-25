@@ -3,6 +3,7 @@ import os
 import psycopg2
 import psycopg2.extras
 from psycopg2.pool import ThreadedConnectionPool
+from openpyxl import load_workbook
 
 app = Flask(__name__)
 
@@ -71,6 +72,94 @@ def post_data():
         abort(400)
     save_data(data)
     return jsonify({'ok': True})
+
+@app.route('/api/y10-accelerated-sow', methods=['GET'])
+def get_y10_accelerated_sow():
+    """Return the Y10 Accelerated sheet in the app's SoW row shape."""
+    workbook_path = os.path.join(
+        os.path.dirname(__file__),
+        'attached_assets',
+        'KS4_Accelerated_SoW_1787616362498.xlsx',
+    )
+    try:
+        workbook = load_workbook(workbook_path, data_only=True, read_only=True)
+        sheet = workbook['Y10 Accelerated']
+        rows = list(sheet.iter_rows(values_only=True))
+        headers = [str(value or '').strip() for value in rows[1]]
+        records = []
+
+        def calendar_term(dates):
+            """Place untitled workbook calendar rows in the term they begin."""
+            text = str(dates or '').lower()
+            import re
+            match = re.search(
+                r'\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)',
+                text,
+            )
+            first_month = match.group(1) if match else ''
+            if first_month in ('jan', 'feb', 'mar'):
+                return 'Lent'
+            if first_month in ('apr', 'may', 'jun', 'jul'):
+                return 'Summer'
+            return 'Michaelmas'
+
+        for index, values in enumerate(rows[2:], start=1):
+            source = {
+                header: (value if value is not None else '')
+                for header, value in zip(headers, values)
+            }
+            cycle = str(source.get('Cycle') or '').strip()
+            week = str(source.get('Week') or '').strip()
+            if not cycle and week:
+                cycle = week[-1]
+            unit = source.get('Unit')
+            if unit == '':
+                unit = None
+            objective = str(source.get('Objective') or '').strip()
+            specification = str(source.get('Specification point(s)') or '').strip()
+            qualification = str(source.get('Qualification') or '').strip()
+            pages = str(source.get('Student Book pages') or '').strip()
+            personalisation = str(
+                source.get('Personalisation and Stretch') or ''
+            ).strip()
+            lesson_type = str(source.get('Type') or '').strip() or 'core'
+            term = str(source.get('Term') or '').strip()
+            if not term and lesson_type == 'calendar':
+                term = calendar_term(source.get('Dates'))
+            detail_parts = [
+                f'Objective: {objective}' if objective else '',
+                f'Specification: {specification}'
+                if specification and specification != '—' else '',
+                f'Qualification: {qualification}'
+                if qualification and qualification != '—' else '',
+                f'Student Book: {pages}' if pages and pages != '—' else '',
+                f'Personalisation and stretch: {personalisation}'
+                if personalisation else '',
+            ]
+            row = {
+                'id': f'y10_fm_acc_{index:03d}',
+                'week': week,
+                'dates': str(source.get('Dates') or '').strip(),
+                'cycle': cycle,
+                'unit': unit,
+                'unitName': str(source.get('Unit Name') or '').strip(),
+                'lessonNo': str(source.get('Lesson No.') or '').strip(),
+                'lessonName': str(source.get('Lesson Name') or '').strip(),
+                'type': lesson_type,
+                'term': term,
+                'obj': '  |  '.join(part for part in detail_parts if part),
+                'objective': objective,
+                'specification': specification,
+                'qualification': qualification,
+                'pages': pages,
+                'personalisation': personalisation,
+                'alert': str(source.get('Alert / Notes') or '').strip(),
+            }
+            records.append(row)
+        return jsonify(records)
+    except Exception as exc:
+        app.logger.exception('Unable to load Y10 Accelerated sheet')
+        return jsonify({'error': str(exc)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)

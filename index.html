@@ -297,8 +297,17 @@
   .week-label{font-size:12px;font-weight:700;color:#5F7386;
     text-transform:uppercase;letter-spacing:0.06em;min-width:70px;}
   .week-dates{font-size:12px;color:#6C7480;font-weight:500;}
-  .week-alert{font-size:11px;color:#B06B62;background:#F5E7E4;border:1px solid #E8C9C4;
-    font-weight:600;margin-left:auto;padding:4px 10px;border-radius:999px;white-space:nowrap;}
+  .week-cycle{font-size:11px;font-weight:700;color:#5F7386;background:#EAF1F6;
+    border:1px solid #D9E4ED;padding:3px 8px;border-radius:999px;white-space:nowrap;}
+  .week-key-events{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;}
+  .week-key-event{font-size:11px;color:#5A7190;background:#EAF1F6;border:1px solid #D9E4ED;
+    padding:4px 9px;border-radius:999px;font-weight:600;white-space:nowrap;max-width:290px;
+    overflow:hidden;text-overflow:ellipsis;}
+  .week-teaching-note{font-size:11.5px;color:#7A4A43;background:#FBF1EF;border-top:1px solid #E8C9C4;
+    padding:8px 16px;line-height:1.45;}
+  .week-teaching-note strong{font-weight:700;color:#B06B62;}
+  .lesson-detail{font-size:11px;color:var(--dark-gray);margin-top:4px;line-height:1.45;
+    white-space:normal;}
 
   /* Clearer week grouping in Scheme of Work */
 
@@ -2152,7 +2161,7 @@ const Y9_MA1_SOW = [
 ];
 // Year 10 FM (SSW) — IGCSE 4MA1 + Further Pure 4PM1, and Year 11 Ma1 (SSW) — accelerated
 // 4MA1 linear. Both replaced "SoW coming soon" placeholders.
-const Y10_FM_SOW = [
+let Y10_FM_SOW = [
   {id:'y10_fm_001',week:'M1A',dates:'24-28 Aug 2026',cycle:'',unit:0,unitName:'Unit 0',lessonNo:'1',lessonName:'Accelerated pathway induction: the 4MA1 + 4PM1 route, expectations and routines',type:'core',term:'Michaelmas',obj:'Week 1A is a single Friday lesson, so this is the whole of the opening week. Set out the two-qualification route explicitly: 4MA1 Higher is examined in November of Year 11, 4PM1 in May/June 2028. Establish the independent-practice expectation (Dr Frost Maths, Save My Exams) and the folder and calculator routine before teaching proper begins in week 2B.'},
   {id:'y10_fm_002',week:'M2B',dates:'31 Aug-4 Sep 2026',cycle:'',unit:1,unitName:'Unit 1',lessonNo:'2',lessonName:'Distance between two points, the midpoint, and a point dividing a line in ratio m:n',type:'core',term:'Michaelmas',obj:'Opens the year because everything graphical depends on it: regions and linear programming in Unit 11, every graph unit, and the 4PM1 coordinate-geometry questions. Support: a labelled worked example of each of the three line forms. Stretch: the ratio formula for a point dividing a line (4PM1 8B), which goes beyond 4MA1. Spec: F3.3E  |  4PM1 8A–8B'},
   {id:'y10_fm_003',week:'M2B',dates:'31 Aug-4 Sep 2026',cycle:'',unit:1,unitName:'Unit 1',lessonNo:'3',lessonName:'Gradient, the equation of a straight line, the parallel and perpendicular conditions, and straight-line conversion graphs',type:'core',term:'Michaelmas',obj:'F3.3F–H, H3.3F–G  |  4PM1 8C–8E'},
@@ -3768,6 +3777,18 @@ async function loadKeyDates(){
   }
 }
 
+async function loadY10AcceleratedSow(){
+  try{
+    const res=await fetch('/api/y10-accelerated-sow',{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows=await res.json();
+    if(!Array.isArray(rows) || rows.length<1) throw new Error('empty workbook response');
+    Y10_FM_SOW=rows;
+  }catch(err){
+    console.warn('Y10 Accelerated workbook unavailable — using the built-in copy:',err);
+  }
+}
+
 function keyDateType(row){
   const c=String(row.category||'').toLowerCase();
   if(/holiday|break|closed/.test(c))       return 'Holiday';
@@ -3871,6 +3892,55 @@ function getInternalEvents(start, end, yearFilter){
     return {date:r.date,event:r.event,details:r.details,appliesTo,type:r.type};
   }).sort((a,b)=>a.date-b.date);
   return out;
+}
+
+function weekCodeVariants(week, term){
+  const code=String(week||'').trim();
+  const variants=new Set(code?[code]:[]);
+  const prefix = term==='Michaelmas'?'M':term==='Lent'?'L':term==='Summer'?'S':'';
+  if(prefix && code && !/^[MLS]/i.test(code)) variants.add(prefix+code);
+  return variants;
+}
+
+function eventAudienceApplies(audience, yg){
+  const text=String(audience||'').toLowerCase();
+  const years=[...text.matchAll(/\by(\d{1,2})\b/gi)].map(m=>Number(m[1]));
+  if(years.length) return years.includes(Number(yg));
+  return /all staff|school|staff/.test(text);
+}
+
+function getTeacherWeekEvents(week, dates, term, yg){
+  const boundsStart=parseStartDate(dates);
+  const boundsEnd=parseEndDate(dates)||boundsStart;
+  if(!boundsStart || !boundsEnd) return [];
+  const codes=weekCodeVariants(week,term);
+  const found=new Map();
+  const add=(event, start, end, code, audience, id, type, details)=>{
+    if(!event || !start || !end || end<boundsStart || start>boundsEnd) return;
+    if(code && !codes.has(String(code).trim())) return;
+    if(!eventAudienceApplies(audience,yg)) return;
+    if(EXTERNAL_EVENT_RX.test(`${event} ${details||''}`)) return;
+    const key=id || `${start.toISOString().slice(0,10)}|${event}`;
+    if(!found.has(key)) found.set(key,{event,start,type,details});
+  };
+
+  if(KEY_DATES.length){
+    KEY_DATES.forEach(row=>{
+      const start=parseIsoDate(row.start_date);
+      const end=parseIsoDate(row.end_date||row.start_date)||start;
+      const tbc=String(row.is_tbc||'').toUpperCase()==='TRUE';
+      add(String(row.event||'').trim()+(tbc?' (TBC)':''),start,end,
+          row.week_code,row.audience,row.event_id,row.category,row.notes);
+    });
+  }else{
+    (CALENDAR_EVENTS||[]).forEach(row=>{
+      const start=parseStartDate(row.dates);
+      const end=parseEndDate(row.dates)||start;
+      add(row.label,start,end,'','All staff / school',
+          `fallback|${row.label}|${row.dates}`,row.type,row.note);
+    });
+  }
+  return [...found.values()].sort((a,b)=>a.start-b.start||a.event.localeCompare(b.event));
 }
 
 // Pace / progress for a single (yg,set) using existing helpers.
@@ -4374,7 +4444,7 @@ function renderTeacher(){
   sow.forEach(l=>{
     if(!unitCounts[l.unitName]) unitCounts[l.unitName]={total:0,tracked:0};
     unitCounts[l.unitName].total++;
-    if(l.type!=='flex') unitCounts[l.unitName].tracked++;
+    if(l.type==='core'||l.type==='cse'||l.type==='assessment') unitCounts[l.unitName].tracked++;
     if(l.type==='core'||l.type==='cse'){
       if(!unitSeqIds[l.unitName]) unitSeqIds[l.unitName]=[];
       unitSeqIds[l.unitName].push(l.id);
@@ -4391,7 +4461,7 @@ function renderTeacher(){
   const terms=[...new Set(lessons.map(l=>l.term))];
   terms.forEach(term=>{
     const tl=lessons.filter(l=>l.term===term);
-    const tt=tl.filter(l=>l.type!=='flex');
+    const tt=tl.filter(l=>l.type==='core'||l.type==='cse'||l.type==='assessment');
     const td=tt.filter(l=>getStatus(l.id,set)==='Done').length;
     const tp2=tt.length?Math.round(td/tt.length*100):0;
     const termId='term-'+term.replace(/\s+/g,'-');
@@ -4411,16 +4481,21 @@ function renderTeacher(){
       if(!wkL.length)return;
       const first=wkL[0];
       const alertL=wkL.find(l=>l.alert);
+      const weekEvents=getTeacherWeekEvents(wk,first.dates,term,yg);
+      const cycle=first.cycle||(/^[MLS]?\d+[AB]$/i.test(first.week)?first.week.slice(-1):'—');
       html+=`<div class="week"><div class="week-header">
         <div class="week-head-left">
           <span class="week-icon" aria-hidden="true">🗓️</span>
           <div class="week-title-wrap">
             <span class="week-label">Week ${wk}</span>
-            <span class="week-dates">${first.dates} · Cycle ${first.cycle||first.week.slice(-1)}</span>
+            <span class="week-dates">${esc(first.dates)}</span>
           </div>
         </div>
-        ${alertL?`<span class="week-alert">${alertL.alert}</span>`:''}
-      </div>`;
+        <span class="week-cycle">Cycle ${esc(cycle)}</span>
+        ${weekEvents.length?`<div class="week-key-events">${weekEvents.map(event=>
+          `<span class="week-key-event" title="${esc(event.details?`${event.event} — ${event.details}`:event.event)}">${esc(event.event)}</span>`
+        ).join('')}</div>`:''}
+      </div>${alertL?`<div class="week-teaching-note"><strong>Teaching note:</strong> ${esc(alertL.alert)}</div>`:''}`;
 
       wkL.forEach(lesson=>{
         // Unit divider when unit name changes
@@ -4439,14 +4514,14 @@ function renderTeacher(){
 
         const isA=lesson.type==='assessment';
         const isC=lesson.type==='cse';
-        const isF=lesson.type==='flex';
+        const isF=lesson.type==='flex'||lesson.type==='calendar';
         // Any lesson explicitly named "Revision …" gets the green CSE-style row, so
         // revision blocks look consistent across all year groups even when the
         // underlying SoW row uses type:'flex' (e.g. KS3/KS4 pre-assessment revision).
         const isRevision=/revision/i.test(lesson.lessonName);
         const rc=isA?'assess':(isC||isRevision)?'cse':isF?'flex':'';
         const bc=isA?'assess':(isC||isRevision)?'cse':isF?'flex':'core';
-        const bt=isA?'ASSESSMENT':isRevision?'REVISION':isC?'CSE':isF?'FLEX':'CORE';
+        const bt=isA?'ASSESSMENT':isRevision?'REVISION':isC?'CSE':lesson.type==='calendar'?'CALENDAR':isF?'FLEX':'CORE';
         const status=isF?'N/A':getStatus(lesson.id,set);
         const sc=statusClass(status);
         const seqLabel=isA?'★':lessonSeqNo[lesson.id]||'';
@@ -4465,6 +4540,7 @@ function renderTeacher(){
                 : `<span class="lesson-name${isA?' assess':''}">${esc(displayName)}</span>`
               }
             </div>
+            ${lesson.obj?`<div class="lesson-detail">${esc(lesson.obj)}</div>`:''}
           </div>
           ${lesson.tier
             ? `<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`
@@ -4932,7 +5008,7 @@ async function init(){
   document.getElementById('tv-search').addEventListener('input',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('sel-assess-yg').addEventListener('change',()=>{saveTvFilters();renderAssessments();});
   document.getElementById('btn-reset').addEventListener('click',resetProgress);
-  await Promise.all([syncFromServer(), loadKeyDates()]);
+  await Promise.all([syncFromServer(), loadKeyDates(), loadY10AcceleratedSow()]);
   restoreTvFilters();
   renderYearTabs();
   renderHOD();

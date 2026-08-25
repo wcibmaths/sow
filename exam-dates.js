@@ -9,6 +9,18 @@ const EXTERNAL_EXAM_SERIES = [
 ];
 
 const EXTERNAL_EXAMS = [
+  // Pearson Edexcel International A Level October 2026 series.
+  // The source series name is intentionally provider-specific; the Dashboard
+  // maps it to the combined Oct/Nov tab using qualification, code and month.
+  {date:'2026-10-09', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA11', paper:'P1 Pure Mathematics 1',  yg:'Year 12', session:'AM'},
+  {date:'2026-10-13', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME01', paper:'M1 Mechanics 1',              yg:'Year 12', session:'AM'},
+  {date:'2026-10-15', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA12', paper:'P2 Pure Mathematics 2',      yg:'Year 12', session:'AM'},
+  {date:'2026-10-19', series:'IAL October 2026', exam:'IAL Mathematics', code:'WST01', paper:'S1 Statistics 1',             yg:'Year 12', session:'AM'},
+  {date:'2026-10-21', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA13', paper:'P3 Pure Mathematics 3',      yg:'Year 13', session:'AM'},
+  {date:'2026-10-22', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME02', paper:'M2 Mechanics 2',              yg:'Year 13', session:'AM'},
+  {date:'2026-10-26', series:'IAL October 2026', exam:'IAL Mathematics', code:'WST02', paper:'S2 Statistics 2',             yg:'Year 13', session:'AM'},
+  {date:'2026-10-28', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA14', paper:'P4 Pure Mathematics 4',      yg:'Year 13', session:'AM'},
+
   // Confirmed Pearson IAL January 2027 timetable.
   {date:'2027-01-08', series:'jan-feb', exam:'IAL Mathematics',   code:'WMA11', paper:'P1 Pure Mathematics 1',       yg:'Year 12', session:'AM'},
   {date:'2027-01-12', series:'jan-feb', exam:'IAL Mathematics',   code:'WST01', paper:'S1 Statistics 1',              yg:'Year 12', session:'PM'},

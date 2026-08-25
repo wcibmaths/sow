@@ -3801,9 +3801,45 @@ function getExternalExamSeriesWindows(referenceDate, count){
   }
   return out.sort((a,b)=>a.start-b.start).slice(0,count);
 }
-// Match on the unit code, not on free text in the paper name.
+function externalExamQualification(exam){
+  const supplied=String(exam && (exam.qualification||exam.qual||'')).trim();
+  if(supplied) return supplied;
+  const code=String(exam && exam.code||'').toUpperCase();
+  if(code==='4MA1') return 'International GCSE';
+  if(/^W(?:MA|ST|ME|FM|DM)/.test(code)) return 'International A Level';
+  return '';
+}
+
+function externalExamFamily(exam){
+  const code=String(exam && exam.code||'').toUpperCase();
+  const qualification=externalExamQualification(exam).toLowerCase();
+  if(code==='4MA1' && /igcse|international gcse/.test(qualification)) return 'igcse';
+  if(/^W(?:MA|ST|ME|FM|DM)/.test(code) && /ial|international a level/.test(qualification)) return 'ial';
+  return '';
+}
+
+// Match on Pearson's examination code and qualification family, then use the
+// calendar month for the series. This intentionally does not depend on a
+// provider-specific displayed series label.
 function isRelevantExternalExam(exam){
-  return !!exam && RELEVANT_EXTERNAL_CODES.has(String(exam.code||'').toUpperCase());
+  return !!exam &&
+    RELEVANT_EXTERNAL_CODES.has(String(exam.code||'').toUpperCase()) &&
+    !!externalExamFamily(exam);
+}
+
+function externalExamBelongsToWindow(exam, window){
+  const d=parseIsoDate(exam.date);
+  if(!d || !window || d<window.start || d>window.end) return false;
+  const family=externalExamFamily(exam);
+  const month=d.getMonth();
+  if(window.seriesKey==='oct-nov'){
+    // Pearson IAL October + Pearson International GCSE November form one
+    // dashboard tab, even though their source series names differ.
+    return (family==='ial' && month===9) || (family==='igcse' && month===10);
+  }
+  if(window.seriesKey==='jan-feb') return month===0 || month===1;
+  if(window.seriesKey==='may-june') return month===4 || month===5;
+  return false;
 }
 let selectedExternalSeriesId='';
 function setExternalExamSeries(id){ selectedExternalSeriesId=id; renderHOD(); }
@@ -4262,8 +4298,7 @@ function renderHOD(){
                     || externalWindows[0] || null;
   if(selectedWindow) selectedExternalSeriesId=selectedWindow.id;
   const extRows=selectedWindow
-    ? extAll.filter(e=>e.series===selectedWindow.seriesKey
-                    && e.d>=selectedWindow.start && e.d<=selectedWindow.end)
+    ? extAll.filter(e=>externalExamBelongsToWindow(e,selectedWindow))
             .map(e=>({
               date:e.d,
               event:`${e.exam} · ${e.paper}`,

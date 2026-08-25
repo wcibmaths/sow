@@ -4248,11 +4248,6 @@ function renderHOD(){
   const events7=getInternalEvents(today,in7);
 
   const assessments7=events7.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
-  const upcomingAssessmentRows=assessmentScheduleEntries().map(a=>({
-    date:a.start, event:a.name, details:a.sub, appliesTo:a.appliesTo,
-    type:/mock|exam/i.test(a.name)?'Mock Exam':'Internal Assessment',
-    tentative:a.tentative
-  })).filter(a=>a.date>=today);
 
   // Upcoming external examinations — from exam-dates.js
   const extAll=externalExamList()
@@ -4269,6 +4264,13 @@ function renderHOD(){
   const extRows=selectedWindow
     ? extAll.filter(e=>e.series===selectedWindow.seriesKey
                     && e.d>=selectedWindow.start && e.d<=selectedWindow.end)
+            .map(e=>({
+              date:e.d,
+              event:`${e.exam} · ${e.paper}`,
+              details:`${e.code||''}${e.session?` · ${e.session}`:''}`,
+              appliesTo:e.yg||'',
+              type:'External Exam'
+            }))
     : [];
 
   // Classes behind pace
@@ -4304,6 +4306,7 @@ function renderHOD(){
     if(/deadline/.test(ev)) return '<span class="type-pill tp-deadline">Deadline</span>';
     if(t==='Mock Exam') return '<span class="type-pill tp-mock">Mock</span>';
     if(t==='Internal Assessment') return '<span class="type-pill tp-assessment">Assessment</span>';
+    if(t==='External Exam') return '<span class="type-pill tp-exam">Exam</span>';
     if(t==='Internal Exam Window') return '<span class="type-pill tp-exam">Exam</span>';
     if(t==='Deadline') return '<span class="type-pill tp-deadline">Deadline</span>';
     if(t==='Holiday') return '<span class="type-pill tp-holiday">Holiday</span>';
@@ -4343,8 +4346,13 @@ function renderHOD(){
   // ── Card: Next 7 days ──────────────────────────────────────────────
   const eventsHtml=renderGroupedDates(eventRows,'No school events or assessments in the next 7 days.');
 
-  // ── Card: Upcoming exams ──────────────────────────────────────────
-  const extHtml=renderGroupedDates(upcomingAssessmentRows,'No scheduled or tentative assessments found.');
+  // ── Card: Upcoming Edexcel external exams ──────────────────────────
+  const extTabs = externalWindows.length
+    ? `<div class="assess-tog-wrap">${externalWindows.map(w=>
+        `<button class="assess-tog-btn${w.id===selectedExternalSeriesId?' active':''}" onclick="setExternalExamSeries('${w.id}')">${w.label}</button>`
+      ).join('')}</div>`
+    : '';
+  const extHtml=extTabs+renderGroupedDates(extRows,'No relevant Edexcel Maths or Further Maths exams are scheduled for this series.');
 
   // ── Card: Needs attention ───────────────────────────────────────────
   const attentionHtml = attentionItems.length
@@ -4404,7 +4412,7 @@ function renderHOD(){
   const insightsHtml = `
     <div class="hod-row">
       ${card('',ICN.cal,'Next 7 Days',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
-      ${card('',ICN.cap,'Upcoming Exams',lnk('View assessment schedule',"showView('assessments')"),extHtml)}
+      ${card('',ICN.cap,'Upcoming Exams',lnk('View Pearson timetable',"window.open('https://qualifications.pearson.com/en/support/support-topics/exams/exam-timetables.html#tab-Internationalcentres','_blank')"),extHtml)}
     </div>
     <div class="hod-row">
       ${card('hod-attn',ICN.warn,'Needs Attention','',attentionHtml)}

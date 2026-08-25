@@ -3,9 +3,9 @@
 // Keep the external timetable separate from the main dashboard so dates can
 // be updated without rewriting the large single-file application.
 const EXTERNAL_EXAM_SERIES = [
-  {key:'jan-feb',  label:'January',          startMonth:0, endMonth:1},
-  {key:'may-june', label:'May/June',         startMonth:4, endMonth:5},
-  {key:'oct-nov',  label:'October/November', startMonth:9, endMonth:10},
+  {key:'jan-feb',  label:'Jan/Feb', startMonth:0, endMonth:1},
+  {key:'may-june', label:'May/Jun', startMonth:4, endMonth:5},
+  {key:'oct-nov',  label:'Oct/Nov', startMonth:9, endMonth:10},
 ];
 
 const EXTERNAL_EXAMS = [

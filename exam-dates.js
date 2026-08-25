@@ -1,7 +1,7 @@
 'use strict';
 
-// Keep the external timetable separate from the main dashboard so dates can
-// be updated without rewriting the large single-file application.
+// Canonical external timetable source for the Dashboard. Keep all Pearson
+// examination records here; index.html loads this file directly.
 const EXTERNAL_EXAM_SERIES = [
   {key:'jan-feb',  label:'Jan/Feb', startMonth:0, endMonth:1},
   {key:'may-june', label:'May/Jun', startMonth:4, endMonth:5},
@@ -9,9 +9,9 @@ const EXTERNAL_EXAM_SERIES = [
 ];
 
 const EXTERNAL_EXAMS = [
-  // Pearson Edexcel International A Level October 2026 series.
+  // Pearson Edexcel International A Level October 2026 final timetable.
   // The source series name is intentionally provider-specific; the Dashboard
-  // maps it to the combined Oct/Nov tab using qualification, code and month.
+  // maps this with the separate International GCSE series to its Oct/Nov tab.
   {date:'2026-10-09', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA11', paper:'P1 Pure Mathematics 1',  yg:'Year 12', session:'AM'},
   {date:'2026-10-13', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME01', paper:'M1 Mechanics 1',              yg:'Year 12', session:'AM'},
   {date:'2026-10-15', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA12', paper:'P2 Pure Mathematics 2',      yg:'Year 12', session:'AM'},
@@ -20,6 +20,12 @@ const EXTERNAL_EXAMS = [
   {date:'2026-10-22', series:'IAL October 2026', exam:'IAL Mathematics', code:'WME02', paper:'M2 Mechanics 2',              yg:'Year 13', session:'AM'},
   {date:'2026-10-26', series:'IAL October 2026', exam:'IAL Mathematics', code:'WST02', paper:'S2 Statistics 2',             yg:'Year 13', session:'AM'},
   {date:'2026-10-28', series:'IAL October 2026', exam:'IAL Mathematics', code:'WMA14', paper:'P4 Pure Mathematics 4',      yg:'Year 13', session:'AM'},
+
+  // Pearson Edexcel International GCSE October/November 2026 final timetable.
+  {date:'2026-10-30', series:'International GCSE October/November 2026', exam:'IGCSE Further Pure Mathematics', code:'4PM1', paper:'Paper 1',           yg:'Year 11', session:''},
+  {date:'2026-11-04', series:'International GCSE November 2026',          exam:'IGCSE Mathematics A',             code:'4MA1', paper:'Paper 1H (Higher)', yg:'Year 11', session:'AM'},
+  {date:'2026-11-06', series:'International GCSE November 2026',          exam:'IGCSE Mathematics A',             code:'4MA1', paper:'Paper 2H (Higher)', yg:'Year 11', session:'AM'},
+  {date:'2026-11-10', series:'International GCSE October/November 2026', exam:'IGCSE Further Pure Mathematics', code:'4PM1', paper:'Paper 2',           yg:'Year 11', session:''},
 
   // Confirmed Pearson IAL January 2027 timetable.
   {date:'2027-01-08', series:'jan-feb', exam:'IAL Mathematics',   code:'WMA11', paper:'P1 Pure Mathematics 1',       yg:'Year 12', session:'AM'},
@@ -48,4 +54,9 @@ const EXTERNAL_EXAMS = [
   {date:'2027-06-11', series:'may-june', exam:'IAL Mathematics',     code:'WME01', paper:'M1 Mechanics 1',                 yg:'Year 13', session:''},
   {date:'2027-06-14', series:'may-june', exam:'IAL Mathematics',     code:'WMA14', paper:'P4 Pure Mathematics 4',         yg:'Year 13', session:''},
   {date:'2027-06-16', series:'may-june', exam:'IAL Further Maths',   code:'WFM02', paper:'FP2 Further Pure 2',             yg:'Year 13', session:''},
-];
+].map(exam=>({
+  qualification:/^W(?:MA|ST|ME|FM|DM)/.test(exam.code)
+    ? 'International A Level'
+    : 'International GCSE',
+  ...exam
+}));

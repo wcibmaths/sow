@@ -1,0 +1,96 @@
+Update the Dashboard layout and information hierarchy on the WCIB Maths Department Scheme of Work site.
+
+Page:
+https://wcibmaths.github.io/sow/
+
+NEXT 7 DAYS AND UPCOMING EXAMS
+
+Make the top dashboard row more compact.
+
+Layout:
+
+Next 7 Days: approximately 60% width
+Upcoming Exams: approximately 40% width
+Both cards should have the same fixed height, approximately 280 to 320px.
+
+Do not allow either card to become taller because of the number of events.
+
+Add an internal vertical scrollbar to the content area when there are more items than fit within the card.
+
+Keep the card title, navigation link and exam-series buttons fixed and visible while the content scrolls.
+
+Next 7 Days:
+
+Continue grouping events by date.
+Show approximately 4 to 5 events before scrolling.
+Keep the layout compact.
+Avoid excessive vertical spacing between events.
+Keep Year/Class and event type as secondary information.
+
+Upcoming Exams:
+
+Keep the Oct/Nov, Jan/Feb and May/Jun selectors.
+Show approximately 4 exam entries before scrolling.
+Reduce unnecessary vertical padding between exam rows.
+Keep “View Pearson timetable” visible in the card header.
+
+Do not change the underlying exam or calendar data.
+
+REMOVE DUPLICATION BETWEEN NEEDS ATTENTION AND CLASSES BEHIND PACE
+
+The current Needs Attention panel repeats information already shown in Classes Behind Pace.
+
+Change their purposes.
+
+Rename:
+“Needs Attention” to “Action Required”
+“Classes Behind Pace” to “Teaching Pace”
+
+ACTION REQUIRED
+
+Only show items requiring meaningful teacher action.
+
+Include:
+
+assessments taking place within the next 7 days
+classes significantly behind the planned SOW
+classes behind pace with an assessment approaching
+overdue or other genuinely urgent curriculum issues
+
+Do not show every class that is only 1 or 2 lessons behind.
+
+Suggested pace rules:
+
+1 lesson behind: Teaching Pace table only
+2 lessons behind: Teaching Pace table only
+3 or more lessons behind: also show in Action Required
+if an assessment is approaching and the class is behind, show it in Action Required regardless of the threshold
+
+TEACHING PACE
+
+Keep the detailed table showing:
+Year
+Class / Set
+Teacher
+Planned
+Completed
+Behind/Ahead
+Next Assessment
+
+Improvements:
+
+Sort classes with the largest delay first.
+Show only classes that are ahead or behind if this is intended as an exception view.
+Clearly distinguish “behind” from “ahead”.
+Make a class row clickable where possible so it opens the relevant class/SOW.
+Keep this panel compact and scroll internally if the list becomes long.
+GENERAL
+Preserve the existing visual style.
+Do not change any SOW, assessment or exam data.
+Do not change the existing navigation or filters.
+Make the dashboard faster to scan.
+Avoid large empty areas inside cards.
+Ensure the layout remains responsive on smaller screens.
+Test that internal scrolling does not cause the whole dashboard card to expand.
+
+One extra point I would challenge: I would not make “2 lessons behind” automatically a warning. At the start of term, timetable variation, trips, assemblies and different lesson allocations will create small differences. If every two-lesson difference becomes an alert, the dashboard will train you to ignore alerts. The Action Required section should be reserved for things that genuinely need intervention.

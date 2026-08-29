@@ -61,6 +61,10 @@ def wellington_logo():
 def exam_dates():
     return send_file('exam-dates.js', mimetype='application/javascript')
 
+@app.route('/y10-fm-sow.js')
+def y10_fm_sow_source():
+    return send_file('y10-fm-sow.js', mimetype='application/javascript')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())
@@ -79,7 +83,7 @@ def get_y10_accelerated_sow():
     workbook_path = os.path.join(
         os.path.dirname(__file__),
         'attached_assets',
-        'KS4_Accelerated_SoW_1787616362498.xlsx',
+        'KS4_Accelerated_SoW_(3)_1787970692790.xlsx',
     )
     try:
         workbook = load_workbook(workbook_path, data_only=True, read_only=True)
@@ -137,7 +141,7 @@ def get_y10_accelerated_sow():
                 if personalisation else '',
             ]
             row = {
-                'id': f'y10_fm_acc_{index:03d}',
+                'id': f'y10_fm_source_{index:03d}',
                 'week': week,
                 'dates': str(source.get('Dates') or '').strip(),
                 'cycle': cycle,

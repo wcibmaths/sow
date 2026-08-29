@@ -947,6 +947,7 @@ if(!window.WCIB_DB){
 <!-- External examination dates (Pearson International timetables).
      Kept in its own file so it can be updated without touching this one. -->
 <script src="./exam-dates.js?v=pearson-final-2026-11-r2"></script>
+<script src="./y10-fm-sow.js?v=2026-08-29-v2-fm-anchored"></script>
 
 <script>
 'use strict';
@@ -3907,16 +3908,137 @@ async function loadKeyDates(){
   }
 }
 
+function normaliseY10IdentityText(value){
+  return String(value||'')
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/[−–—]/g,'-')
+    .replace(/^\s*\d+(?:\.\d+)*\s+/,'')
+    .replace(/[^a-z0-9]+/g,' ').trim();
+}
+
+function y10StableLessonId(row){
+  const identity=[
+    normaliseY10IdentityText(row.type),
+    normaliseY10IdentityText(row.lessonName),
+    normaliseY10IdentityText(row.specification)
+  ].join('|');
+  let hash=2166136261;
+  for(let i=0;i<identity.length;i++){
+    hash^=identity.charCodeAt(i);
+    hash=Math.imul(hash,16777619);
+  }
+  return `y10_fm_ssw_${(hash>>>0).toString(36)}`;
+}
+
+function y10CalendarTerm(dates){
+  const match=String(dates||'').toLowerCase()
+    .match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/);
+  const month=match?match[1]:'';
+  if(['jan','feb','mar'].includes(month)) return 'Lent';
+  if(['apr','may','jun','jul'].includes(month)) return 'Summer';
+  return 'Michaelmas';
+}
+
+function normaliseY10WorkbookRow(source){
+  const objective=String(source.objective||source.Objective||'').trim();
+  const specification=String(source.specification||source['Specification point(s)']||'').trim();
+  const qualification=String(source.qualification||source.Qualification||'').trim();
+  const pages=String(source.pages||source['Student Book pages']||'').trim();
+  const personalisation=String(
+    source.personalisation||source['Personalisation and Stretch']||''
+  ).trim();
+  const type=String(source.type||source.Type||'core').trim().toLowerCase()||'core';
+  const dates=String(source.dates||source.Dates||'').trim();
+  const row={
+    week:String(source.week||source.Week||'').trim(),
+    dates,
+    cycle:String(source.cycle||source.Cycle||'').trim(),
+    unit:source.unit!==undefined ? source.unit : source.Unit,
+    unitName:String(source.unitName||source['Unit Name']||'').trim(),
+    lessonNo:String(source.lessonNo||source['Lesson No.']||'').trim(),
+    lessonName:String(source.lessonName||source['Lesson Name']||'').trim(),
+    type,
+    term:String(source.term||source.Term||'').trim(),
+    objective,
+    specification,
+    qualification,
+    pages,
+    personalisation,
+    alert:String(source.alert||source['Alert / Notes']||'').trim(),
+    legacyIds:Array.isArray(source.legacyIds)
+      ? source.legacyIds
+      : Array.isArray(source['Legacy progress IDs']) ? source['Legacy progress IDs'] : []
+  };
+  if(row.unit==='') row.unit=null;
+  if(!row.cycle && /^[MLS]?\d+[AB]$/i.test(row.week)) row.cycle=row.week.slice(-1);
+  if(!row.term && row.type==='calendar') row.term=y10CalendarTerm(row.dates);
+  row.obj=[
+    objective ? `Objective: ${objective}` : '',
+    specification && specification!=='—' ? `Specification: ${specification}` : '',
+    qualification && qualification!=='—' ? `Qualification: ${qualification}` : '',
+    pages && pages!=='—' ? `Student Book: ${pages}` : '',
+    personalisation ? `Personalisation and stretch: ${personalisation}` : ''
+  ].filter(Boolean).join('  |  ');
+  row.id=y10StableLessonId(row);
+  return row;
+}
+
+function embeddedY10WorkbookRows(){
+  const source=window.WCIB_Y10_FM_SOURCE;
+  if(!source || !Array.isArray(source.columns) || !Array.isArray(source.rows)) return [];
+  return source.rows.map(values=>{
+    const row={};
+    source.columns.forEach((column,index)=>{ row[column]=values[index]; });
+    return normaliseY10WorkbookRow(row);
+  });
+}
+
+function migrateY10ProgressAliases(rows){
+  const entries=loadAll();
+  const updates=entries.__updatedAt&&typeof entries.__updatedAt==='object'
+    ? entries.__updatedAt : (entries.__updatedAt={});
+  let changed=false;
+  (rows||[]).forEach(row=>{
+    const target=makeKey(row.id,'Ma1');
+    if(entries[target]) return;
+    const candidates=(row.legacyIds||[])
+      .map(id=>makeKey(id,'Ma1'))
+      .filter(key=>entries[key]);
+    if(!candidates.length) return;
+    candidates.sort((a,b)=>(updates[b]||0)-(updates[a]||0));
+    const source=candidates[0];
+    entries[target]=entries[source];
+    updates[target]=updates[source]||Date.now();
+    changed=true;
+  });
+  if(!changed) return;
+  _cache=entries;
+  _lsSave(entries);
+}
+
 async function loadY10AcceleratedSow(){
+  const embedded=embeddedY10WorkbookRows();
+  let rows=embedded;
   try{
     const res=await fetch('/api/y10-accelerated-sow',{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
-    const rows=await res.json();
-    if(!Array.isArray(rows) || rows.length<1) throw new Error('empty workbook response');
-    Y10_FM_SOW=rows;
+    const apiRows=await res.json();
+    if(!Array.isArray(apiRows) || apiRows.length<1) throw new Error('empty workbook response');
+    const aliasesById=new Map(embedded.map(row=>[row.id,row.legacyIds]));
+    rows=apiRows.map(raw=>{
+      const row=normaliseY10WorkbookRow(raw);
+      row.legacyIds=aliasesById.get(row.id)||[];
+      return row;
+    });
   }catch(err){
-    console.warn('Y10 Accelerated workbook unavailable — using the built-in copy:',err);
+    if(!embedded.length){
+      console.error('Y10 Accelerated workbook and static source are unavailable:',err);
+      return;
+    }
+    console.warn('Y10 Accelerated workbook endpoint unavailable — using the static v2 copy:',err);
   }
+  migrateY10ProgressAliases(rows);
+  Y10_FM_SOW=rows;
 }
 
 function keyDateType(row){
@@ -4617,9 +4739,12 @@ function renderTeacher(){
       </div>
       <div class="term-body" id="${termId}">`;
 
-    const weeks=[...new Set(tl.map(l=>l.week))];
-    weeks.forEach(wk=>{
-      const wkL=tl.filter(l=>l.week===wk);
+    // Dates are part of the grouping key so separate holiday rows labelled
+    // "Break" do not collapse into a single block within the same term.
+    const weeks=[...new Set(tl.map(l=>`${l.week}\u001f${l.dates}`))];
+    weeks.forEach(weekKey=>{
+      const [wk,weekDates]=weekKey.split('\u001f');
+      const wkL=tl.filter(l=>l.week===wk&&l.dates===weekDates);
       if(!wkL.length)return;
       const first=wkL[0];
       const alertL=wkL.find(l=>l.alert);
@@ -5150,7 +5275,8 @@ async function init(){
   document.getElementById('tv-search').addEventListener('input',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('sel-assess-yg').addEventListener('change',()=>{saveTvFilters();renderAssessments();});
   document.getElementById('btn-reset').addEventListener('click',resetProgress);
-  await Promise.all([syncFromServer(), loadKeyDates(), loadY10AcceleratedSow()]);
+  await syncFromServer();
+  await Promise.all([loadKeyDates(), loadY10AcceleratedSow()]);
   restoreTvFilters();
   renderYearTabs();
   renderHOD();

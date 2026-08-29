@@ -65,6 +65,10 @@ def exam_dates():
 def y10_fm_sow_source():
     return send_file('y10-fm-sow.js', mimetype='application/javascript')
 
+@app.route('/y11-ma1-sow.js')
+def y11_ma1_sow_source():
+    return send_file('y11-ma1-sow.js', mimetype='application/javascript')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())

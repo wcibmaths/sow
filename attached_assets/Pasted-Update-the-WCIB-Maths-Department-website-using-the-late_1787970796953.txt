@@ -1,0 +1,67 @@
+Update the WCIB Maths Department website using the latest Year 10 Further Maths Scheme of Work Excel file that I will upload.
+
+Main page:
+https://wcibmaths.github.io/sow/
+
+Scope:
+Year 10 Further Maths, SSW only.
+
+Use the uploaded Excel file as the latest source of truth.
+
+1. Scheme of Work
+
+* Update the full Year 10 Further Maths SSW Scheme of Work.
+* Replace outdated lesson sequencing with the latest sequence from the Excel file.
+* Preserve lesson order, topics, subtopics, assessments, revision lessons and notes from the spreadsheet.
+* Remove old Year 10 FM SSW information where it conflicts with the new file.
+
+2. Assessment Schedule
+
+Check the Assessment Schedule and update every Year 10 Further Maths assessment to match the new Scheme of Work.
+
+This includes:
+
+* assessment names
+* assessment dates or teaching weeks
+* assessment order
+* topics assessed
+* revision or preparation lessons linked to assessments
+
+Remove any old Year 10 FM assessment information that no longer matches the uploaded Excel file.
+
+3. Related Pages and Data
+
+Search the website/codebase for any other places where Year 10 Further Maths SSW information appears.
+
+Update related information where it is derived from the Scheme of Work, including:
+
+* assessment/calendar views
+* upcoming assessments
+* dashboard assessment information
+* curriculum overview pages
+* teacher/class filters
+* Year 10 FM summary information
+* any shared data files used by these pages
+
+Do not change unrelated classes.
+
+4. Important Restrictions
+
+* Only update Year 10 Further Maths taught by SSW.
+* Do not change Year 10 IGCSE Maths.
+* Do not change another teacher's Scheme of Work.
+* Do not change another year group.
+* Keep the existing website design, navigation, filters and functionality unchanged.
+* Do not guess missing dates or content. If something is not provided in the Excel file, retain the existing information unless it directly conflicts with the new Scheme of Work.
+
+5. Final Check
+
+Before completing the update:
+
+* Compare the website against the uploaded Excel file.
+* Check the Year 10 FM SSW Scheme of Work lesson by lesson.
+* Check that the Assessment Schedule matches it.
+* Check all Year 10 FM related pages for outdated information.
+* Confirm that the same assessment does not show conflicting dates or topics on different pages.
+* Test the Year 10, Further Maths and SSW filters.
+* Report which files/pages were changed.

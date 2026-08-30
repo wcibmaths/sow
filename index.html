@@ -690,24 +690,11 @@
 
 <div id="view-teacher" class="view">
   <div class="controls">
-    <div class="ctrl"><label>Year Group</label>
-      <select id="sel-yg">
-        <option value="7">Year 7</option>
-        <option value="8">Year 8</option>
-        <option value="9">Year 9</option>
-        <option value="10">Year 10</option>
-        <option value="11">Year 11</option>
-        <option value="12">Year 12 (IAL)</option>
-        <option value="13">Year 13 (IAL)</option>
-      </select>
+    <div class="ctrl"><label>Teacher</label>
+      <select id="sel-teacher"></select>
     </div>
-    <div class="ctrl"><label>Class Set</label>
-      <select id="sel-set">
-        <option value="Ma1">Ma1 — MKM</option>
-        <option value="Ma2">Ma2 — HPA</option>
-        <option value="Ma3">Ma3 — ADE</option>
-        <option value="Ma4">Ma4 — FTA</option>
-      </select>
+    <div class="ctrl"><label>Class</label>
+      <select id="sel-class"></select>
     </div>
     <div class="ctrl"><label>Term</label>
       <select id="sel-term">
@@ -3377,6 +3364,54 @@ function sowFor(yg, set){
   return SOW_BY_YG[yg] || null;
 }
 
+// Teacher View uses a compact class key in the UI, while all data and
+// progress lookups continue to use their existing (year, internal set) pair.
+function tvClassKey(yg,set){ return `${Number(yg)}|${set}`; }
+function tvClassFromKey(key){
+  const parts=String(key||'').split('|');
+  const yg=Number(parts[0]);
+  const set=parts.slice(1).join('|');
+  return Number.isFinite(yg)&&set ? {yg,set} : null;
+}
+function teacherNamesForClass(yg,set){
+  return String((TEACHERS_BY_YG[yg]||{})[set]||'')
+    .split(/\s*,\s*/).map(s=>s.trim()).filter(Boolean);
+}
+function tvClassLabel(yg,set){
+  const ial=(IAL_INFO[yg]||{})[set];
+  const className=ial
+    ? ial.label.replace(/\s*\([^)]*\)\s*$/,'')
+    : displaySet(yg,set);
+  return `Year ${yg} ${className}`;
+}
+function allTeacherNames(){
+  const names=[];
+  Object.keys(SETS_BY_YG).forEach(yg=>{
+    (SETS_BY_YG[yg]||[]).forEach(set=>{
+      teacherNamesForClass(Number(yg),set).forEach(name=>{
+        if(!names.includes(name)) names.push(name);
+      });
+    });
+  });
+  return names.sort((a,b)=>a.localeCompare(b));
+}
+function teacherClassOptions(teacher){
+  const options=[];
+  Object.keys(SETS_BY_YG).forEach(yg=>{
+    const year=Number(yg);
+    (SETS_BY_YG[year]||[]).forEach(set=>{
+      if(teacherNamesForClass(year,set).includes(teacher)){
+        options.push({yg:year,set,label:tvClassLabel(year,set)});
+      }
+    });
+  });
+  return options;
+}
+function selectedTvClass(){
+  const selected=tvClassFromKey(document.getElementById('sel-class')?.value);
+  return selected || {yg:7,set:'Ma1'};
+}
+
 // Derive assessment cards from any SoW array by picking out its assessment rows.
 // Used by the accelerated KS4 classes (Y10 FM, Y11 Ma1), which carry their
 // assessments inline in the scheme rather than in a separate ASSESSMENTS_* table.
@@ -3757,11 +3792,15 @@ function refreshActiveView(){
 }
 
 function openDashboardClass(yg,set){
-  const yearSelect=document.getElementById('sel-yg');
-  const setSelect=document.getElementById('sel-set');
-  if(yearSelect) yearSelect.value=String(yg);
-  updateSetDropdown();
-  if(setSelect) setSelect.value=set;
+  const teacherSelect=document.getElementById('sel-teacher');
+  const classSelect=document.getElementById('sel-class');
+  const teacher=teacherNamesForClass(yg,set)[0] || '';
+  if(teacherSelect){
+    teacherSelect.value=teacher;
+    updateClassDropdown(tvClassKey(yg,set));
+  }
+  if(classSelect) classSelect.value=tvClassKey(yg,set);
+  saveTvFilters();
   showView('teacher');
   document.getElementById('view-teacher')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -4735,8 +4774,8 @@ function renderHOD(){
 //  TEACHER VIEW
 // ════════════════════════════════════════════════════════════════════
 function renderTeacher(){
-  const yg=parseInt(document.getElementById('sel-yg').value);
-  const set=document.getElementById('sel-set').value;
+  const {yg,set}=selectedTvClass();
+  const selectedTeacher=document.getElementById('sel-teacher')?.value || teacherNamesForClass(yg,set)[0] || '';
   const tf=document.getElementById('sel-term').value;
   const q=(document.getElementById('tv-search').value||'').toLowerCase().trim();
 
@@ -4750,7 +4789,6 @@ function renderTeacher(){
     return;
   }
 
-  const teachers=TEACHERS_BY_YG[yg]||{};
   const base=tf==='all'?sow:sow.filter(l=>l.term===tf);
   const lessons=q?base.filter(l=>
     l.lessonName.toLowerCase().includes(q)||
@@ -4762,7 +4800,7 @@ function renderTeacher(){
   const unitLabel = `lessons completed (${p.pct}%)`;
   let html=`<div class="card"><div class="tv-header">
     <div>
-      <div class="tv-title">${teachers[set]||set} — Year ${yg} ${ialInfo?ialInfo.label.replace(/\s*\([^)]*\)\s*$/,''):displaySet(yg,set)}</div>
+       <div class="tv-title">${selectedTeacher} — ${tvClassLabel(yg,set)}</div>
       <div id="tv-lbl" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">
         ${p.done} of ${p.total} ${unitLabel}</div>
     </div>
@@ -4981,8 +5019,7 @@ function handleChange(e){
   setStatusValue(id,set,val);
   sel.className='status-sel '+statusClass(val);
   // Update progress bar
-  const set2=document.getElementById('sel-set').value;
-  const yg2=parseInt(document.getElementById('sel-yg').value);
+  const {yg:yg2,set:set2}=selectedTvClass();
   const p=getProgress(set2,sowFor(yg2,set2)||Y7_SOW);
   const bar=document.getElementById('tv-bar');
   const pct=document.getElementById('tv-pct');
@@ -4995,8 +5032,7 @@ function handleChange(e){
 function resetProgress(){
   if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return;  // viewing only
   if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
-  const set=document.getElementById('sel-set').value;
-  const yg=parseInt(document.getElementById('sel-yg').value);
+  const {yg,set}=selectedTvClass();
   const sow=sowFor(yg,set)||Y7_SOW;
   const d=loadAll();
   sow.forEach(l=>{
@@ -5365,25 +5401,36 @@ function renderCalendar(){
 // ════════════════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════════════════
-function updateSetDropdown(){
-  const yg=parseInt(document.getElementById('sel-yg').value);
-  const sets=SETS_BY_YG[yg]||SETS_BY_YG[7];
-  const teachers=TEACHERS_BY_YG[yg]||TEACHERS_BY_YG[7];
-  const sel=document.getElementById('sel-set');
+function updateTeacherDropdown(){
+  const sel=document.getElementById('sel-teacher');
+  if(!sel)return;
   const cur=sel.value;
-  const ialMap = IAL_INFO[yg] || {};
-  sel.innerHTML=sets.map(s=>{
-    const ial = ialMap[s];
-    const label = ial ? ial.label : `${displaySet(yg,s)} — ${teachers[s]||s}`;
-    return `<option value="${s}"${s===cur?' selected':''}>${label}</option>`;
-  }).join('');
+  sel.innerHTML=allTeacherNames().map(name=>
+    `<option value="${esc(name)}"${name===cur?' selected':''}>${esc(name)}</option>`
+  ).join('');
+  if(cur && [...sel.options].some(o=>o.value===cur)) sel.value=cur;
+}
+function updateClassDropdown(preferredKey){
+  const teacher=document.getElementById('sel-teacher')?.value || '';
+  const sel=document.getElementById('sel-class');
+  if(!sel)return;
+  const current=preferredKey || sel.value;
+  const options=teacherClassOptions(teacher);
+  sel.innerHTML=options.map(option=>
+    `<option value="${tvClassKey(option.yg,option.set)}">${esc(option.label)}</option>`
+  ).join('');
+  if(options.some(option=>tvClassKey(option.yg,option.set)===current)){
+    sel.value=current;
+  }else if(options.length){
+    sel.value=tvClassKey(options[0].yg,options[0].set);
+  }
 }
 
 function saveTvFilters(){
   try{
     const f = {
-      yg: document.getElementById('sel-yg').value,
-      set: document.getElementById('sel-set').value,
+      teacher: document.getElementById('sel-teacher').value,
+      classKey: document.getElementById('sel-class').value,
       term: document.getElementById('sel-term').value,
       search: document.getElementById('tv-search').value,
       assessYg: document.getElementById('sel-assess-yg').value,
@@ -5396,19 +5443,39 @@ function restoreTvFilters(){
     const raw = localStorage.getItem('wcib_tv_filters');
     if(!raw) return;
     const f = JSON.parse(raw);
-    if(f.yg){ const e=document.getElementById('sel-yg'); if([...e.options].some(o=>o.value==f.yg)) e.value=f.yg; }
+    updateTeacherDropdown();
+    // Migrate the previous year/set filter shape when an existing browser
+    // has saved the old Teacher View preferences.
+    let savedClass=f.classKey;
+    if(!savedClass && f.yg && f.set) savedClass=tvClassKey(f.yg,f.set);
+    let savedTeacher=f.teacher;
+    if(!savedTeacher && savedClass){
+      const oldClass=tvClassFromKey(savedClass);
+      savedTeacher=oldClass && teacherNamesForClass(oldClass.yg,oldClass.set)[0];
+    }
+    const teacherSel=document.getElementById('sel-teacher');
+    if(savedTeacher && [...teacherSel.options].some(o=>o.value===savedTeacher)){
+      teacherSel.value=savedTeacher;
+    }else if(teacherSel.options.length){
+      teacherSel.selectedIndex=0;
+    }
+    updateClassDropdown(savedClass);
     if(f.term){ const e=document.getElementById('sel-term'); if([...e.options].some(o=>o.value==f.term)) e.value=f.term; }
     if(f.search!=null) document.getElementById('tv-search').value=f.search;
     if(f.assessYg){ const e=document.getElementById('sel-assess-yg'); if([...e.options].some(o=>o.value==f.assessYg)) e.value=f.assessYg; }
-    updateSetDropdown();
-    if(f.set){ const e=document.getElementById('sel-set'); if([...e.options].some(o=>o.value==f.set)) e.value=f.set; }
   }catch(e){}
 }
 
 async function init(){
   document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
-  document.getElementById('sel-yg').addEventListener('change',()=>{updateSetDropdown();saveTvFilters();renderTeacher();});
-  document.getElementById('sel-set').addEventListener('change',()=>{saveTvFilters();renderTeacher();});
+  updateTeacherDropdown();
+  updateClassDropdown();
+  document.getElementById('sel-teacher').addEventListener('change',()=>{
+    updateClassDropdown();
+    saveTvFilters();
+    renderTeacher();
+  });
+  document.getElementById('sel-class').addEventListener('change',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('sel-term').addEventListener('change',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('tv-search').addEventListener('input',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('sel-assess-yg').addEventListener('change',()=>{saveTvFilters();renderAssessments();});

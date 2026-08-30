@@ -3731,6 +3731,67 @@ function getTermProgress(set, term, sow){
   return {done,prog,ns,pct:t.length?Math.round(done/t.length*100):0,total:t.length};
 }
 
+// KS3 lesson folders use the common Resources path rather than the old
+// year-specific Plan links. Folder names are generated from visible SOW
+// metadata, with overrides available when SharePoint wording differs.
+const KS3_SHAREPOINT_ROOT =
+  '/sites/Mathematics/Shared Documents/Maths Team Hub/4. Resources/A. Key Stage 3';
+const KS3_SHAREPOINT_URL =
+  'https://wcibth.sharepoint.com/sites/Mathematics/Shared%20Documents/Forms/AllItems.aspx';
+const KS3_SHAREPOINT_VIEW_ID = '02167581-f40c-4ab5-b24c-4d497f2dc614';
+const KS3_SHAREPOINT_FOLDER_CTID = '0x012000D0CF7BB6916D3541A8EDC8E4D61F8DC0';
+
+const KS3_UNIT_FOLDER_OVERRIDES = {
+  '7|1|Analysing & Displaying Data':'Analysing_and_Displaying_Data',
+  '8|1|Number':'Number',
+  '9|1|1. Significant Figures, Powers & Standard Form':
+    'Significant_Figures_Powers_and_Standard_Form'
+};
+const KS3_LESSON_FOLDER_OVERRIDES = {
+  '7|y7_3':'1.1_Averages_and_Range',
+  '8|y8_2':'1.1_Calculating_with_Negative_Integers',
+  '8|y8_3':'1.1_Calculating_with_Negative_Integers',
+  '9|y9_3':'1.1_STEM_Powers_of_10',
+  '9|y9_4':'1.1_STEM_Powers_of_10'
+};
+
+function ks3TitleCasePart(part){
+  if(/^[A-Z0-9]{2,}$/.test(part)) return part;
+  if(/^\d+[A-Z]?$/.test(part)) return part;
+  if(['and','with','of','in','to','for'].includes(part.toLowerCase())) return part.toLowerCase();
+  return part.split('-').map(piece=>
+    piece ? piece.charAt(0).toUpperCase()+piece.slice(1).toLowerCase() : piece
+  ).join('-');
+}
+function ks3FolderSlug(value){
+  return String(value||'')
+    .replace(/\s*\(\d+\s*\/\s*\d+\)\s*$/,'')
+    .replace(/&/g,' and ')
+    .replace(/[’']/g,'')
+    .replace(/[:;,/\\]+/g,' ')
+    .replace(/[–—]/g,'-')
+    .replace(/[^\p{L}\p{N}.\- ]/gu,' ')
+    .trim().split(/\s+/).filter(Boolean)
+    .map(ks3TitleCasePart).join('_');
+}
+function ks3UnitFolderName(lesson,yg){
+  const override=KS3_UNIT_FOLDER_OVERRIDES[`${yg}|${lesson.unit}|${lesson.unitName}`];
+  const visibleName=String(lesson.unitName||'').replace(/^\d+\.\s*/,'');
+  return `Unit_${lesson.unit}_${override||ks3FolderSlug(visibleName)}`;
+}
+function ks3LessonFolderName(lesson,yg){
+  const override=KS3_LESSON_FOLDER_OVERRIDES[`${yg}|${lesson.id}`];
+  if(override) return override;
+  const visibleName=String(lesson.lessonName||'')
+    .replace(/\s*\(\d+\s*\/\s*\d+\)\s*$/,'').trim();
+  return ks3FolderSlug(visibleName || lesson.lessonNo);
+}
+function ks3LessonUrl(lesson,yg){
+  if(![7,8,9].includes(Number(yg)) || !lesson.unit || !lesson.lessonNo) return '';
+  const folderPath=`${KS3_SHAREPOINT_ROOT}/Year_${yg}/${ks3UnitFolderName(lesson,yg)}/${ks3LessonFolderName(lesson,yg)}`;
+  return `${KS3_SHAREPOINT_URL}?id=${encodeURIComponent(folderPath)}&viewid=${KS3_SHAREPOINT_VIEW_ID}&FolderCTID=${KS3_SHAREPOINT_FOLDER_CTID}`;
+}
+
 // Build direct SharePoint file URL from the folder URL + filename
 // Y7: intmathprogtt7_lp_u{UU}_{suffix}.docx  Y8: intmathprogtt8_lp_u{UU}_{suffix}.docx
 function lessonFileUrl(lesson, yg){
@@ -3754,6 +3815,7 @@ function lessonFileUrl(lesson, yg){
 }
 
 function folderBtn(lesson, yg){
+  if([7,8,9].includes(Number(yg))) return '';
   yg = yg || 7;
   const unitFolders = UNIT_FOLDERS_BY_YG[yg];
   const assessFolders = ASSESSMENT_FOLDERS_BY_YG[yg];
@@ -4973,11 +5035,14 @@ function renderTeacher(){
         // visible in Teacher View; this is display-only and does not alter
         // the underlying SoW row or lesson order.
         const displayName = lesson.lessonName;
+        const lessonUrl = [7,8,9].includes(yg)
+          ? ks3LessonUrl(lesson,yg)
+          : (lesson.planUrl||'');
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">
             <div class="lesson-name-row">
-              ${noLabel}${lesson.planUrl
-                ? `<a href="${lesson.planUrl}" target="_blank" class="lesson-name${isA?' assess':''}" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">${esc(displayName)}</a>`
+              ${noLabel}${lessonUrl
+                ? `<a href="${lessonUrl}" target="_blank" rel="noopener noreferrer" class="lesson-name${isA?' assess':''}" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">${esc(displayName)}</a>`
                 : `<span class="lesson-name${isA?' assess':''}">${esc(displayName)}</span>`
               }
             </div>
@@ -4986,7 +5051,9 @@ function renderTeacher(){
           ${lesson.tier
             ? `<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`
             : `<span class="type-badge ${bc}">${bt}</span>`}
-          ${lesson.unit?folderBtn(lesson,yg):'<span></span>'}
+          ${[7,8,9].includes(yg)
+            ? '<span></span>'
+            : lesson.unit?folderBtn(lesson,yg):'<span></span>'}
           ${isF
             ?`<div class="na-badge">N/A</div>`
             :`<select class="status-sel ${sc}" data-lesson-id="${lesson.id}" data-set="${set}">

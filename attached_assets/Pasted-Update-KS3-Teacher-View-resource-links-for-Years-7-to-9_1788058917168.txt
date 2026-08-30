@@ -1,0 +1,91 @@
+Update KS3 Teacher View resource links for Years 7 to 9.
+
+Current issue:
+
+Year 7 has a Plan icon, but the existing links are incorrect.
+Years 8 and 9 do not currently have resource links.
+
+Required change:
+
+For Years 7, 8 and 9:
+
+Remove the Year 7 Plan icon completely.
+Ignore all existing Year 7 Plan URLs.
+Generate new SharePoint resource links for every KS3 lesson using the same folder-path method for all three year groups.
+Make the lesson title itself clickable.
+Open the SharePoint folder in a new tab.
+Keep the progress/status control unchanged.
+
+Final layout:
+
+Progress/status → clickable lesson title
+
+Example:
+
+1/8 1.1 Averages and range
+
+Only the lesson title should be the hyperlink.
+
+SharePoint base folder:
+
+/sites/Mathematics/Shared Documents/Maths Team Hub/4. Resources/A. Key Stage 3/
+
+Folder structure:
+
+Year_7 / Unit_{number}{unit_name} / {lesson_number}{lesson_name}
+
+Year_8 / Unit_{number}{unit_name} / {lesson_number}{lesson_name}
+
+Year_9 / Unit_{number}{unit_name} / {lesson_number}{lesson_name}
+
+Examples:
+
+Year 7:
+Year_7/Unit_1_Analysing_and_Displaying_Data/1.1_Averages_and_Range
+
+Year 8:
+Year_8/Unit_1_Number/1.1_Calculating_with_Negative_Integers
+
+Year 9:
+Year_9/Unit_1_Significant_Figures_Powers_and_Standard_Form/1.1_STEM_Powers_of_10
+
+Use this SharePoint URL structure:
+
+https://wcibth.sharepoint.com/sites/Mathematics/Shared%20Documents/Forms/AllItems.aspx?id={URL-ENCODED-FOLDER-PATH}&viewid=02167581-f40c-4ab5-b24c-4d497f2dc614&FolderCTID=0x012000D0CF7BB6916D3541A8EDC8E4D61F8DC0
+
+Folder naming rules:
+
+Replace spaces with underscores.
+Remove commas and unnecessary punctuation.
+Use the actual unit number and unit name.
+Use the actual lesson number and lesson name.
+Preserve numbering such as 1.1, 1.2, 2.1.
+Preserve acronyms such as STEM.
+Where the SharePoint folder wording differs from the visible SOW title, support an explicit folder-name override or mapping.
+
+Do not attempt to access or crawl SharePoint. Only generate the hyperlinks.
+
+Apply only to Years 7 to 9.
+
+Do not change:
+
+Years 10 to 13
+lesson progress tracking
+completion controls
+assessments
+SOW sequencing
+dashboard
+filters
+
+Before applying this across all lessons, test the generated paths against these three known examples:
+
+Year 7:
+1.1 Averages and Range
+
+Year 8:
+1.1 Calculating with Negative Integers
+
+Year 9:
+1.1 STEM Powers of 10
+
+The generated URLs for these three lessons should exactly match the example SharePoint links provided.

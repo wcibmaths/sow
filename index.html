@@ -3773,8 +3773,8 @@ function ks3FolderSlug(value){
     .replace(/&/g,' and ')
     .replace(/[’']/g,'')
     .replace(/[:;,/\\]+/g,' ')
-    .replace(/[–—]/g,'-')
-    .replace(/[^\p{L}\p{N}.\- ]/gu,' ')
+    .replace(/[-–—]+/g,' ')
+    .replace(/[^\p{L}\p{N}. ]/gu,' ')
     .trim().split(/\s+/).filter(Boolean)
     .map(ks3TitleCasePart).join('_');
 }

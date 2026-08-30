@@ -3786,10 +3786,27 @@ function ks3LessonFolderName(lesson,yg){
     .replace(/\s*\(\d+\s*\/\s*\d+\)\s*$/,'').trim();
   return ks3FolderSlug(visibleName || lesson.lessonNo);
 }
+function ks3ResourceYear(yg,set){
+  if(yg===7) return 7;
+  if(yg===8) return set==='Ma1' ? 9 : 8;
+  if(yg===9) return set==='Ma1' ? null : 9;
+  return null;
+}
+function ks3UnitUrl(lesson,resourceYg){
+  if(![7,8,9].includes(Number(resourceYg)) || !lesson.unit) return '';
+  const folderPath=`${KS3_SHAREPOINT_ROOT}/Year_${resourceYg}/${ks3UnitFolderName(lesson,resourceYg)}`;
+  return `${KS3_SHAREPOINT_URL}?id=${encodeURIComponent(folderPath)}&viewid=${KS3_SHAREPOINT_VIEW_ID}&FolderCTID=${KS3_SHAREPOINT_FOLDER_CTID}`;
+}
 function ks3LessonUrl(lesson,yg){
   if(![7,8,9].includes(Number(yg)) || !lesson.unit || !lesson.lessonNo) return '';
   const folderPath=`${KS3_SHAREPOINT_ROOT}/Year_${yg}/${ks3UnitFolderName(lesson,yg)}/${ks3LessonFolderName(lesson,yg)}`;
   return `${KS3_SHAREPOINT_URL}?id=${encodeURIComponent(folderPath)}&viewid=${KS3_SHAREPOINT_VIEW_ID}&FolderCTID=${KS3_SHAREPOINT_FOLDER_CTID}`;
+}
+function ks3ResourceUrl(lesson,resourceYg){
+  if(!resourceYg || !lesson.unit) return '';
+  return lesson.type==='assessment'
+    ? ks3UnitUrl(lesson,resourceYg)
+    : ks3LessonUrl(lesson,resourceYg);
 }
 
 // Build direct SharePoint file URL from the folder URL + filename
@@ -4840,6 +4857,7 @@ function renderTeacher(){
   const selectedTeacher=document.getElementById('sel-teacher')?.value || teacherNamesForClass(yg,set)[0] || '';
   const tf=document.getElementById('sel-term').value;
   const q=(document.getElementById('tv-search').value||'').toLowerCase().trim();
+  const resourceYg=ks3ResourceYear(yg,set);
 
   // Route to the correct SOW (IAL-aware via sowFor helper)
   const sow = sowFor(yg, set);
@@ -5035,8 +5053,8 @@ function renderTeacher(){
         // visible in Teacher View; this is display-only and does not alter
         // the underlying SoW row or lesson order.
         const displayName = lesson.lessonName;
-        const lessonUrl = [7,8,9].includes(yg)
-          ? ks3LessonUrl(lesson,yg)
+        const lessonUrl = resourceYg
+          ? ks3ResourceUrl(lesson,resourceYg)
           : (lesson.planUrl||'');
         html+=`<div class="lesson ${rc}">
           <div class="lesson-info">

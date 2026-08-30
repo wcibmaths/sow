@@ -3754,6 +3754,10 @@ const KS3_LESSON_FOLDER_OVERRIDES = {
   '9|y9_3':'1.1_STEM_Powers_of_10',
   '9|y9_4':'1.1_STEM_Powers_of_10'
 };
+const KS3_LESSON_URL_OVERRIDES = {
+  '7|y7_5':'https://wcibth.sharepoint.com/sites/Mathematics/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FMathematics%2FShared%20Documents%2FMaths%20Team%20Hub%2F4%2E%20Resources%2FA%2E%20Key%20Stage%203%2FYear%5F7%2FUnit%5F1%5FAnalysing%5Fand%5FDisplaying%5FData%2F1%2E3%5FTwo%5FWay%5FTables%5Fand%5FBar%5FCharts&viewid=02167581%2Df40c%2D4ab5%2Db24c%2D4d497f2dc614&FolderCTID=0x012000D0CF7BB6916D3541A8EDC8E4D61F8DC0',
+  '7|y7_6':'https://wcibth.sharepoint.com/sites/Mathematics/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FMathematics%2FShared%20Documents%2FMaths%20Team%20Hub%2F4%2E%20Resources%2FA%2E%20Key%20Stage%203%2FYear%5F7%2FUnit%5F1%5FAnalysing%5Fand%5FDisplaying%5FData%2F1%2E3%5FTwo%5FWay%5FTables%5Fand%5FBar%5FCharts&viewid=02167581%2Df40c%2D4ab5%2Db24c%2D4d497f2dc614&FolderCTID=0x012000D0CF7BB6916D3541A8EDC8E4D61F8DC0'
+};
 
 function ks3TitleCasePart(part){
   if(/^[A-Z0-9]{2,}$/.test(part)) return part;
@@ -3799,6 +3803,8 @@ function ks3UnitUrl(lesson,resourceYg){
 }
 function ks3LessonUrl(lesson,yg){
   if(![7,8,9].includes(Number(yg)) || !lesson.unit || !lesson.lessonNo) return '';
+  const explicitUrl=KS3_LESSON_URL_OVERRIDES[`${yg}|${lesson.id}`];
+  if(explicitUrl) return explicitUrl;
   const folderPath=`${KS3_SHAREPOINT_ROOT}/Year_${yg}/${ks3UnitFolderName(lesson,yg)}/${ks3LessonFolderName(lesson,yg)}`;
   return `${KS3_SHAREPOINT_URL}?id=${encodeURIComponent(folderPath)}&viewid=${KS3_SHAREPOINT_VIEW_ID}&FolderCTID=${KS3_SHAREPOINT_FOLDER_CTID}`;
 }

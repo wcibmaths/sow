@@ -1,0 +1,51 @@
+Task: Add a "My Week" view to the WCIB Maths SoW tracker
+
+Context
+This is the existing WCIB Maths Scheme of Work tracker (repo: wcibmaths/sow, live at wcibmaths.github.io/sow). It already has a Dashboard, Teacher View, Assessment Schedule, and School Calendar, with per-class lesson tracking (a "Lessons completed" progress pointer per class/teacher, used for stats like "Lessons completed this week" and "Classes behind pace"). Before writing any code, inspect the existing data model — how lessons, classes, teachers, and completion state are currently stored — and tell me what you find, since the new feature has to build on that, not replace it.
+
+Goal
+Add a new tab, "My Week," next to Teacher View. It shows one teacher's whole week in a grid: classes as rows, weekdays (Mon–Fri) as columns. Each cell is that class's lesson for that day, showing:
+
+period/time
+lesson topic
+two toggles: Slides and Practice Qs
+
+1. Data model addition
+For each lesson (however lessons are currently identified — by SoW week/unit id, or by class+date), add the ability to store resource links:
+
+slides_links: a list of { label, url } — not just one link, since a lesson may use several slide decks or supporting resources
+practice_links: same shape, for practice questions/worksheets
+
+A toggle is "filled" (done) if its list has at least one entry, "empty" (not started) if the list is empty.
+
+2. Storage — must sync across devices, not per-browser
+This data needs to be visible and editable across the teacher's own devices and shared with the rest of the department (same requirement as the existing "share progress across staff/devices" goal). If there's no shared backend yet, use Firebase/Firestore, keyed by teacher + class + lesson id. Don't store this in localStorage/per-browser — that was the whole problem with the current Chalk + SoW split.
+
+3. "Which lesson shows in each cell" — this is the important logic
+Do NOT map "this week" from the SoW's calendar date. The SoW is a plan, not reality — some classes run ahead or behind it. Instead:
+
+For each class the teacher teaches, find that class's current position using the existing lesson-completion pointer (the same one that drives "Lessons completed" / "Classes behind pace" on the dashboard).
+For each day this week that the class is timetabled, show the next lesson(s) in sequence from that pointer — not whatever the SoW calendar says the date-matched lesson is.
+If a class isn't timetabled on a given day, that cell is empty (render as a placeholder dash, not a blank box).
+
+4. Day styling — grey out as the week passes
+
+Days before today: desaturate the whole column — muted grey background, grey text, grey toggle pills (whether filled or empty, both go grey, just distinguishable enough to still tell them apart).
+Today: highlight with an accent border/badge.
+Days after today: full color, normal styling — these are the ones that still need prep.
+Use the client's/server's current date to determine this, recalculated on load (not hardcoded).
+
+5. Toggle interaction
+Clicking a toggle pill opens an inline popover (not a separate page) showing:
+
+any already-saved links for that lesson/type, each as a clickable label + link, with a remove option
+an "add link" mini-form: a label text field + a URL field + save button
+Saving updates Firestore immediately and updates the toggle's filled/empty state.
+
+6. Visual style — match the existing site
+Poppins font, teal/orange/amber accent palette, dark navy top nav, no purple, no emoji or AI-style icon packs — use simple inline SVG icons (checkmark for done, circle outline for not done). Keep the same nav bar structure and tab styling already used for Dashboard/Teacher View/etc.
+
+7. Teacher selector
+Reuse the existing Teacher filter/dropdown from Teacher View rather than building a new one. It's fine to remember the last-selected teacher per browser for convenience, but the actual lesson/link data itself must live in the shared backend, not per-browser.
+
+Acceptance check: as a teacher, I should be able to open "My Week," see every class I teach this week in one grid, see at a glance which lessons still need slides or practice questions prepped, add multiple resource links per lesson without leaving the grid, and see past days fade out automatically as the week goes on.

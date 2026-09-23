@@ -93,6 +93,10 @@ function mwLinks(key,type){
   const list=mwResources[key]?.[type];
   return Array.isArray(list) ? list : [];
 }
+function mwReady(key,type){
+  const flag=mwResources[key]?.[type==='slides_links'?'slides_ready':'practice_ready'];
+  return flag ?? (mwLinks(key,type).length>0);
+}
 function mwResourceDoc(){
   return window.WCIB_DB;
 }
@@ -158,6 +162,7 @@ function mwAssignments(teacher,info){
 
 const mwIconDone='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 8l3 3 7-7"/></svg>';
 const mwIconEmpty='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/></svg>';
+const mwIconLink='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6.5 9.5l3-3M5.8 6.4l1.3-1.3a3 3 0 0 1 4.2 4.2L10 10.6M10.2 9.6l-1.3 1.3a3 3 0 0 1-4.2-4.2L6 5.4"/></svg>';
 
 function mwPopover(key,type){
   const links=mwLinks(key,type);
@@ -213,9 +218,16 @@ function renderWeek(){
             const resourceKey=mwResourceKey(slot,lesson);
             return `<div class="mw-lesson"><div class="mw-slot">P${slot.period} · ${slot.time}</div>
               <div class="mw-topic">${esc(lesson.lessonName)}</div>
+               <select class="status-sel mw-status ${statusClass(getStatus(lesson.id,set))}" data-mw-status data-lesson-id="${esc(lesson.id)}" data-set="${esc(set)}" aria-label="Status for ${esc(lesson.lessonName)}">
+                 ${['Not started','In progress','Done','N/A'].map(value=>`<option ${getStatus(lesson.id,set)===value?'selected':''}>${value}</option>`).join('')}
+               </select>
               <div class="mw-pills">${[['slides_links','Slides'],['practice_links','Practice Qs']].map(([type,label])=>{
-                const filled=mwLinks(resourceKey,type).length>0;
-                return `<button type="button" class="mw-pill ${filled?'filled':''}" data-mw-key="${esc(resourceKey)}" data-mw-type="${type}" aria-expanded="${mwOpen?.key===resourceKey&&mwOpen?.type===type}" aria-label="${label}: ${filled?'links saved':'no links'}">${filled?mwIconDone:mwIconEmpty}${label}</button>`;
+                 const count=mwLinks(resourceKey,type).length;
+                 const filled=mwReady(resourceKey,type);
+                 return `<span class="mw-pill-group">
+                   <button type="button" class="mw-pill ${filled?'filled':''}" data-mw-toggle data-mw-key="${esc(resourceKey)}" data-mw-type="${type}" aria-pressed="${filled}" aria-label="${label} ready">${filled?mwIconDone:mwIconEmpty}${label}</button>
+                   <button type="button" class="mw-link-chip" data-mw-links data-mw-key="${esc(resourceKey)}" data-mw-type="${type}" aria-expanded="${mwOpen?.key===resourceKey&&mwOpen?.type===type}" aria-label="${label} links${count?`: ${count}`:''}">${mwIconLink}${count||''}</button>
+                 </span>`;
               }).join('')}</div>
               ${mwOpen?.key===resourceKey ? mwPopover(resourceKey,mwOpen.type) : ''}
             </div>`;
@@ -238,7 +250,9 @@ async function mwChangeLinks(key,type,change){
       const current=snap.data()?.resources?.[key]?.[type];
       const existing=Array.isArray(current)?current:[];
       const updated=change(existing);
-      transaction.set(doc,{resources:{[key]:{[type]:updated}}},{merge:true});
+      const patch={[type]:updated};
+      if(!existing.length && updated.length) patch[type==='slides_links'?'slides_ready':'practice_ready']=true;
+      transaction.set(doc,{resources:{[key]:patch}},{merge:true});
     });
   }catch(err){
     mwResourceError='Could not save links to Firestore: '+err.message;
@@ -249,12 +263,39 @@ async function mwChangeLinks(key,type,change){
   }
 }
 
+async function mwToggleReady(key,type){
+  if(mwSaving || mwResourceState!=='ready' || !window.WCIB_CAN_EDIT?.()) return;
+  const doc=mwResourceDoc();
+  if(!doc) return;
+  const readyField=type==='slides_links'?'slides_ready':'practice_ready';
+  mwSaving=true;
+  mwResourceError='';
+  try{
+    await firebase.firestore().runTransaction(async transaction=>{
+      const snap=await transaction.get(doc);
+      const resource=snap.data()?.resources?.[key]||{};
+      const links=Array.isArray(resource[type])?resource[type]:[];
+      const filled=resource[readyField] ?? (links.length>0);
+      transaction.set(doc,{resources:{[key]:{[readyField]:!filled}}},{merge:true});
+    });
+  }catch(err){
+    mwResourceError='Could not update readiness in Firestore: '+err.message;
+    console.error(mwResourceError,err);
+  }finally{
+    mwSaving=false;
+    renderWeek();
+  }
+}
+
 document.addEventListener('click',event=>{
   const root=event.target.closest('#view-week');
   if(!root) return;
-  const pill=event.target.closest('[data-mw-key]');
-  if(pill){
-    const next={key:pill.dataset.mwKey,type:pill.dataset.mwType};
+  const toggle=event.target.closest('[data-mw-toggle]');
+  const chip=event.target.closest('[data-mw-links]');
+  if(toggle){
+    mwToggleReady(toggle.dataset.mwKey,toggle.dataset.mwType);
+  }else if(chip){
+    const next={key:chip.dataset.mwKey,type:chip.dataset.mwType};
     mwOpen=mwOpen?.key===next.key&&mwOpen?.type===next.type ? null : next;
     renderWeek();
   }else if(event.target.closest('[data-mw-close]')){
@@ -283,4 +324,14 @@ document.addEventListener('submit',event=>{
   if(!label) return;
   const {key,type}=mwOpen;
   mwChangeLinks(key,type,links=>[...links,{label,url:url.href}]);
+});
+document.addEventListener('change',event=>{
+  const select=event.target.closest('[data-mw-status]');
+  if(!select || !select.closest('#view-week')) return;
+  if(!window.WCIB_CAN_EDIT?.()){
+    select.value=getStatus(select.dataset.lessonId,select.dataset.set);
+    return;
+  }
+  setStatusValue(select.dataset.lessonId,select.dataset.set,select.value);
+  refreshActiveView();
 });

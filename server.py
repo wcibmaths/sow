@@ -69,6 +69,10 @@ def y10_fm_sow_source():
 def y11_ma1_sow_source():
     return send_file('y11-ma1-sow.js', mimetype='application/javascript')
 
+@app.route('/my-week.js')
+def my_week_source():
+    return send_file('my-week.js', mimetype='application/javascript')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())

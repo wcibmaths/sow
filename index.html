@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" href="./wellington-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     /* page surfaces */
@@ -660,6 +660,52 @@
   }
 
 
+  /* My Week */
+  #view-week{font-family:Poppins,Arial,sans-serif}
+  .mw-header{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .mw-header h2{font-size:23px;letter-spacing:-.03em;color:#213746}
+  .mw-header p{color:#637580;font-size:12px;margin-top:4px}
+  .mw-header .ctrl label{display:block;font-size:11px;font-weight:600;margin-bottom:5px}
+  .mw-header select{font:inherit;padding:8px 12px;border:1px solid #cbd7d7;border-radius:7px;background:white;color:#213746}
+  .mw-notice{padding:10px 14px;margin:14px 0;border-radius:7px;background:#fff5e4;color:#83510c;font-size:12px}
+  .mw-error{background:#ffebe8;color:#962e25}
+  .mw-scroll{overflow-x:auto;margin-top:17px}
+  .mw-grid{width:100%;min-width:980px;border-collapse:separate;border-spacing:0;table-layout:fixed}
+  .mw-grid th,.mw-grid td{padding:12px;vertical-align:top;border-right:1px solid #e0e8e7;border-bottom:1px solid #e0e8e7}
+  .mw-grid thead th{background:#eaf4f2;color:#195f61;font-size:12px;text-align:left}
+  .mw-grid thead th:first-child{width:160px;border-radius:8px 0 0 0}
+  .mw-grid thead th:last-child{border-radius:0 8px 0 0}
+  .mw-grid tbody th{font-size:12px;text-align:left;background:#f8faf9;color:#213746}
+  .mw-grid tbody th small{display:block;color:#71818b;font-weight:400}
+  .mw-grid .mw-past{background:#f1f2f2!important;color:#858e92!important}
+  .mw-grid .mw-today{box-shadow:inset 3px 0 #e49930;background:#fffaf0}
+  .mw-today-tag{display:inline-block;background:#f6ddaa;color:#714c10;padding:2px 6px;border-radius:4px;margin-left:5px}
+  .mw-empty{text-align:center;color:#acb6b7;font-size:18px}
+  .mw-lesson{position:relative;padding:8px 0;border-bottom:1px dashed #dbe4e3}
+  .mw-lesson:last-child{border:0}
+  .mw-slot{font-size:11px;font-weight:700;color:#187474}
+  .mw-topic{font-size:12px;font-weight:600;color:#263e49;line-height:1.4;margin:4px 0 8px;overflow-wrap:anywhere}
+  .mw-past .mw-slot,.mw-past .mw-topic{color:#858e92}
+  .mw-pills{display:flex;flex-wrap:wrap;gap:5px}
+  .mw-pill{font:500 10px Poppins,Arial,sans-serif;border:1px solid #bfd6d3;background:#f4faf9;color:#257474;border-radius:20px;padding:4px 7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+  .mw-pill.filled{border-color:#2b8581;background:#d7eeea;color:#165f5c}
+  .mw-pill svg{width:12px;height:12px;flex:none}
+  .mw-past .mw-pill,.mw-past .mw-pill.filled{background:#e5e7e7;border-color:#cbd0d0;color:#737e81}
+  .mw-past .mw-pill.filled{background:#d5dadb;color:#555f63}
+  .mw-pill:focus-visible,.mw-popover button:focus-visible{outline:2px solid #d48925;outline-offset:2px}
+  .mw-popover{position:relative;z-index:5;background:#fff;border:1px solid #b7d1cd;box-shadow:0 9px 24px #2137462b;border-radius:9px;padding:12px;margin-top:7px;color:#213746;min-width:190px}
+  .mw-popover-title{display:flex;justify-content:space-between;gap:5px;font-size:12px;font-weight:700}
+  .mw-popover button{cursor:pointer}
+  .mw-close,.mw-remove{border:0;background:transparent;color:#a04830}
+  .mw-links{list-style:none;margin:8px 0;padding:0}
+  .mw-links li{display:flex;align-items:center;justify-content:space-between;gap:5px;margin:6px 0;font-size:11px;overflow-wrap:anywhere}
+  .mw-links a{color:#196e70}
+  .mw-form{display:grid;gap:6px;margin-top:9px}
+  .mw-form input{min-width:0;width:100%;padding:6px;border:1px solid #cbd7d7;border-radius:5px;font:11px Poppins,Arial,sans-serif}
+  .mw-form button{border:0;border-radius:5px;padding:7px;background:#247d79;color:white;font:600 11px Poppins,Arial,sans-serif}
+  .mw-form button:disabled{opacity:.5;cursor:wait}
+  .mw-popover-note{font-size:11px;color:#66777b;margin-top:9px}
+  @media(max-width:650px){#view-week{padding:16px}.mw-header h2{font-size:20px}}
 </style>
 </head>
 <body>
@@ -673,6 +719,7 @@
   <nav>
     <button class="nav-btn active" data-view="hod">Dashboard</button>
     <button class="nav-btn" data-view="teacher">Teacher View</button>
+    <button class="nav-btn" data-view="week">My Week</button>
     <button class="nav-btn" data-view="assessments">Assessment Schedule</button>
     <button class="nav-btn" data-view="calendar">School Calendar</button>
   </nav>
@@ -764,6 +811,16 @@
     <button class="reset-btn" id="btn-reset">Reset My Progress</button>
   </div>
   <div id="teacher-content"></div>
+</div>
+
+<div id="view-week" class="view">
+  <div class="card">
+    <div class="mw-header">
+      <div><h2>My Week</h2><p id="mw-dates"></p></div>
+      <div class="ctrl"><label for="mw-teacher">Teacher</label><select id="mw-teacher"></select></div>
+    </div>
+    <div id="mw-content"></div>
+  </div>
 </div>
 
 <div id="view-assessments" class="view">
@@ -904,6 +961,8 @@ if(!window.WCIB_DB){
   function render(){
     if(!box) return;
     document.body.classList.toggle('wcib-locked', !canEdit);
+    if(document.getElementById('view-week')?.classList.contains('active') &&
+       typeof window.renderWeek==='function') window.renderWeek();
     box.className = 'show';
 
     if(sent){
@@ -3704,13 +3763,18 @@ function _toDoc(data){
   return { entries: entries, updatedAt: Object.assign({}, data.__updatedAt || {}) };
 }
 
-// Save the WHOLE map. Used by "Reset progress", where deletions must stick.
+// Replace progress on reset while preserving shared lesson resources and
+// any other fields on this document. A transaction retries concurrent edits.
 function saveAll(data){
   _cache = data;
   _lsSave(data);
   flashSync();
   if(window.WCIB_DB){
-    window.WCIB_DB.set(_toDoc(data)).catch(e=>console.warn('Firebase save failed',e));
+    const db=firebase.firestore();
+    db.runTransaction(async transaction=>{
+      const snap=await transaction.get(window.WCIB_DB);
+      transaction.set(window.WCIB_DB,{...(snap.data()||{}),..._toDoc(data)});
+    }).catch(e=>console.warn('Firebase save failed',e));
   }
 }
 
@@ -3963,6 +4027,11 @@ function showView(name){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   const view=document.getElementById('view-'+name);
   if(!view) return;
+  if(name==='week'){
+    const select=document.getElementById('mw-teacher');
+    const teacher=document.getElementById('sel-teacher');
+    if(select && teacher) select.value=teacher.value;
+  }
   view.classList.add('active');
   const navName=name==='hod-progress'?'hod':name;
   const navButton=document.querySelector(`.nav-btn[data-view="${navName}"]`);
@@ -3976,6 +4045,7 @@ function refreshActiveView(){
   if(id==='view-hod') renderHOD();
   else if(id==='view-hod-progress') renderDashboardProgressDetail();
   else if(id==='view-teacher') renderTeacher();
+  else if(id==='view-week') renderWeek();
   else if(id==='view-assessments') renderAssessments();
   else if(id==='view-calendar') renderCalendar();
 }
@@ -5852,6 +5922,8 @@ async function init(){
     updateClassDropdown();
     saveTvFilters();
     renderTeacher();
+    const weekTeacher=document.getElementById('mw-teacher');
+    if(weekTeacher) weekTeacher.value=document.getElementById('sel-teacher').value;
   });
   document.getElementById('sel-class').addEventListener('change',()=>{saveTvFilters();renderTeacher();});
   document.getElementById('sel-term').addEventListener('change',()=>{saveTvFilters();renderTeacher();});
@@ -5862,13 +5934,16 @@ async function init(){
   migrateY11ProgressAliases(Y11_MA1_SOW);
   await Promise.all([loadKeyDates(), loadY10AcceleratedSow()]);
   restoreTvFilters();
+  initWeek();
   renderYearTabs();
   renderHOD();
+  if(location.hash==='#week') showView('week');
 }
 
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 
 </script>
+<script src="./my-week.js"></script>
 
 </body>
 </html>

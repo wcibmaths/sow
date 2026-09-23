@@ -1,0 +1,1 @@
+- [Firestore resource storage permissions](firestore-resource-storage.md) — this project allows reading the existing progress document but denied a separate resources document.

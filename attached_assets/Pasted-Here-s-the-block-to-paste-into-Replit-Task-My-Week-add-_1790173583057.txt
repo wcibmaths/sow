@@ -1,0 +1,77 @@
+Here's the block to paste into Replit.
+
+---
+
+**Task: My Week — add previous / next week navigation**
+
+All changes are in `my-week.js` unless stated. Read `mwWeekInfo()`, `mwAssignments()` and `renderWeek()` first — the week is currently hard-coded to "the week containing today" in several places.
+
+**1. Add week-offset state**
+
+Add a module-level `let mwWeekOffset = 0;` alongside the existing `mwOpen` / `mwSaving` declarations. `0` = this week, `1` = next week, `-1` = previous week. Clamp to that range — do not allow arbitrary paging.
+
+**2. `mwWeekInfo(now)` → `mwWeekInfo(now, offset)`**
+
+- Work out the Monday of the week containing `now` exactly as it does today, then shift `monday` and `friday` by `offset × 7` days.
+- Re-run the existing `Y7_SOW` cycle lookup **against the shifted dates**, and use the shifted Monday in the anchor fallback. Do **not** derive next week's cycle by flipping A→B — half-terms and holiday weeks break the alternation and a flip will drift silently.
+- Change the returned `day` so past/today shading switches off when you're not on the current week:
+  ```js
+  day: offset === 0 ? (today.getDay()+6)%7 : (offset < 0 ? 5 : -1)
+  ```
+  `-1` makes every column render as upcoming; `5` makes every column render as past. No other branching needed in the render.
+- Also return `offset` on the info object.
+
+**3. Fix the lesson projection in `mwAssignments()`**
+
+This is the part that must be right. Currently:
+
+```js
+const earlier = slots.filter(s => s.day < info.day).length;
+const start = next - earlier;
+```
+
+That rewind is specific to the current week. Generalise it: the pointer is anchored to *now*, so any other week is offset by the slots in between.
+
+- Factor the "group this teacher's slots by class for a given cycle" logic into a helper, e.g. `mwGroupSlots(teacher, cycle)`, returning the same `Map<classKey, slots[]>`. `mwAssignments` currently builds this inline.
+- Always compute the **current** week's info (`mwWeekInfo(new Date(), 0)`) and its grouped slots, regardless of which week is displayed.
+- For each class, compute its current-week anchor first:
+  ```js
+  const currentWeekStart = next - currentSlots.filter(s => s.day < currentInfo.day).length;
+  ```
+- Then shift by whole weeks:
+  - offset `0`: `start = currentWeekStart`
+  - offset `+1`: `start = currentWeekStart + currentSlots.length` (this week's total slots for that class)
+  - offset `-1`: `start = currentWeekStart - prevSlots.length`, where `prevSlots` comes from the previous week's cycle
+
+  For `-1` you'll need `mwWeekInfo(new Date(), -1)` to get that week's cycle before you can count its slots.
+- Keep the existing `beforeStart` handling (`start + index < 0`) and the `lessons[start+index] || null` fallback unchanged.
+
+Sanity check the +1 case: on a Friday, a class that meets Friday P1 shows Friday's lesson as its next one, and next Monday's cell shows the lesson after it. On a Saturday or Sunday the formula should fall out to `start = next` for next week — verify this rather than special-casing it.
+
+**4. Do not touch the resource key**
+
+`mwResourceKey()` must stay `teacher__yearGroup__set__lesson.id`. Do **not** add the week, the date or the offset to it. Prep links are bound to the lesson so they follow it wherever it lands — adding a week would orphan every link already saved.
+
+**5. Week navigation UI**
+
+Put `‹` and `›` buttons either side of the existing `#mw-dates` label:
+- `‹` decrements `mwWeekOffset`, `›` increments, both clamped to `[-1, 1]`; disable the button at each end (`disabled` attribute, not just styling) and give both an `aria-label`.
+- When `mwWeekOffset !== 0`, show a "This week" button that resets it to `0`.
+- Set `mwOpen = null` on any week change, then `renderWeek()` — same as the teacher dropdown's change handler already does.
+
+**6. Label the week honestly**
+
+`#mw-dates` currently reads `21 Sep – 25 Sep · Week A`. Extend it:
+- offset `0`: unchanged
+- offset `+1`: prefix "Next week" and append `· provisional`
+- offset `-1`: prefix "Last week"
+
+The provisional marker matters — next week's grid assumes the rest of this week runs to plan, so a cancelled lesson shifts it. Style that suffix in muted grey, not as an error.
+
+**7. Weekend default**
+
+In `initWeek()`, if today is Saturday or Sunday, set `mwWeekOffset = 1` before the first render. On a weekend the current code shows the week that just ended, which isn't useful.
+
+**Leave alone:** `mwListen()` and the Firestore wiring — resource data is global, not per-week, so nothing there changes. Keep the existing Poppins / teal-orange-amber styling and inline SVG icons.
+
+**Acceptance check:** on a Friday I can click `›`, see next week's grid with the correct A/B cycle, see each class's lessons continuing from where this week leaves off, tick and attach links to them, and have those ticks still be there when that lesson comes round for real.

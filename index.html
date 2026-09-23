@@ -646,6 +646,14 @@
   .mw-header{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .mw-header h2{font-size:23px;letter-spacing:-.03em;color:#213746}
   .mw-header p{color:#637580;font-size:12px;margin-top:4px}
+  .mw-week-nav{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+  .mw-week-nav p{margin:0}
+  .mw-week-nav button{font:500 11px Poppins,Arial,sans-serif;cursor:pointer;border:1px solid #bfd6d3;background:#f4faf9;color:#195f61;border-radius:6px;padding:4px 7px;display:inline-flex;align-items:center;justify-content:center}
+  .mw-week-nav button svg{width:14px;height:14px}
+  .mw-week-nav button:disabled{opacity:.45;cursor:not-allowed}
+  .mw-week-nav button:focus-visible{outline:2px solid #d48925;outline-offset:2px}
+  .mw-week-nav .mw-this-week[hidden]{display:none}
+  .mw-provisional{color:#859298}
   .mw-header .ctrl label{display:block;font-size:11px;font-weight:600;margin-bottom:5px}
   .mw-header select{font:inherit;padding:8px 12px;border:1px solid #cbd7d7;border-radius:7px;background:white;color:#213746}
   .mw-notice{padding:10px 14px;margin:14px 0;border-radius:7px;background:#fff5e4;color:#83510c;font-size:12px}
@@ -802,7 +810,12 @@
 <div id="view-week" class="view">
   <div class="card">
     <div class="mw-header">
-      <div><h2>My Week</h2><p id="mw-dates"></p></div>
+      <div><h2>My Week</h2><div class="mw-week-nav">
+        <button id="mw-prev" type="button" aria-label="Previous week"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3-5 5 5 5"/></svg></button>
+        <p id="mw-dates"></p>
+        <button id="mw-next" type="button" aria-label="Next week"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button>
+        <button id="mw-this-week" class="mw-this-week" type="button" hidden>This week</button>
+      </div></div>
       <div class="ctrl"><label for="mw-teacher">Teacher</label><select id="mw-teacher"></select></div>
     </div>
     <div id="mw-content"></div>

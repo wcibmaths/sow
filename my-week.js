@@ -25,6 +25,7 @@ let mwResourceError = '';
 let mwOpen = null;
 let mwSaving = false;
 let mwUnsubscribe = null;
+let mwWeekOffset = 0;
 
 // Course and cover assignments resolve to the *underlying* progress key.
 function mwClassFor(teacher, code){
@@ -69,10 +70,12 @@ mwPrepareSlots();
 
 // 24 August 2026 is Week A in the school's timetable. This is used only
 // for choosing timetable slots; lesson content always comes from progress.
-function mwWeekInfo(now){
+function mwWeekInfo(now, offset=0){
+  offset=Math.max(-1,Math.min(1,offset));
   const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   const monday=new Date(today);
   monday.setDate(today.getDate()-(today.getDay()+6)%7);
+  monday.setDate(monday.getDate()+offset*7);
   const friday=new Date(monday); friday.setDate(monday.getDate()+4);
   const anchor=new Date(2026,7,24);
   const utcDay=d=>Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000;
@@ -82,8 +85,8 @@ function mwWeekInfo(now){
     const end=parseEndDate(row.dates);
     return start && end && start<=friday && end>=monday && /^[AB]$/.test(row.cycle);
   });
-  return {monday,friday,day:(today.getDay()+6)%7,
-    cycle:planned?.cycle || (Math.abs(weeks)%2===0?'A':'B')};
+  return {monday,friday,day:offset===0?(today.getDay()+6)%7:(offset<0?5:-1),
+    cycle:planned?.cycle || (Math.abs(weeks)%2===0?'A':'B'),offset};
 }
 
 function mwResourceKey(slot,lesson){
@@ -123,6 +126,8 @@ function mwListen(){
 }
 
 function initWeek(){
+  const weekday=new Date().getDay();
+  if(weekday===0 || weekday===6) mwWeekOffset=1;
   const teacherSelect=document.getElementById('mw-teacher');
   teacherSelect.innerHTML=document.getElementById('sel-teacher').innerHTML;
   teacherSelect.value=document.getElementById('sel-teacher').value;
@@ -133,27 +138,54 @@ function initWeek(){
     mwOpen=null;
     renderWeek();
   });
+  document.getElementById('mw-prev').addEventListener('click',()=>mwChangeWeek(-1));
+  document.getElementById('mw-next').addEventListener('click',()=>mwChangeWeek(1));
+  document.getElementById('mw-this-week').addEventListener('click',()=>{
+    mwWeekOffset=0;
+    mwOpen=null;
+    renderWeek();
+  });
   if(window.firebase?.auth) firebase.auth().onAuthStateChanged(()=>renderWeek());
 }
 
-function mwAssignments(teacher,info){
-  const days=mwSlots[teacher+'|'+info.cycle]||[[],[],[],[],[]];
+function mwChangeWeek(delta){
+  const offset=Math.max(-1,Math.min(1,mwWeekOffset+delta));
+  if(offset===mwWeekOffset) return;
+  mwWeekOffset=offset;
+  mwOpen=null;
+  renderWeek();
+}
+
+function mwGroupSlots(teacher,cycle){
+  const days=mwSlots[teacher+'|'+cycle]||[[],[],[],[],[]];
   const grouped=new Map();
   days.forEach((slots,day)=>slots.forEach(slot=>{
     const key=tvClassKey(slot.yg,slot.set);
     if(!grouped.has(key)) grouped.set(key,[]);
     grouped.get(key).push(slot);
   }));
+  return grouped;
+}
+
+function mwAssignments(teacher,info){
+  const days=mwSlots[teacher+'|'+info.cycle]||[[],[],[],[],[]];
+  const grouped=mwGroupSlots(teacher,info.cycle);
+  const currentInfo=mwWeekInfo(new Date(),0);
+  const currentGrouped=mwGroupSlots(teacher,currentInfo.cycle);
+  const previousGrouped=info.offset<0 ? mwGroupSlots(teacher,info.cycle) : null;
   const assigned=new Map();
   grouped.forEach((slots,key)=>{
     const {yg,set}=tvClassFromKey(key);
     const lessons=getTeachable(sowFor(yg,set)||[]);
     const pointer=lessons.findIndex(l=>getStatus(l.id,set)!=='Done');
     const next=pointer<0?lessons.length:pointer;
-    // The completion pointer refers to the next lesson *now*. Rewind by
-    // this week's earlier slots to show already-taught days in the same grid.
-    const earlier=slots.filter(s=>s.day<info.day).length;
-    const start=next-earlier;
+    // Anchor the pointer to today, then move by this class's actual slot
+    // counts; adjacent weeks may have different timetable cycles.
+    const currentSlots=currentGrouped.get(key)||[];
+    const currentWeekStart=next-currentSlots.filter(s=>s.day<currentInfo.day).length;
+    const start=info.offset>0 ? currentWeekStart+currentSlots.length
+      : info.offset<0 ? currentWeekStart-(previousGrouped.get(key)||[]).length
+      : currentWeekStart;
     slots.forEach((slot,index)=>assigned.set(slot,
       {lesson:lessons[start+index]||null,beforeStart:start+index<0}));
   });
@@ -187,10 +219,19 @@ function renderWeek(){
   const root=document.getElementById('mw-content');
   if(!root) return;
   const teacher=document.getElementById('mw-teacher')?.value;
-  const info=mwWeekInfo(new Date());
+  const info=mwWeekInfo(new Date(),mwWeekOffset);
   const dateOptions={day:'numeric',month:'short'};
   document.getElementById('mw-dates').textContent=
-    `${info.monday.toLocaleDateString('en-GB',dateOptions)} – ${info.friday.toLocaleDateString('en-GB',dateOptions)} · Week ${info.cycle}`;
+    `${info.offset>0?'Next week · ':info.offset<0?'Last week · ':''}${info.monday.toLocaleDateString('en-GB',dateOptions)} – ${info.friday.toLocaleDateString('en-GB',dateOptions)} · Week ${info.cycle}`;
+  if(info.offset>0){
+    const provisional=document.createElement('span');
+    provisional.className='mw-provisional';
+    provisional.textContent=' · provisional';
+    document.getElementById('mw-dates').append(provisional);
+  }
+  document.getElementById('mw-prev').disabled=info.offset===-1;
+  document.getElementById('mw-next').disabled=info.offset===1;
+  document.getElementById('mw-this-week').hidden=info.offset===0;
   if(document.getElementById('view-week').classList.contains('active')) mwListen();
   const {days,grouped,assigned}=mwAssignments(teacher,info);
   const keys=[...grouped.keys()].sort((a,b)=>{
@@ -201,7 +242,7 @@ function renderWeek(){
     ? `<div class="mw-notice mw-error" role="alert">${esc(mwResourceError)}</div>`
     : mwResourceState==='loading' ? '<div class="mw-notice">Loading shared links…</div>' : '';
   if(!keys.length){
-    root.innerHTML=notice+'<div class="mw-notice">No classes are timetabled for this teacher this week.</div>';
+    root.innerHTML=notice+'<div class="mw-notice">No classes are timetabled for this teacher in the selected week.</div>';
     return;
   }
   root.innerHTML=notice+`<div class="mw-scroll"><table class="mw-grid">

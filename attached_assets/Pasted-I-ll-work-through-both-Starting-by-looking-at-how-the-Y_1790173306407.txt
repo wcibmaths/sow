@@ -1,0 +1,93 @@
+I'll work through both. Starting by looking at how the Y7 assessments are currently structured in the repo, and what's in the Resources folder you just connected.The Resources folder disconnected mid-way, but I already pulled everything I needed from it. Now looking at the repo side.Found the real picture — the maps partly exist already. Checking how they're wired into the rendering, plus the dashboard sections you want removed.Before the instructions — what I found doesn't quite match the assumption, and it changes what needs doing.
+
+**The code already has more than you think**
+
+| Year | Map in code | Points at | Reality |
+|---|---|---|---|
+| Y7 | populated (11 units) | `3. Assessment/B. Unit Tests/Year 7` | working |
+| Y8 | **already populated** (11 units) | `3. Assessment/B. Unit Tests/Year 8` | unverified — see below |
+| Y9 | `Y9_ASSESSMENT_FOLDERS = {}` | — | **genuinely empty** |
+| Y12 P1/P2 | **already populated** (13 units) | `4. Resources/C. Key Stage 5/...` | wired to SoW rows only, not the Assessment Schedule |
+
+Y12's map isn't in `ASSESSMENT_FOLDERS_BY_YG` (which only has keys 7, 8, 9), so the Assessment Schedule never reads it — it's only used by `folderBtn()` on the SoW lesson rows. And Y12 has no `ASSESSMENTS[12]` data at all, so that tab shows "coming soon" regardless.
+
+**What actually exists in the Resources folder**
+
+- **Y9** — all 12 units have real test files. This is the clean win.
+- **Y8** — units 1–6 have tests; **units 7–11 have Assessment folders that are completely empty**.
+- **Y12 Pure 1** — only P1.1 has tests at its linked folder. The P1.2–P1.3 test exists but sits in `P1.3/Unit_3_Assessment`, while the code's unit-2 link points at `P1.2/Unit_2_Assessment`, which is empty. P1.4–P1.9 are all empty (`.keep` only).
+- **Y12 Pure 2** — P2.1 through P2.8 are **entirely empty**. No tests at all.
+- There is a useful legacy bank at `Pure 1/Pure Maths 1 and 2 Unit Tests/` (topic tests by chapter, plus P1 and P2 Half Term Assessments with mark schemes) that nothing currently links to.
+
+So for Y12 the blocker is mostly missing content, not missing code — wiring it up would give you 12 buttons leading to empty folders.
+
+One caveat: only `4. Resources` was connected, so I couldn't check whether `3. Assessment/B. Unit Tests/Year 8` exists. Worth clicking a Y8 test button on the live site first — if it 404s, the instructions below repoint it.
+
+---
+
+**Replit instructions — paste into the Agent chat**
+
+**Task 1: Populate the Year 9 assessment folder links**
+
+`Y9_ASSESSMENT_FOLDERS` in `index.html` (around line 1195) is currently `{}`. Replace it with the map below. All twelve of these folders have been verified to contain test files.
+
+```js
+const Y9_ASSESSMENT_FOLDERS = {
+  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_1_Significant_Figures_Powers_and_Standard_Form/Unit_1_Assessment?csf=1&web=1',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_2_2D_Shapes_and_3D_Solids/Unit_2_Assessment?csf=1&web=1',
+  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_3_Quadratics/Unit_3_Assessment?csf=1&web=1',
+  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_4_Constructions/Unit_4_Assessment?csf=1&web=1',
+  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_5_Inequalities_Equations_and_Formulae/Unit_5_Assessment?csf=1&web=1',
+  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_6_Collecting_and_Analysing_Data/Unit_6_Assessment?csf=1&web=1',
+  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_7_Multiplicative_Reasoning/Unit_7_Assessment?csf=1&web=1',
+  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_8_Scale_Drawings_and_Measures/Unit_8_Assessment?csf=1&web=1',
+  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_9_Accuracy_and_Measures/Unit_9_Assessment?csf=1&web=1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_10_Graphical_Solutions/Unit_10_Assessment?csf=1&web=1',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_11_Trigonometry/Unit_11_Assessment?csf=1&web=1',
+  12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_12_Probability/Unit_12_Assessment?csf=1&web=1',
+};
+```
+
+Don't change anything else — `ASSESSMENT_FOLDERS_BY_YG` already references this variable, and the Y9 assessment entries in `ASSESSMENTS[9]` already carry `unit` numbers, so the "Unit Test Folder" links will start appearing on their own.
+
+**Task 2: Year 8 — verify, then repoint if broken**
+
+`Y8_ASSESSMENT_FOLDERS` currently points at `3. Assessment/B. Unit Tests/Year 8/...`. First check whether those links actually resolve. If they 404, replace units 1–6 with these verified paths:
+
+```js
+  1: '.../4.%20Resources/A.%20Key%20Stage%203/Year_8/Unit_1_Number/Unit_1_Assessment?csf=1&web=1',
+  2: '.../4.%20Resources/A.%20Key%20Stage%203/Year_8/Unit_2_Equations_and_Formulae/Unit_2_Assessment?csf=1&web=1',
+  3: '.../4.%20Resources/A.%20Key%20Stage%203/Year_8/Unit_3_Working_with_Powers/Unit_3_Assessment?csf=1&web=1',
+  4: '.../4.%20Resources/A.%20Key%20Stage%203/Year_8/Unit_4_2D_Shapes_and_3D_Solids/Unit_4_Assessment?csf=1&web=1',
+  5: '.../4.%20Resources/A.%20Key%20Stage%203/Year_8/Unit_5_Graphs/Unit_5_Assessment?csf=1&web=1',
+  6: '.../4.%20Resources/A.%20Key%20Stage%203/Year_8/Unit_6_Fractions_Decimals_Ratio_and_Proportion/Unit_6_Assessment?csf=1&web=1',
+```
+
+(Use the same full `https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/` prefix as the other entries.) **Remove keys 7–11 entirely** — those folders are empty, and with no key the card simply renders without a link rather than sending someone to an empty folder.
+
+**Task 3: Fix the Year 12 unit 2 assessment link**
+
+In `Y12_P12_ASSESSMENT_FOLDERS`, key `2` points at `P1.2 Quadratics/Unit_2_Assessment`, which is empty. The actual P1.2–P1.3 unit test (Versions A and B plus mark schemes) is in the partner folder. Change key `2` to:
+
+```
+.../4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.3%20Equations%20and%20Inequalities/Unit_3_Assessment?csf=1&web=1
+```
+
+Leave the explanatory comment block above the map intact, but update the partner-folder note for unit 2 to reflect the swap.
+
+**Task 4: Dashboard — remove two cards**
+
+In the dashboard render (`index.html`, around line 5086), `insightsHtml` contains a second `.hod-row`:
+
+```js
+    <div class="hod-row">
+      ${card('hod-attn hod-action-card',ICN.warn,'Action Required','',attentionHtml)}
+      ${card('hod-pace-card',ICN.chart,'Teaching Pace',behindLink,behindHtml)}
+    </div>
+```
+
+Delete that entire `<div class="hod-row">` block so the footer moves up directly beneath the "Next 7 Days" / "Upcoming Exams" row. Also remove the now-unused `attentionHtml`, `behindHtml` and `behindLink` builders (and any variables that feed only them, such as `pacePreview` and `attentionItems`, if nothing else references them) so no dead code is left. Keep the `.hod-pace-card` CSS rules — the Teacher Progress panel still uses the pace table.
+
+---
+
+Two things I couldn't resolve on my own: Y12 can't appear in the Assessment Schedule until someone supplies `ASSESSMENTS[12]` (week codes and dates) — send me those and I'll generate it. And Pure 2 has no unit tests anywhere in Resources, so that's a content gap rather than a code one.

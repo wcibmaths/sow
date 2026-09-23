@@ -157,22 +157,9 @@
   .hod-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
   .hod-card-head .card-title{margin-bottom:0;display:flex;align-items:center;gap:7px;}
   .hod-card-head .ct-icon{color:var(--lavender-d);display:inline-flex;}
-  .hod-attn .ct-icon{color:var(--blush-d);}
   .hod-card-link{border:none;background:transparent;color:var(--blue-d);font:inherit;
     font-size:11px;font-weight:600;cursor:pointer;padding:0;white-space:nowrap;}
   .hod-card-link:hover{text-decoration:underline;}
-
-  /* attention rows (mockup style) */
-  .attn-list{display:flex;flex-direction:column;gap:9px;}
-  .attn-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
-    background:#FFFFFF;border:1px solid var(--blush-bg);cursor:default;}
-  .attn-ic{width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;
-    align-items:center;justify-content:center;background:var(--blush-bg);color:var(--blush-d);}
-  .attn-ic svg{width:16px;height:16px;}
-  .attn-txt{flex:1;min-width:0;display:flex;flex-direction:column;}
-  .attn-title{display:block;font-size:13px;font-weight:700;color:var(--navy);line-height:1.25;}
-  .attn-detail{display:block;font-size:11.5px;color:var(--dark-gray);margin-top:2px;line-height:1.3;}
-  .attn-chev{color:var(--blush);flex-shrink:0;}
 
   /* type pills */
   .type-pill{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;
@@ -215,7 +202,6 @@
   .hod-fixed-card .assess-tog-wrap{flex-shrink:0;margin-bottom:10px;padding-bottom:10px;}
   .hod-pace-card{height:300px;min-height:300px;max-height:300px;overflow:hidden;}
   .hod-pace-card .scroll{min-height:0;overflow:auto;}
-  .hod-action-card .attn-list{max-height:230px;overflow-y:auto;padding-right:3px;}
   .hod-pace-row{cursor:pointer;}
   .hod-pace-row:focus td,.hod-pace-row:hover td{background:var(--gray);}
 
@@ -238,11 +224,6 @@
   .yg-tab.active{background:var(--amber);border-color:var(--amber);color:var(--navy);font-weight:600;}
   .yg-tab.disabled{opacity:0.4;cursor:not-allowed;}
 
-  /* ── HoD attention card (soft blush, never bright red) ── */
-  .hod-attn{background:#FBF1EF;border:1px solid #E8C9C4;}
-  .hod-attn .card-title{color:var(--blush-d);}
-  .hod-attn ul{margin:0;padding-left:18px;}
-  .hod-attn li{font-size:13px;color:#7A4A43;margin:4px 0;line-height:1.45;}
   .hod-section-title{font-size:11px;font-weight:700;color:var(--dark-amber);
     text-transform:uppercase;letter-spacing:0.08em;margin:18px 0 10px;}
   .hod-card{padding:14px 16px;margin-bottom:0;min-width:0;height:100%;
@@ -1189,15 +1170,23 @@ const Y8_ASSESSMENT_FOLDERS = {
   4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%204%202D%20shapes%20and%203D%20solids?csf=1&web=1',
   5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%205%20Graphs?csf=1&web=1',
   6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%206%20Fractions%2C%20decimals%2C%20ratio%20and%20proportion?csf=1&web=1',
-  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%207%20Probability?csf=1&web=1',
-  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%208%20Percentages%20and%20ratios?csf=1&web=1',
-  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%209%20Shapes%20and%20angles?csf=1&web=1',
-  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%2010%20Charts%20and%20diagrams?csf=1&web=1',
-  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/3.%20Assessment/B.%20Unit%20Tests/Year%208/Unit%2011%20Straight-line%20graphs?csf=1&web=1',
 };
 
 const Y9_UNIT_FOLDERS        = {};
-const Y9_ASSESSMENT_FOLDERS  = {};
+const Y9_ASSESSMENT_FOLDERS = {
+  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_1_Significant_Figures_Powers_and_Standard_Form/Unit_1_Assessment?csf=1&web=1',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_2_2D_Shapes_and_3D_Solids/Unit_2_Assessment?csf=1&web=1',
+  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_3_Quadratics/Unit_3_Assessment?csf=1&web=1',
+  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_4_Constructions/Unit_4_Assessment?csf=1&web=1',
+  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_5_Inequalities_Equations_and_Formulae/Unit_5_Assessment?csf=1&web=1',
+  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_6_Collecting_and_Analysing_Data/Unit_6_Assessment?csf=1&web=1',
+  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_7_Multiplicative_Reasoning/Unit_7_Assessment?csf=1&web=1',
+  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_8_Scale_Drawings_and_Measures/Unit_8_Assessment?csf=1&web=1',
+  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_9_Accuracy_and_Measures/Unit_9_Assessment?csf=1&web=1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_10_Graphical_Solutions/Unit_10_Assessment?csf=1&web=1',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_11_Trigonometry/Unit_11_Assessment?csf=1&web=1',
+  12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_12_Probability/Unit_12_Assessment?csf=1&web=1',
+};
 const UNIT_FOLDERS_BY_YG     = { 7: UNIT_FOLDERS, 8: Y8_UNIT_FOLDERS, 9: Y9_UNIT_FOLDERS };
 const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDERS, 9: Y9_ASSESSMENT_FOLDERS };
 
@@ -1234,7 +1223,7 @@ const Y12_P12_UNIT_FOLDERS = {
 // they are deliberately different from the folder numbers.
 const Y12_P12_ASSESSMENT_FOLDERS = {
   1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.1%20Algebraic%20Expressions/Unit_1_Assessment?csf=1&web=1',
-  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.2%20Quadratics/Unit_2_Assessment?csf=1&web=1',
+  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.3%20Equations%20and%20Inequalities/Unit_3_Assessment?csf=1&web=1',
   3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.4%20Graphs%20and%20Transformations/Unit_4_Assessment?csf=1&web=1',
   4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.5%20Straight%20Line%20Graphs/Unit_5_Assessment?csf=1&web=1',
   5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.6%20Trigonometric%20Ratios/Unit_6_Assessment?csf=1&web=1',
@@ -1248,9 +1237,10 @@ const Y12_P12_ASSESSMENT_FOLDERS = {
   13: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.6%20Trigonometric%20Identities%20and%20Equations/Unit_6_Assessment?csf=1&web=1',
 };
 
-// Units covering two chapters use the first chapter's assessment folder.
+// Units covering two chapters use the first chapter's assessment folder,
+// except unit 2, whose test is in P1.3 rather than the empty P1.2 folder.
 // The partner folders, if ever needed:
-//   unit 2  .../Pure%201/P1.3%20Equations%20and%20Inequalities/Unit_3_Assessment
+//   unit 2  .../Pure%201/P1.2%20Quadratics/Unit_2_Assessment (empty)
 //   unit 7  .../Pure%202/P2.7%20Differentiation/Unit_7_Assessment
 //   unit 8  .../Pure%202/P2.8%20Integration/Unit_8_Assessment
 //   unit 11 .../Pure%202/P2.4%20The%20Binomial%20Expansion/Unit_4_Assessment
@@ -4219,7 +4209,6 @@ function parseIsoDate(raw){
   const m=String(raw||'').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
   return m ? parseLocalDate(m[1],Number(m[2])-1,m[3]) : null;
 }
-function fmtDate(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
 function sameDay(a,b){ return a.toDateString()===b.toDateString(); }
 
 // ── External examination series ───────────────────────────────────
@@ -4724,54 +4713,12 @@ function getYearGroupHealth(yg, today){
   return {yg:Number(yg),pct,onPace,behindCt,nextAssess:nextA,concern};
 }
 
-// Walk `delta` school days (weekdays only) from `date`. Negative for past.
-function addSchoolDays(date, delta){
-  const d=new Date(date); d.setHours(0,0,0,0);
-  let n=Math.abs(delta); const step=delta<0?-1:1;
-  while(n>0){
-    d.setDate(d.getDate()+step);
-    const dow=d.getDay();
-    if(dow!==0 && dow!==6) n--;
-  }
-  return d;
-}
-
-// Returns one-line messages for classes whose most recent lesson-status
-// change is older than the stale threshold (10 school days). Classes that
-// have never been updated are intentionally excluded — those are caught by
-// the existing "0 completed lessons after teaching started" alert.
-function getClassesWithStaleUpdates(todayOverride){
-  const STALE_SCHOOL_DAYS = 10;
-  const map = loadAll().__updatedAt;
-  if(!map || typeof map!=='object') return [];
-  const today = todayOverride ? new Date(todayOverride) : new Date();
-  today.setHours(0,0,0,0);
-  const staleBeforeMs = addSchoolDays(today, -STALE_SCHOOL_DAYS).getTime();
-  const stale=[];
-  allClassPairs().forEach(({yg,set})=>{
-    const sow=sowFor(yg,set); if(!sow) return;
-    let latest=0;
-    getTeachable(sow).forEach(l=>{
-      const ts=map[makeKey(l.id,set)];
-      if(ts && ts>latest) latest=ts;
-    });
-    if(latest>0 && latest < staleBeforeMs){
-      const teacher=(TEACHERS_BY_YG[yg]||TEACHERS)[set]||set;
-      const days=Math.max(1, Math.round((Date.now()-latest)/86400000));
-      stale.push({yg,set,teacher,latest,days});
-    }
-  });
-  stale.sort((a,b)=>a.latest-b.latest);
-  return stale.map(c=>`Year ${c.yg} ${c.set} (${c.teacher}) — no status updates in ${c.days} days`);
-}
-
 function renderHOD(){
   const hodSets    = SETS_BY_YG[hodYear]     || SETS;
   const hodTeachers= TEACHERS_BY_YG[hodYear] || TEACHERS;
   const hodSow     = SOW_BY_YG[hodYear]      || Y7_SOW;
 
   const today=new Date(); today.setHours(0,0,0,0);
-  const in14=new Date(today); in14.setDate(today.getDate()+14);
   // A seven-day window is today plus the following six calendar days.
   const in7=new Date(today); in7.setDate(today.getDate()+6);
   const weekAgo=new Date(today); weekAgo.setDate(today.getDate()-6);
@@ -4918,62 +4865,10 @@ function renderHOD(){
   // not become alerts unless they need intervention.
   const behindRows=paces.filter(p=>p.behindBy>=1).sort((a,b)=>b.behindBy-a.behindBy);
   const behindYears=new Set(behindRows.map(p=>p.yg)).size;
-  const paceRows=paces
-    .filter(p=>p.behindBy>=1||p.aheadBy>=1)
-    .sort((a,b)=>b.behindBy-a.behindBy||b.aheadBy-a.aheadBy);
-
-  // Action Required: reserve this for assessments and genuinely actionable
-  // exceptions, rather than repeating every small pace difference.
-  const beforeFirstTeachingDay = today < FIRST_TEACHING_DAY;
-  const stale = beforeFirstTeachingDay ? [] : getClassesWithStaleUpdates(today);
-  const attention=[];
-  const attentionKeys=new Set();
-  const addAttention=(key,item)=>{
-    if(attentionKeys.has(key)) return;
-    attentionKeys.add(key);
-    attention.push(item);
-  };
-  events7.filter(e=>/Assessment|Mock/.test(e.type)).forEach(e=>{
-    addAttention(`assessment|${e.date.toISOString()}|${e.event}`,{
-      priority:1,title:'Assessment in the next 7 days',
-      detail:`${fmtDate(e.date)} · ${e.appliesTo} · ${e.event}`
-    });
-  });
-  paces.filter(p=>p.behindBy>=1 && p.nextAssess && p.nextAssess.date<=in14).forEach(p=>{
-    addAttention(`class|${p.yg}|${p.set}`,{
-      priority:2,title:'Assessment approaching while behind pace',
-      detail:`Year ${p.yg} ${p.set} — ${p.teacher} · ${p.behindBy} behind · ${p.nextAssess.name}`
-    });
-  });
-  paces.filter(p=>p.behindBy>=3).forEach(p=>{
-    addAttention(`class|${p.yg}|${p.set}`,{
-      priority:3,title:`${p.behindBy} lessons behind pace`,
-      detail:`Year ${p.yg} ${p.set} — ${p.teacher}`
-    });
-  });
-  if(!beforeFirstTeachingDay){
-    paces.filter(p=>p.plannedCt>0 && p.doneCt===0).slice(0,3).forEach(p=>{
-      addAttention(`class|${p.yg}|${p.set}`,{
-        priority:4,title:'No completed lessons after teaching started',
-        detail:`Year ${p.yg} ${p.set} — ${p.teacher}`
-      });
-    });
-    stale.slice(0,3).forEach(msg=>{
-      const match=String(msg).match(/Year (\d+) ([^ ]+)/);
-      addAttention(match?`class|${match[1]}|${match[2]}`:`stale|${msg}`,{
-        priority:5,title:'No recent lesson updates',detail:String(msg)
-      });
-    });
-  }
-  attention.sort((a,b)=>a.priority-b.priority);
-  const attentionItems=attention.slice(0,4);
-  const attentionMore=Math.max(0,attention.length-attentionItems.length);
   const eventRows=events7;
-  const pacePreview=paceRows.slice(0,8);
 
   // ── Render helpers ──────────────────────────────────────────────────
   const fmtY = d => d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-  const fmtWdY = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
   const typePill = e => {
     const t=e.type, ev=(e.event||'').toLowerCase();
     if(/deadline/.test(ev)) return '<span class="type-pill tp-deadline">Deadline</span>';
@@ -4989,10 +4884,8 @@ function renderHOD(){
   const ICN = {
     cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
     cap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
-    warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
     chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>',
   };
-  const chev = '<svg class="attn-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
 
   const renderGroupedDates=(rows,emptyText)=>{
     if(!rows.length) return `<p style="color:var(--dark-gray);font-size:13px;margin:0;">${emptyText}</p>`;
@@ -5027,34 +4920,7 @@ function renderHOD(){
     : '';
   const extHtml=extTabs+renderGroupedDates(extRows,'No relevant Edexcel Maths or Further Maths exams are scheduled for this series.');
 
-  // ── Card: Action required ────────────────────────────────────────────
-  const attentionHtml = attentionItems.length
-    ? `<div class="attn-list">${attentionItems.map(a=>`
-         <div class="attn-item">
-           <span class="attn-ic">${ICN.warn}</span>
-           <span class="attn-txt"><span class="attn-title">${a.title}</span><span class="attn-detail">${a.detail}</span></span>
-           ${chev}
-         </div>`).join('')}</div>
-       ${attentionMore?`<div style="font-size:11px;color:var(--blush-d);font-weight:700;margin-top:9px;">+ ${attentionMore} more</div>`:''}`
-    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Nothing currently needs attention.</p>`;
-
-  // ── Card: Teaching pace ──────────────────────────────────────────────
   const noPlannedPace = paces.length>0 && paces.every(p=>p.plannedCt===0);
-  const behindHtml = noPlannedPace
-    ? `<p style="color:var(--dark-gray);font-size:13px;margin:0;">Academic year has not started yet — pace tracking begins Thu 27 Aug 2026.</p>`
-    : pacePreview.length
-    ? `<div class="scroll"><table class="hod-table compact"><thead><tr>
-         <th>Year</th><th>Class / Set</th><th>Teacher</th><th>Planned</th><th>Completed</th><th>Behind / Ahead</th><th>Next Assessment</th>
-       </tr></thead><tbody>${pacePreview.map(r=>`<tr class="hod-pace-row" tabindex="0" role="button" aria-label="Open Year ${r.yg} ${r.set} in Teacher View" onclick="openDashboardClass(${r.yg},'${r.set}')" onkeydown="if(event.key==='Enter'||event.key===' ')openDashboardClass(${r.yg},'${r.set}')">
-         <td style="white-space:nowrap;">Year ${r.yg}</td><td>${r.set}</td><td>${r.teacher}</td>
-         <td>${r.plannedCt}</td><td>${r.doneCt}</td>
-         <td>${r.behindBy
-           ? `<span class="behind-pill">${r.behindBy} behind</span>`
-           : r.aheadBy ? `<span class="pace-ahead">${r.aheadBy} ahead</span>`
-           : '<span class="pace-even">On pace</span>'}</td>
-         <td style="white-space:nowrap;">${r.nextAssess?fmtY(r.nextAssess.date):'—'}</td>
-       </tr>`).join('')}</tbody></table></div>`
-    : `<p style="color:var(--dark-gray);font-size:13px;margin:0;">All classes are currently on pace.</p>`;
 
   // ── Card: Year group health overview ────────────────────────────────
   const ygRows=Object.keys(SETS_BY_YG).map(yg=>getYearGroupHealth(yg,today)).filter(Boolean);
@@ -5082,17 +4948,10 @@ function renderHOD(){
       ${body}
     </div>`;
   const lnk = (label,onclick) => `<button type="button" class="hod-card-link" onclick="${onclick}">${label} →</button>`;
-  const viewAllClasses = `document.querySelector('.teacher-progress-panel').scrollIntoView({behavior:'smooth',block:'start'})`;
-
-  const behindLink = paceRows.length>pacePreview.length ? lnk('View all exceptions',viewAllClasses) : '';
   const insightsHtml = `
     <div class="hod-row insights-row">
       ${card('hod-fixed-card',ICN.cal,'Next 7 Days',lnk('View full calendar',"showView('calendar')"),eventsHtml)}
       ${card('hod-fixed-card',ICN.cap,'Upcoming Exams',lnk('View Pearson timetable',"window.open('https://qualifications.pearson.com/en/support/support-topics/exams/exam-timetables.html#tab-Internationalcentres','_blank')"),extHtml)}
-    </div>
-    <div class="hod-row">
-      ${card('hod-attn hod-action-card',ICN.warn,'Action Required','',attentionHtml)}
-      ${card('hod-pace-card',ICN.chart,'Teaching Pace',behindLink,behindHtml)}
     </div>
     <div class="hod-footer">
       <span>Data is based on lessons and assessments up to today (${fmtY(today)}).</span>

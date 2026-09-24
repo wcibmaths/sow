@@ -1,0 +1,284 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>My Week Round Two</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --page:#F4EFE7; --surface:#FFFFFF; --surface-2:#F9F5EE;
+    --border:#E2DDD7; --border-2:#EFEAE2;
+    --text:#2F3640; --mid:#4F5762; --muted:#6C7480; --dark:#3E4655;
+    --blush:#DBA39D; --blush-bg:#F0DDD9; --blush-d:#B47267;
+    --mint:#C9E4D4; --mint-bg:#E2F1E8; --mint-d:#5A9B7F; --mint-dd:#3E7358;
+    --code-bg:#2B3038; --code-ink:#E4E1DB; --code-line:#3D444E;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:#191A1D; --surface:#212328; --surface-2:#1C1E22;
+      --border:#33363C; --border-2:#2A2D32;
+      --text:#E9E7E3; --mid:#C2C6CC; --muted:#959BA4; --dark:#2A2D34;
+      --blush:#C08D87; --blush-bg:#33241F; --blush-d:#E0A99F;
+      --mint:#4E7C64; --mint-bg:#1D2A23; --mint-d:#8CC6A8; --mint-dd:#A6D6BC;
+      --code-bg:#15171A; --code-ink:#DDDAD4; --code-line:#2C3037;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:#191A1D; --surface:#212328; --surface-2:#1C1E22;
+    --border:#33363C; --border-2:#2A2D32;
+    --text:#E9E7E3; --mid:#C2C6CC; --muted:#959BA4; --dark:#2A2D34;
+    --blush:#C08D87; --blush-bg:#33241F; --blush-d:#E0A99F;
+    --mint:#4E7C64; --mint-bg:#1D2A23; --mint-d:#8CC6A8; --mint-dd:#A6D6BC;
+    --code-bg:#15171A; --code-ink:#DDDAD4; --code-line:#2C3037;
+  }
+
+  body{
+    background:var(--page); color:var(--text);
+    font:400 14px/1.65 Inter,"Segoe UI",system-ui,Arial,sans-serif;
+    padding-inline:16px; padding-block:32px 64px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:24px;}
+
+  .masthead{display:flex; flex-direction:column; gap:8px;}
+  .eyebrow{font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--blush-d);}
+  h1{margin:0; font-size:clamp(24px,4.2vw,32px); font-weight:700; letter-spacing:-.025em; line-height:1.15; text-wrap:balance;}
+  .standfirst{margin:0; max-width:62ch; color:var(--muted); font-size:14.5px;}
+
+  .step{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:13px;}
+  @media(min-width:700px){ .step{padding:24px 26px;} }
+  .step-head{display:flex; gap:13px; align-items:flex-start;}
+  .num{flex:none; width:28px; height:28px; border-radius:9px; background:var(--dark); color:#fff; font:700 13px/28px Inter,sans-serif; text-align:center;}
+  .step h2{margin:0; font-size:18.5px; font-weight:600; letter-spacing:-.02em; text-wrap:balance;}
+  .where{font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-top:3px;}
+  p{margin:0; max-width:66ch;}
+  .muted{color:var(--muted); font-size:13px;}
+  .divider{height:1px; background:var(--border-2); border:0;}
+
+  .flag{border:1px solid var(--blush); background:var(--blush-bg); color:#7E4A3E; border-radius:10px; padding:13px 15px; font-size:13px; display:flex; flex-direction:column; gap:6px;}
+  .flag.calm{border-color:var(--mint); background:var(--mint-bg); color:var(--mint-dd);}
+  .flag strong{font-weight:600;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .flag{color:#EFC4BA;} }
+  :root[data-theme="dark"] .flag{color:#EFC4BA;}
+
+  .block{border:1px solid var(--code-line); border-radius:11px; overflow:hidden; background:var(--code-bg);}
+  .block-head{display:flex; gap:10px; align-items:center; justify-content:space-between; padding:9px 13px; background:rgba(255,255,255,.04); border-bottom:1px solid var(--code-line);}
+  .block-label{font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#A8B4A9;}
+  .copy{border:1px solid #4A535E; background:#343B45; color:#E4E1DB; border-radius:7px; cursor:pointer; font:600 11.5px Inter,sans-serif; padding:5px 12px;}
+  .copy:hover{background:#414A56;}
+  .copy:focus-visible{outline:2px solid var(--blush); outline-offset:2px;}
+  .copy.done{background:#3C5A4A; border-color:#548068; color:#D8EFE2;}
+  pre{margin:0; padding:14px 15px; overflow-x:auto; color:var(--code-ink);
+      font:400 12px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+      white-space:pre-wrap; overflow-wrap:anywhere;}
+
+  code{font-family:ui-monospace,Menlo,monospace; font-size:12.5px; background:var(--surface-2); border:1px solid var(--border); padding:1px 5px; border-radius:4px; color:var(--mid);}
+
+  ol.checks{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:7px; max-width:66ch;}
+  ol.checks li{font-size:13.5px;}
+  ul.pts{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; max-width:66ch;}
+  ul.pts li{font-size:13.5px;}
+
+  .swatches{display:flex; flex-wrap:wrap; gap:9px; margin-top:2px;}
+  .sw{display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted); background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:6px 10px;}
+  .sw i{width:15px; height:15px; border-radius:4px; display:inline-block; flex:none;}
+  .sw b{font-family:ui-monospace,Menlo,monospace; font-size:11px; color:var(--mid); font-weight:500;}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">WCIB Maths · My Week</div>
+    <h1>Fixing the reminders, and the two design changes</h1>
+    <p class="standfirst">Three prompts for the Replit Agent. Do the first one on its own and check it works before the other two — it’s the one stopping reminders from saving at all. The other two are cosmetic and independent of each other.</p>
+  </header>
+
+  <div class="flag">
+    <strong>Take a checkpoint first.</strong>
+    <span>Replit → History, same as last time. Prompt 2 rewrites most of <code>notes.js</code>, so you want a way back.</span>
+  </div>
+
+  <!-- 1 -->
+  <div class="step">
+    <div class="step-head"><span class="num">1</span><div><h2>Fix “Missing or insufficient permissions”</h2><div class="where">Paste into Replit Agent · do this one first</div></div></div>
+    <p><code>notes.js</code> saves to a document named after your email address — <code>notes/shakira.suwan@gmail.com</code> — but the rule we published only permits <code>notes/SSW</code>. Every read and write is refused. It’s a rename, not a redesign.</p>
+
+    <div class="block">
+      <div class="block-head"><span class="block-label">Prompt 1 · permissions fix</span><button type="button" class="copy" data-copy="p1">Copy</button></div>
+      <pre id="p1">Fix a permissions bug in notes.js. Only edit notes.js — do not touch index.html, my-week.js or any other file.
+
+THE BUG
+The reminders panel shows "Could not load reminders from Firestore: Missing or insufficient permissions." notes.js uses the signed-in EMAIL ADDRESS as the Firestore document id, so it reads and writes notes/&lt;email&gt;. The published security rule only allows notes/&lt;teacher code&gt; — for example notes/SSW — and checks it against the "code" field on that teacher's document in the teachers collection. So every read and every write is denied.
+
+THE FIX
+Use window.WCIB_ME.code as the document id everywhere notes.js currently uses the email. In the current file that is five places:
+
+1. In refresh(), change
+     const me=owner(), next=me?.email||null;
+   to
+     const me=owner(), next=me?.code||null;
+
+2. In update(), change
+     if(!me || me.email!==state.identity || state.saving || state.loading) return false;
+     const identity=me.email;
+   to
+     if(!me || me.code!==state.identity || state.saving || state.loading) return false;
+     const identity=me.code;
+
+3. In the [data-mn-add] submit handler, change
+     const identity=owner()?.email;
+   to
+     const identity=owner()?.code;
+   and change
+     if(success &amp;&amp; owner()?.email===identity)
+   to
+     if(success &amp;&amp; owner()?.code===identity)
+
+4. In the [data-mn-edit] submit handler, make those same two changes: owner()?.email becomes owner()?.code in both places.
+
+AFTERWARDS
+state.identity now holds the teacher code, and firebase.firestore().collection('notes').doc(...) is called with the code. Search notes.js for ".email" and confirm the only remaining use is inside owner(), where window.WCIB_ME.email is compared against the signed-in user's email — that check is correct and must stay exactly as it is.
+
+Change nothing else: not owner(), not the privacy states, not the Firestore transaction logic, not the error handling.</pre>
+    </div>
+
+    <h3 style="margin:0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);">Then check</h3>
+    <ol class="checks">
+      <li>Push to GitHub, hard-refresh the live site (Ctrl/Cmd + Shift + R), open My Week with the teacher set to SSW.</li>
+      <li>The red permissions error should be gone. Add a reminder — it should appear and survive a reload.</li>
+      <li>In Firebase → Firestore → Data you should now see a <code>notes</code> collection with a single document called <code>SSW</code>.</li>
+    </ol>
+
+    <div class="flag calm">
+      <strong>Once that works, ask a colleague to sign in.</strong>
+      <span>If they see their own empty panel and not yours, open <code>notes.js</code> and change <code>isolationTestConfirmed=false</code> on line 6 to <code>true</code>. That removes the pink “Privacy check pending” banner. I already tested the rule four ways in the Firebase playground — you allowed, Marcin denied, signed-out denied, your gmail allowed — so this is confirmation rather than discovery.</span>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="step">
+    <div class="step-head"><span class="num">2</span><div><h2>Sticky notes, above the grid</h2><div class="where">Paste into Replit Agent</div></div></div>
+    <p>This is presentation only — the Firestore logic and the privacy check stay exactly as they are. One line moves in <code>index.html</code>; everything else is <code>notes.js</code>.</p>
+
+    <div class="swatches">
+      <span class="sw"><i style="background:#F7E9B0"></i>butter <b>#F7E9B0</b></span>
+      <span class="sw"><i style="background:#F3DCD7"></i>blush <b>#F3DCD7</b></span>
+      <span class="sw"><i style="background:#DCEFE3"></i>mint <b>#DCEFE3</b></span>
+      <span class="sw"><i style="background:#DCE7F0"></i>blue <b>#DCE7F0</b></span>
+    </div>
+
+    <div class="block">
+      <div class="block-head"><span class="block-label">Prompt 2 · sticky note redesign</span><button type="button" class="copy" data-copy="p2">Copy</button></div>
+      <pre id="p2">Redesign the reminders panel in notes.js as sticky notes, and move it above the week grid.
+
+FILES
+- index.html: exactly one change. Move the existing line &lt;div id="mw-notes"&gt;&lt;/div&gt; so it sits immediately BEFORE &lt;div id="mw-content"&gt;&lt;/div&gt; inside &lt;div id="view-week"&gt;, instead of after it. Change nothing else in index.html.
+- notes.js: everything else. Keep the Firestore logic, the owner() privacy check, the state machine, the collapse behaviour and the error handling exactly as they are. This is a presentation change only.
+
+LAYOUT
+The panel sits between the My Week heading and the timetable, in a band with background #F9F5EE, a 1px #E2DDD7 border, 12px radius, and 18px of space below it before the grid.
+
+Band header in one row: the title "My reminders" at 13.5px/600 with a muted count beside it ("3 to do", or "all done", or nothing when the list is empty); on the right, the four colour swatches that set the colour of the next new note, then the "Clear ticked" button.
+
+Below the header, a horizontal rail of notes: display:flex, 13px gap, overflow-x:auto, so a long list scrolls sideways instead of pushing the timetable down the page. On a phone that becomes a swipe.
+
+THE NOTES
+Each note is 164px wide, min-height 150px, 3px radius (nearly square — it is paper, not a card), padding 15px 14px 13px, shadow 0 1px 2px rgba(47,54,64,.06), 0 6px 16px -8px rgba(47,54,64,.28). Give each one a turned-up bottom-right corner using a ::after triangle: 20px square, background linear-gradient(135deg, transparent 50%, rgba(0,0,0,.09) 50%).
+
+Rotate each note very slightly, between -0.7deg and +0.7deg, derived from its id so the angle is stable across re-renders. On hover lift it: translateY(-3px), rotate(0deg), and a deeper shadow.
+
+Four colours — background then text:
+  butter  #F7E9B0 / #6B5A1E
+  blush   #F3DCD7 / #9C5B4B
+  mint    #DCEFE3 / #3F7C61
+  blue    #DCE7F0 / #4F7290
+Replace the current amber/teal/grey set with these four everywhere, including the swatches and the stored colour values. When reading from Firestore, map an existing note with colour "amber" to butter, "teal" to mint and "grey" to blue, so reminders saved before this change still display correctly.
+
+The text is the main element of the note: font 600 14.5px/1.45 Inter, letter-spacing -.01em, flex:1, overflow-wrap:anywhere. It is edited in place with contenteditable — remove the separate Edit button and the edit form entirely. Save on blur and on Enter (preventDefault so Enter does not insert a line break). Keep the 160-character limit.
+
+Bottom row of each note: the added date on the left at 10.5px, opacity .72; on the right a small delete button (✕, 22px square, background rgba(255,255,255,.55), 5px radius) that is opacity:0 by default and becomes visible on hover or when anything inside the note has keyboard focus.
+
+Top right of each note: a 19px round tick button with a 1.6px border in the note's own text colour at .4 opacity, empty until ticked. When ticked it fills with that text colour and shows a tick drawn in the note's background colour; the whole note drops to opacity .6 and the text gets a line-through. Ticked notes stay in the rail until deleted or cleared.
+
+Last in the rail, an "add" tile the same size as a note: 2px dashed #E2DDD7 border, transparent background, a large + above the words "New reminder", centred, muted text. Clicking it creates an empty note in the currently selected swatch colour and puts the cursor straight into it.
+
+TYPE
+Use Inter, the site font, for the note text — not a handwriting font.
+
+ACCESSIBILITY
+Keep everything keyboard reachable. The tick, the delete and the add tile are real buttons with aria-labels; the editable text has role="textbox" and an aria-label. Keep the existing three privacy states in render() word for word, along with the loading and error messages.</pre>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="step">
+    <div class="step-head"><span class="num">3</span><div><h2>Make the ready tick read</h2><div class="where">Paste into Replit Agent · independent of the others</div></div></div>
+    <p>Option A — filled mint. These pills were never moved onto the site’s current palette, so they still use the old teal, which against the cream page looks nearly identical ticked or not.</p>
+
+    <div class="block">
+      <div class="block-head"><span class="block-label">Prompt 3 · pill colours</span><button type="button" class="copy" data-copy="p3">Copy</button></div>
+      <pre id="p3">Change the Slides / Practice Qs pill colours in index.html. This is three CSS rules and nothing else — do not touch any JavaScript, any markup, or any other style.
+
+WHY
+These pills were never moved onto the site's current palette. They still use the old teal, which against the cream page looks nearly the same whether ticked or not.
+
+Find these rules, which sit together around line 681 of index.html:
+
+  .mw-pill{font:500 10px Poppins,Arial,sans-serif;border:1px solid #bfd6d3;background:#f4faf9;color:#257474; ...}
+  .mw-pill.filled{border-color:#2b8581;background:#d7eeea;color:#165f5c}
+  .mw-link-chip{font:500 10px Poppins,Arial,sans-serif;border:1px solid #bfd6d3;border-left:0;background:#eaf4f2;color:#195f61; ...}
+
+Change ONLY the font, border, background and colour values in them. Keep every other property — border-radius, padding, cursor, display, align-items, gap — exactly as it is:
+
+  .mw-pill        font:500 10px Inter,'Segoe UI',Arial,sans-serif;  border:1px solid #E2DDD7;  background:#FFFFFF;  color:#6C7480;
+  .mw-pill.filled border-color:#5A9B7F;  background:#C9E4D4;  color:#3E7358;  font-weight:600;
+  .mw-link-chip   font:500 10px Inter,'Segoe UI',Arial,sans-serif;  border:1px solid #E2DDD7;  border-left:0;  background:#F9F5EE;  color:#6C7480;
+
+Leave the .mw-past overrides directly below them exactly as they are — past days should still grey out.
+
+The result: an unticked pill is plain white with grey text, a ticked one is filled mint with dark green text, and the difference is obvious at a glance. The font change from Poppins to Inter is deliberate — the rest of the site moved to Inter and these pills were left behind.</pre>
+    </div>
+  </div>
+
+  <!-- finish -->
+  <div class="step">
+    <div class="step-head"><span class="num">4</span><div><h2>Push and look</h2><div class="where">Replit → GitHub</div></div></div>
+    <ol class="checks">
+      <li>Commit and push. GitHub Pages rebuilds in a minute or two; hard-refresh before judging anything.</li>
+      <li>My Week with SSW selected: reminders above the grid, notes add and tick and delete, ticked ones fade.</li>
+      <li>Switch the teacher dropdown to a colleague — the panel must disappear.</li>
+      <li>Look along a row: ticked Slides / Practice Qs should now be plainly green against the unticked white ones.</li>
+      <li>Check it on your phone. The notes rail should swipe sideways and the grid should still scroll on its own.</li>
+    </ol>
+    <hr class="divider">
+    <p class="muted">If the Agent goes wrong on prompt 2, restore the checkpoint rather than arguing with it across several messages — that file is small enough to redo cleanly.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  Array.prototype.forEach.call(document.querySelectorAll('.copy'), function(btn){
+    btn.addEventListener('click', function(){
+      var pre=document.getElementById(btn.getAttribute('data-copy'));
+      if(!pre) return;
+      var settle=function(label){
+        btn.textContent=label; btn.classList.add('done');
+        setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('done'); },2200);
+      };
+      var fallback=function(){
+        try{
+          var r=document.createRange(); r.selectNodeContents(pre);
+          var s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+          settle('Selected — copy it');
+        }catch(e){ settle('Select it by hand'); }
+      };
+      try{
+        navigator.clipboard.writeText(pre.textContent).then(function(){ settle('Copied'); }, fallback);
+      }catch(e){ fallback(); }
+    });
+  });
+})();
+</script>
+
+</body></html>

@@ -113,7 +113,7 @@
     </section>`;
   }
   function refresh(){
-    const me=owner(), next=me?.email||null;
+    const me=owner(), next=me?.code||null;
     if(next!==state.identity){
       if(state.unsubscribe){ state.unsubscribe(); state.unsubscribe=null; }
       state.operation++;
@@ -149,8 +149,8 @@
 
   async function update(change){
     const me=owner();
-    if(!me || me.email!==state.identity || state.saving || state.loading) return false;
-    const identity=me.email;
+    if(!me || me.code!==state.identity || state.saving || state.loading) return false;
+    const identity=me.code;
     const operation=++state.operation;
     const doc=firebase.firestore().collection('notes').doc(identity);
     state.saving=true; state.error=''; render();
@@ -192,16 +192,16 @@
       if(!text) return;
       const colour=colours.has(state.colour)?state.colour:'amber';
       const id=window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
-      const identity=owner()?.email;
+      const identity=owner()?.code;
       update(items=>[...items,{id,text,colour,done:false,created:Date.now(),updated:Date.now()}])
-        .then(success=>{ if(success && owner()?.email===identity){state.draft='';render();} });
+        .then(success=>{ if(success && owner()?.code===identity){state.draft='';render();} });
     }else if(event.target.matches('[data-mn-edit]')){
       event.preventDefault();
       const id=event.target.dataset.mnEdit,text=event.target.elements.text.value.trim().slice(0,160);
       if(!text) return;
-      const identity=owner()?.email;
+      const identity=owner()?.code;
       update(items=>items.map(item=>item.id===id?{...item,text,updated:Date.now()}:item))
-        .then(success=>{if(success && owner()?.email===identity){state.editId=null;render();}});
+        .then(success=>{if(success && owner()?.code===identity){state.editId=null;render();}});
     }
   });
   root.addEventListener('click',event=>{

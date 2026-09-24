@@ -1,2 +1,3 @@
 - [Firestore resource storage permissions](firestore-resource-storage.md) — this project allows reading the existing progress document but denied a separate resources document.
 - [SharePoint link validation](sharepoint-link-validation.md) — anonymous HTTP 403 responses cannot establish whether school-only assessment folders exist.
+- [Private notes rule contract](private-notes-rule.md) — published Firestore access expects teacher-code note IDs, not email IDs; an own-code save was user-confirmed.

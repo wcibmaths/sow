@@ -6,6 +6,47 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!--  SIGN-IN REQUIRED TO VIEW                                         -->
+<!--  The page stays hidden until Firebase confirms the visitor is on  -->
+<!--  the maths department teacher list. The class is added straight   -->
+<!--  away so no content flashes up before that check has finished.    -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<style id="wcib-seal">
+  html.wcib-sealed body > *:not(#wcib-gate){ display:none !important; }
+  html.wcib-sealed, html.wcib-sealed body{ overflow:hidden !important; background:#F4EFE7 !important; }
+  #wcib-gate{ display:none; }
+  html.wcib-sealed #wcib-gate{
+    display:flex; position:fixed; inset:0; z-index:2147483647;
+    align-items:center; justify-content:center; padding:24px;
+    background:#F4EFE7; font:500 14px/1.6 Poppins, system-ui, sans-serif; color:#2F3640;
+  }
+  #wcib-gate .wcib-card{
+    width:min(420px, 100%); background:#FFFFFF; border:1px solid #E2DDD7;
+    border-radius:16px; padding:32px 28px; text-align:center;
+    box-shadow:0 2px 4px rgba(47,54,64,.05), 0 18px 44px -20px rgba(47,54,64,.35);
+  }
+  #wcib-gate img{ width:54px; height:54px; object-fit:contain; margin:0 0 14px; }
+  #wcib-gate h1{ font:700 19px/1.3 Poppins, system-ui, sans-serif; margin:0 0 6px; color:#2F3640; }
+  #wcib-gate h2{ font:600 14.5px/1.4 Poppins, system-ui, sans-serif; margin:0 0 12px; color:#6C7480; }
+  #wcib-gate p{ margin:0 0 16px; color:#6C7480; font-size:13.5px; }
+  #wcib-gate form{ display:flex; flex-direction:column; gap:10px; }
+  #wcib-gate input{
+    width:100%; box-sizing:border-box; padding:11px 13px; border:1px solid #E2DDD7;
+    border-radius:9px; font:400 14px/1.4 Poppins, system-ui, sans-serif; color:#2F3640; background:#fff;
+  }
+  #wcib-gate input:focus-visible{ outline:2px solid #B47267; outline-offset:1px; border-color:#B47267; }
+  #wcib-gate button{
+    border:none; border-radius:9px; padding:11px 16px; cursor:pointer;
+    font:600 14px/1.4 Poppins, system-ui, sans-serif; background:#B47267; color:#fff;
+  }
+  #wcib-gate button:disabled{ opacity:.6; cursor:default; }
+  #wcib-gate button.ghost{ background:transparent; color:#6C7480; font-weight:500; padding:6px; }
+  #wcib-gate button.ghost:hover{ color:#2F3640; text-decoration:underline; }
+  #wcib-gate .wcib-err{ color:#B47267; font-size:12.5px; margin:12px 0 0; }
+</style>
+<script>document.documentElement.classList.add('wcib-sealed');</script>
 <title>WCIB Maths Department — Scheme of Work 2026/27</title>
 <link rel="icon" type="image/png" href="./wellington-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -940,14 +981,94 @@ if(!window.WCIB_DB){
 </style>
 <script>
 (function(){
-  if(!window.WCIB_DB) return;              // Firebase not set up yet
-  if(!firebase.auth) return;               // auth SDK missing
-
-  var auth = firebase.auth();
+  var html = document.documentElement;
+  var auth = null, gate = null, box = null;
+  var canEdit = false, user = null, sent = false;
   var EMAIL_KEY = 'wcib_signin_email';
-  var canEdit = false, user = null, box = null, sent = false;
 
   window.WCIB_CAN_EDIT = function(){ return canEdit; };
+
+  function esc2(s){ return String(s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  /* ── The full-page sign-in screen ─────────────────────────────────── */
+
+  function card(inner){
+    if(!gate){
+      gate = document.getElementById('wcib-gate');
+      if(!gate){
+        gate = document.createElement('div');
+        gate.id = 'wcib-gate';
+        document.body.appendChild(gate);
+      }
+    }
+    gate.innerHTML = '<div class="wcib-card"><img src="./wellington-logo.png" alt="">' + inner + '</div>';
+  }
+
+  function seal(){ html.classList.add('wcib-sealed'); }
+  function unseal(){ html.classList.remove('wcib-sealed'); }
+
+  function gateChecking(){
+    card('<h1>WCIB Maths</h1><p>Checking your access…</p>');
+  }
+
+  // Firebase could not start, so we cannot tell who this is. Stay shut.
+  function gateUnavailable(){
+    card('<h1>WCIB Maths</h1><h2>Cannot check access right now</h2>'
+      + '<p>The sign-in service did not load. Check your internet connection and try again. '
+      + 'If this keeps happening, let the Head of Maths know.</p>'
+      + '<button type="button" id="wcib-retry">Try again</button>');
+    var b = document.getElementById('wcib-retry');
+    if(b) b.onclick = function(){ location.reload(); };
+  }
+
+  function gateSignIn(err){
+    card('<h1>WCIB Maths</h1><h2>Scheme of Work 2026/27</h2>'
+      + '<p>This site is for maths department staff. Enter your school email and we will send you '
+      + 'a sign-in link — no password needed.</p>'
+      + '<form id="wcib-form"><input id="wcib-email" type="email" required '
+      + 'placeholder="your.name@wellingtoncollege.ac.th" autocomplete="email">'
+      + '<button type="submit">Send sign-in link</button></form>'
+      + (err ? '<p class="wcib-err">' + esc2(err) + '</p>' : ''));
+
+    document.getElementById('wcib-form').onsubmit = function(e){
+      e.preventDefault();
+      var email = document.getElementById('wcib-email').value.trim();
+      if(!email) return;
+      var btn = gate.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      auth.sendSignInLinkToEmail(email, {
+        url: window.location.origin + window.location.pathname,
+        handleCodeInApp: true
+      }).then(function(){
+        try{ localStorage.setItem(EMAIL_KEY, email); }catch(e){}
+        gateSent(email);
+      }).catch(function(e2){
+        gateSignIn(e2 && e2.code === 'auth/unauthorized-continue-uri'
+          ? 'This web address has not been added to the Firebase authorised list yet — '
+            + 'add it under Authentication → Settings → Authorized domains.'
+          : 'Could not send the link: ' + (e2 && e2.message ? e2.message : 'unknown error'));
+      });
+    };
+  }
+
+  function gateSent(email){
+    card('<h1>Check your inbox</h1>'
+      + '<p>We sent a sign-in link to <strong>' + esc2(email) + '</strong>. Open it on this device '
+      + 'and you will stay signed in here.</p>'
+      + '<button class="ghost" type="button" id="wcib-again">Use a different address</button>');
+    document.getElementById('wcib-again').onclick = function(){ gateSignIn(''); };
+  }
+
+  function gateDenied(email){
+    card('<h1>Not on the teacher list</h1>'
+      + '<p>You are signed in as <strong>' + esc2(email) + '</strong>, but that address is not on '
+      + 'the maths department list. Ask the Head of Maths to add you.</p>'
+      + '<button class="ghost" type="button" id="wcib-out">Sign out</button>');
+    document.getElementById('wcib-out').onclick = signOut;
+  }
+
+  /* ── The small corner box, once someone is in ─────────────────────── */
 
   function build(){
     box = document.createElement('div');
@@ -955,65 +1076,12 @@ if(!window.WCIB_DB){
     document.body.appendChild(box);
   }
 
-  function esc2(s){ return String(s).replace(/[&<>"']/g,function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-
   function render(){
     if(!box) return;
     document.body.classList.toggle('wcib-locked', !canEdit);
     if(document.getElementById('view-week')?.classList.contains('active') &&
        typeof window.renderWeek==='function') window.renderWeek();
-    box.className = 'show';
-
-    if(sent){
-      box.innerHTML = '<p>Check your inbox</p>'
-        + '<p class="wcib-note">We sent a sign-in link to <strong>' + esc2(sent) + '</strong>. '
-        + 'Open it on this device and you will stay signed in here.</p>'
-        + '<div class="wcib-row"><span></span><button class="ghost" id="wcib-again">Use a different address</button></div>';
-      box.querySelector('#wcib-again').onclick = function(){ sent = false; render(); };
-      return;
-    }
-
-    if(!user){
-      box.innerHTML = '<p>Viewing only</p>'
-        + '<p class="wcib-note">Sign in with your school email to update progress. No password needed.</p>'
-        + '<form id="wcib-form"><input id="wcib-email" type="email" required '
-        + 'placeholder="your.name@school.ac.th" autocomplete="email"><button type="submit">Send link</button></form>'
-        + '<p class="wcib-note" id="wcib-err" style="display:none;color:#B4470B"></p>';
-      box.querySelector('#wcib-form').onsubmit = function(e){
-        e.preventDefault();
-        var email = box.querySelector('#wcib-email').value.trim();
-        if(!email) return;
-        var btn = box.querySelector('button[type=submit]');
-        btn.disabled = true; btn.textContent = 'Sending…';
-        auth.sendSignInLinkToEmail(email, {
-          url: window.location.origin + window.location.pathname,
-          handleCodeInApp: true
-        }).then(function(){
-          try{ localStorage.setItem(EMAIL_KEY, email); }catch(e){}
-          sent = email; render();
-        }).catch(function(err){
-          btn.disabled = false; btn.textContent = 'Send link';
-          var p = box.querySelector('#wcib-err');
-          p.style.display = 'block';
-          p.textContent = err && err.code === 'auth/unauthorized-continue-uri'
-            ? 'This web address is not on the Firebase authorised list yet — see the "Authorise your website" step of the setup guide.'
-            : 'Could not send the link: ' + (err && err.message ? err.message : 'unknown error');
-        });
-      };
-      return;
-    }
-
-    if(!canEdit){
-      box.innerHTML = '<p>Not on the teacher list</p>'
-        + '<p class="wcib-note">You are signed in as ' + esc2(user.email) + ', but that address has not been '
-        + 'added to the maths department list, so progress is read-only. Ask the Head of Maths to add you.</p>'
-        + '<div class="wcib-row"><span></span><button class="ghost" id="wcib-out">Sign out</button></div>';
-      box.querySelector('#wcib-out').onclick = signOut;
-      return;
-    }
-
-    box.classList.add('quiet');
+    box.className = 'show quiet';
     box.innerHTML = '<div class="wcib-row"><span class="wcib-who">' + esc2(user.email) + '</span>'
       + '<button class="ghost" id="wcib-out">Sign out</button></div>';
     box.querySelector('#wcib-out').onclick = signOut;
@@ -1050,20 +1118,31 @@ if(!window.WCIB_DB){
   }
 
   function start(){
+    // No Firebase means no way to check who this is, so the page stays shut.
+    if(!window.WCIB_DB || !window.firebase || !firebase.auth){ gateUnavailable(); return; }
+
+    auth = firebase.auth();
     build();
+    gateChecking();
     completeLinkSignIn();
+
     auth.onAuthStateChanged(function(u){
       user = u;
-      sent = false;                       // clear the "check your inbox" notice
+      sent = false;
       canEdit = false;
       window.WCIB_ME = null;
       if(window.WCIB_NOTES_REFRESH) window.WCIB_NOTES_REFRESH();
-      if(!u){ canEdit = false; render(); return; }
+
+      if(!u){ if(box){ box.className=''; box.innerHTML=''; } seal(); gateSignIn(''); return; }
+
+      gateChecking();
       checkAllowed(u).then(function(me){
         if(auth.currentUser?.uid !== u.uid) return;
         canEdit = !!me;
         window.WCIB_ME = me;
         if(window.WCIB_NOTES_REFRESH) window.WCIB_NOTES_REFRESH();
+        if(!me){ if(box){ box.className=''; box.innerHTML=''; } seal(); gateDenied(u.email); return; }
+        unseal();                       // on the list — let the page through
         render();
       });
     });

@@ -819,6 +819,7 @@
       <div class="ctrl"><label for="mw-teacher">Teacher</label><select id="mw-teacher"></select></div>
     </div>
     <div id="mw-content"></div>
+    <div id="mw-notes"></div>
   </div>
 </div>
 
@@ -1026,10 +1027,10 @@ if(!window.WCIB_DB){
 
   // Is this signed-in address on the department list?
   function checkAllowed(u){
-    if(!u || !u.email) return Promise.resolve(false);
+    if(!u || !u.email) return Promise.resolve(null);
     return firebase.firestore().collection('teachers').doc(u.email.toLowerCase()).get()
-      .then(function(d){ return d.exists; })
-      .catch(function(){ return false; });
+      .then(function(d){ return d.exists ? { email:u.email.toLowerCase(), code:d.data().code || null } : null; })
+      .catch(function(){ return null; });
   }
 
   // Coming back from the emailed link?
@@ -1054,8 +1055,17 @@ if(!window.WCIB_DB){
     auth.onAuthStateChanged(function(u){
       user = u;
       sent = false;                       // clear the "check your inbox" notice
+      canEdit = false;
+      window.WCIB_ME = null;
+      if(window.WCIB_NOTES_REFRESH) window.WCIB_NOTES_REFRESH();
       if(!u){ canEdit = false; render(); return; }
-      checkAllowed(u).then(function(ok){ canEdit = ok; render(); });
+      checkAllowed(u).then(function(me){
+        if(auth.currentUser?.uid !== u.uid) return;
+        canEdit = !!me;
+        window.WCIB_ME = me;
+        if(window.WCIB_NOTES_REFRESH) window.WCIB_NOTES_REFRESH();
+        render();
+      });
     });
   }
 
@@ -3811,14 +3821,19 @@ function saveAll(data){
 
 // Save ONE tick. Only that one field is sent, so two teachers ticking at
 // the same moment can never wipe out each other's work.
-function _saveOne(key, val, ts){
+function _saveOne(key, val, ts, extra){
   _lsSave(_cache);
   flashSync();
   if(window.WCIB_DB){
     const patch = { entries:{}, updatedAt:{} };
     patch.entries[key] = val;
     patch.updatedAt[key] = ts;
-    window.WCIB_DB.set(patch, {merge:true}).catch(e=>console.warn('Firebase save failed',e));
+    if(extra) Object.assign(patch,extra);
+    const saved=window.WCIB_DB.set(patch, {merge:true});
+    if(extra) return saved;
+    saved.catch(e=>console.warn('Firebase save failed',e));
+  }else if(extra){
+    return Promise.reject(new Error('Shared progress storage is unavailable.'));
   }
 }
 
@@ -3832,7 +3847,7 @@ async function syncFromServer(){
       const local=_lsLoad();
       const hasLocal=Object.keys(local).some(k=>k!=='__updatedAt');
       _cache = hasLocal ? local : {};
-      if(hasLocal) await window.WCIB_DB.set(_toDoc(local));
+      if(hasLocal) await window.WCIB_DB.set(_toDoc(local), {merge:true});
     } else {
       _cache = _fromDoc(snap.data());
     }
@@ -3856,14 +3871,28 @@ async function syncFromServer(){
 
 function makeKey(lessonId,set){ return lessonId+'__'+set; }
 function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
-function setStatusValue(lessonId,set,val){
+function setStatusValue(lessonId,set,val,extra){
   if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return;  // viewing only
   const d=loadAll(); const k=makeKey(lessonId,set); const ts=Date.now();
+  const previous=d[k],previousTime=d.__updatedAt?.[k];
   d[k]=val;
   if(!d.__updatedAt || typeof d.__updatedAt!=='object') d.__updatedAt={};
   d.__updatedAt[k]=ts;
   _cache=d;
-  _saveOne(k,val,ts);
+  const saved=_saveOne(k,val,ts,extra);
+  if(!extra) return saved;
+  return saved.catch(err=>{
+    const latest=loadAll();
+    if(latest[k]===val && latest.__updatedAt?.[k]===ts){
+      if(previous===undefined) delete latest[k];
+      else latest[k]=previous;
+      if(previousTime===undefined) delete latest.__updatedAt[k];
+      else latest.__updatedAt[k]=previousTime;
+      _cache=latest;
+      _lsSave(latest);
+    }
+    throw err;
+  });
 }
 function getStatusUpdatedAt(lessonId,set){
   const m=loadAll().__updatedAt;
@@ -5846,6 +5875,7 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',ini
 
 </script>
 <script src="./my-week.js"></script>
+<script src="./notes.js"></script>
 
 </body>
 </html>

@@ -26,6 +26,10 @@ let mwOpen = null;
 let mwSaving = false;
 let mwUnsubscribe = null;
 let mwWeekOffset = 0;
+let mwTaught = {};
+let mwServerTaught = {};
+const mwPendingPins = new Map();
+let mwPinError = '';
 
 // Course and cover assignments resolve to the *underlying* progress key.
 function mwClassFor(teacher, code){
@@ -115,6 +119,8 @@ function mwListen(){
   }
   mwUnsubscribe=doc.onSnapshot(snap=>{
     mwResources=snap.exists ? (snap.data()?.resources||{}) : {};
+    mwServerTaught=snap.exists ? (snap.data()?.taught||{}) : {};
+    mwApplyPendingPins();
     mwResourceState='ready';
     mwResourceError='';
     renderWeek();
@@ -125,12 +131,21 @@ function mwListen(){
   });
 }
 
+function mwApplyPendingPins(){
+  mwTaught={...mwServerTaught};
+  mwPendingPins.forEach((value,key)=>{
+    if(value.id===null) delete mwTaught[key];
+    else mwTaught[key]=value.id;
+  });
+}
+
 function initWeek(){
   const weekday=new Date().getDay();
   if(weekday===0 || weekday===6) mwWeekOffset=1;
   const teacherSelect=document.getElementById('mw-teacher');
   teacherSelect.innerHTML=document.getElementById('sel-teacher').innerHTML;
   teacherSelect.value=document.getElementById('sel-teacher').value;
+  window.WCIB_NOTES_REFRESH?.();
   teacherSelect.addEventListener('change',()=>{
     document.getElementById('sel-teacher').value=teacherSelect.value;
     updateClassDropdown();
@@ -167,6 +182,17 @@ function mwGroupSlots(teacher,cycle){
   return grouped;
 }
 
+function mwSlotDate(info,slot){
+  const date=new Date(info.monday);
+  date.setDate(date.getDate()+slot.day);
+  return date;
+}
+function mwPinKey(info,slot){
+  const date=mwSlotDate(info,slot);
+  const day=[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');
+  return `${slot.teacher}__${slot.yg}-${slot.set}__${day}__P${slot.period}`;
+}
+
 function mwAssignments(teacher,info){
   const days=mwSlots[teacher+'|'+info.cycle]||[[],[],[],[],[]];
   const grouped=mwGroupSlots(teacher,info.cycle);
@@ -186,10 +212,58 @@ function mwAssignments(teacher,info){
     const start=info.offset>0 ? currentWeekStart+currentSlots.length
       : info.offset<0 ? currentWeekStart-(previousGrouped.get(key)||[]).length
       : currentWeekStart;
-    slots.forEach((slot,index)=>assigned.set(slot,
-      {lesson:lessons[start+index]||null,beforeStart:start+index<0}));
+    const fixed=slots.map(slot=>{
+      const id=mwTaught[mwPinKey(info,slot)];
+      return typeof id==='string' ? lessons.findIndex(lesson=>lesson.id===id) : -1;
+    });
+    const first=fixed.findIndex(index=>index>=0);
+    const indexes=[];
+    let cursor=start;
+    for(let i=0;i<slots.length;i++){
+      if(fixed[i]>=0){
+        indexes[i]=fixed[i];
+        cursor=fixed[i]+(getStatus(lessons[fixed[i]].id,set)==='In progress'?0:1);
+      }else if(first<0 || i>first){
+        indexes[i]=cursor++;
+      }
+    }
+    if(first>=0){
+      for(let i=first-1;i>=0;i--) indexes[i]=indexes[i+1]-1;
+    }
+    slots.forEach((slot,index)=>{
+      const position=indexes[index];
+      assigned.set(slot,{lesson:lessons[position]||null,beforeStart:position<0,pinned:fixed[index]>=0});
+    });
   });
   return {days,grouped,assigned};
+}
+
+async function mwSetStatusAndPin(info,slot,lessonId,value){
+  const doc=mwResourceDoc();
+  if(!doc){
+    mwPinError='Could not save progress and taught lesson: shared storage is unavailable.';
+    renderWeek();
+    return;
+  }
+  const key=mwPinKey(info,slot);
+  const pending={id:value==='Not started'?null:lessonId};
+  mwPendingPins.set(key,pending);
+  mwApplyPendingPins();
+  mwPinError='';
+  renderWeek();
+  try{
+    await setStatusValue(lessonId,slot.set,value,
+      {taught:{[key]:pending.id||firebase.firestore.FieldValue.delete()}});
+  }catch(err){
+    mwPinError='Could not save progress and taught lesson to Firestore: '+err.message;
+    console.error(mwPinError,err);
+  }finally{
+    if(mwPendingPins.get(key)===pending){
+      mwPendingPins.delete(key);
+      mwApplyPendingPins();
+      renderWeek();
+    }
+  }
 }
 
 const mwIconDone='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 8l3 3 7-7"/></svg>';
@@ -238,9 +312,9 @@ function renderWeek(){
     const x=tvClassFromKey(a),y=tvClassFromKey(b);
     return x.yg-y.yg||tvClassLabel(x.yg,x.set).localeCompare(tvClassLabel(y.yg,y.set));
   });
-  const notice=mwResourceError
+  const notice=(mwPinError?`<div class="mw-notice mw-error" role="alert">${esc(mwPinError)}</div>`:'')+(mwResourceError
     ? `<div class="mw-notice mw-error" role="alert">${esc(mwResourceError)}</div>`
-    : mwResourceState==='loading' ? '<div class="mw-notice">Loading shared links…</div>' : '';
+    : mwResourceState==='loading' ? '<div class="mw-notice">Loading shared links…</div>' : '');
   if(!keys.length){
     root.innerHTML=notice+'<div class="mw-notice">No classes are timetabled for this teacher in the selected week.</div>';
     return;
@@ -254,14 +328,15 @@ function renderWeek(){
         const matching=slots.filter(slot=>tvClassKey(slot.yg,slot.set)===key);
         return `<td class="${day<info.day?'mw-past':day===info.day?'mw-today':''}">
           ${matching.length ? matching.map(slot=>{
-            const {lesson,beforeStart}=assigned.get(slot);
+             const {lesson,beforeStart,pinned}=assigned.get(slot);
             if(!lesson) return `<div class="mw-lesson"><div class="mw-slot">P${slot.period} · ${slot.time}</div><div class="mw-topic">${beforeStart?'Before recorded progress':'No remaining SoW lesson'}</div></div>`;
             const resourceKey=mwResourceKey(slot,lesson);
             return `<div class="mw-lesson"><div class="mw-slot">P${slot.period} · ${slot.time}</div>
               <div class="mw-topic">${esc(lesson.lessonName)}</div>
-               <select class="status-sel mw-status ${statusClass(getStatus(lesson.id,set))}" data-mw-status data-lesson-id="${esc(lesson.id)}" data-set="${esc(set)}" aria-label="Status for ${esc(lesson.lessonName)}">
+                <select class="status-sel mw-status ${statusClass(getStatus(lesson.id,set))}" data-mw-status data-mw-pin="${esc(mwPinKey(info,slot))}" data-lesson-id="${esc(lesson.id)}" data-set="${esc(set)}" aria-label="Status for ${esc(lesson.lessonName)}">
                  ${['Not started','In progress','Done','N/A'].map(value=>`<option ${getStatus(lesson.id,set)===value?'selected':''}>${value}</option>`).join('')}
                </select>
+               ${pinned?`<div class="mw-slot">Pinned · taught ${mwSlotDate(info,slot).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</div>`:''}
               <div class="mw-pills">${[['slides_links','Slides'],['practice_links','Practice Qs']].map(([type,label])=>{
                  const count=mwLinks(resourceKey,type).length;
                  const filled=mwReady(resourceKey,type);
@@ -373,6 +448,9 @@ document.addEventListener('change',event=>{
     select.value=getStatus(select.dataset.lessonId,select.dataset.set);
     return;
   }
-  setStatusValue(select.dataset.lessonId,select.dataset.set,select.value);
+  const info=mwWeekInfo(new Date(),mwWeekOffset);
+  const slot=mwSlots[document.getElementById('mw-teacher').value+'|'+info.cycle]
+    ?.flat().find(item=>mwPinKey(info,item)===select.dataset.mwPin);
+  if(slot) mwSetStatusAndPin(info,slot,select.dataset.lessonId,select.value);
   refreshActiveView();
 });

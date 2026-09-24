@@ -73,6 +73,10 @@ def y11_ma1_sow_source():
 def my_week_source():
     return send_file('my-week.js', mimetype='application/javascript')
 
+@app.route('/notes.js')
+def notes_source():
+    return send_file('notes.js', mimetype='application/javascript')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())

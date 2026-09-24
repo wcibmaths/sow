@@ -2,6 +2,8 @@
   'use strict';
   const root=document.getElementById('mw-notes');
   if(!root) return;
+  // Remove this warning only after a live two-account isolation test passes.
+  const isolationTestConfirmed=false;
   const allowedCodes=new Set(['SSW','FTA','MKM','HPA','ADE','XLN']);
   const colours=new Set(['amber','teal','grey']);
   const state={identity:null,unsubscribe:null,items:[],loading:false,error:'',saving:false,
@@ -74,7 +76,7 @@
     }
     if(!own){
       root.innerHTML=`<p class="mn-muted">${allowedCodes.has(me.code)
-        ? 'Reminders are private to each teacher.'
+        ? (isolationTestConfirmed ? 'Reminders are private to each teacher.' : 'Reminders only appear when viewing your own timetable. Privacy check pending.')
         : 'Your teacher code is not configured. Ask the administrator to add it before using reminders.'}</p>`;
       return;
     }
@@ -82,6 +84,7 @@
     root.innerHTML=`<section class="mn-panel" aria-label="My reminders">
       <div class="mn-head"><div><h3>My reminders</h3><span class="mn-count">${count} unticked</span></div>
         <button type="button" data-mn-collapse aria-expanded="${!state.collapsed}">${state.collapsed?'Expand':'Collapse'}</button></div>
+      ${isolationTestConfirmed?'':'<p class="mn-error" role="status">Privacy check pending. Use test reminders only until access has been checked with two teacher accounts.</p>'}
       ${state.error?`<div class="mn-error" role="alert">${escapeHtml(state.error)}</div>`:''}
       ${state.collapsed?'':`<div class="mn-body">
         ${state.loading?'<p class="mn-muted">Loading reminders…</p>':`

@@ -2,8 +2,6 @@
   'use strict';
   const root=document.getElementById('mw-notes');
   if(!root) return;
-  // Keep notes disabled until the live per-owner Firestore rule is confirmed.
-  const privacyVerified=false;
   const allowedCodes=new Set(['SSW','FTA','MKM','HPA','ADE','XLN']);
   const colours=new Set(['amber','teal','grey']);
   const state={identity:null,unsubscribe:null,items:[],loading:false,error:'',saving:false,
@@ -64,16 +62,11 @@
   document.head.append(style);
 
   function owner(){
-    if(!privacyVerified) return null;
     const me=window.WCIB_ME, selected=document.getElementById('mw-teacher')?.value;
     const email=window.firebase?.auth?.().currentUser?.email?.toLowerCase();
     return me && me.email===email && allowedCodes.has(me.code) && selected===me.code ? me : null;
   }
   function render(){
-    if(!privacyVerified){
-      root.innerHTML='<p class="mn-muted">Reminders are unavailable until the Firebase privacy rules are verified.</p>';
-      return;
-    }
     const me=window.WCIB_ME, own=owner();
     if(!me){
       root.innerHTML='<p class="mn-muted">Sign in with your school email to use your reminders.</p>';

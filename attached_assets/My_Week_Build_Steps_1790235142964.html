@@ -1,0 +1,343 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>My Week Build Steps</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --ink:#213746; --ink-2:#263E49; --muted:#637580; --faint:#8A969C;
+    --page:#F6F8F8; --card:#FFFFFF; --line:#E0E8E7; --line-soft:#EDF2F1;
+    --teal:#195F61; --teal-2:#247D79; --teal-wash:#EAF4F2; --teal-wash-2:#F4FAF9; --teal-line:#BFD6D3;
+    --amber:#E49930; --amber-wash:#FFFAF0; --amber-tag:#F6DDAA; --amber-ink:#714C10;
+    --orange:#F27D00; --red:#A0402F; --red-wash:#FCEDEA;
+    --code-bg:#14232A; --code-ink:#D7E6E4; --code-line:#2C4048;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --ink:#E7EEEF; --ink-2:#DCE7E8; --muted:#9BABB2; --faint:#7C8B92;
+      --page:#121A1F; --card:#18232A; --line:#2A3941; --line-soft:#223038;
+      --teal:#7FD0C6; --teal-2:#63BDB3; --teal-wash:#1B2C31; --teal-wash-2:#17252A; --teal-line:#335054;
+      --amber:#E9A94E; --amber-wash:#241E14; --amber-tag:#4A3A1A; --amber-ink:#F2D49B;
+      --orange:#F79438; --red:#E9917E; --red-wash:#2C1B18;
+      --code-bg:#0E1A20; --code-ink:#CFE0DE; --code-line:#25353C;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --ink:#E7EEEF; --ink-2:#DCE7E8; --muted:#9BABB2; --faint:#7C8B92;
+    --page:#121A1F; --card:#18232A; --line:#2A3941; --line-soft:#223038;
+    --teal:#7FD0C6; --teal-2:#63BDB3; --teal-wash:#1B2C31; --teal-wash-2:#17252A; --teal-line:#335054;
+    --amber:#E9A94E; --amber-wash:#241E14; --amber-tag:#4A3A1A; --amber-ink:#F2D49B;
+    --orange:#F79438; --red:#E9917E; --red-wash:#2C1B18;
+    --code-bg:#0E1A20; --code-ink:#CFE0DE; --code-line:#25353C;
+  }
+
+  body{
+    background:var(--page); color:var(--ink);
+    font:400 14px/1.65 Poppins, system-ui, Arial, sans-serif;
+    padding-inline:16px; padding-block:34px 64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:26px;}
+
+  .masthead{display:flex; flex-direction:column; gap:9px;}
+  .eyebrow{font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--teal-2);}
+  h1{margin:0; font-size:clamp(25px,4.4vw,33px); font-weight:700; letter-spacing:-.03em; line-height:1.15; text-wrap:balance;}
+  .standfirst{margin:0; max-width:62ch; color:var(--muted); font-size:14.5px;}
+
+  .callout{
+    border:1px solid var(--amber-tag); background:var(--amber-wash); color:var(--amber-ink);
+    border-radius:10px; padding:14px 16px; font-size:13px; display:flex; flex-direction:column; gap:7px;
+  }
+  .callout strong{font-weight:600;}
+  .callout.plain{border-color:var(--teal-line); background:var(--teal-wash); color:var(--teal);}
+
+  .step{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:20px; display:flex; flex-direction:column; gap:13px;
+  }
+  @media(min-width:700px){ .step{padding:24px 26px;} }
+  .step-head{display:flex; gap:13px; align-items:baseline;}
+  .num{
+    flex:none; width:28px; height:28px; border-radius:8px; background:var(--teal-2); color:#fff;
+    font:700 13px/28px Poppins, system-ui, sans-serif; text-align:center; align-self:flex-start;
+  }
+  .step h2{margin:0; font-size:18.5px; font-weight:600; letter-spacing:-.02em; text-wrap:balance;}
+  .where{font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); margin-top:3px;}
+  p{margin:0; max-width:66ch;}
+  .muted{color:var(--muted); font-size:13px;}
+
+  ul{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:6px; max-width:66ch;}
+  li{font-size:13.5px;}
+  li strong{font-weight:600;}
+  ol.checks{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:6px; max-width:66ch;}
+  ol.checks li{font-size:13.5px;}
+
+  .block{border:1px solid var(--code-line); border-radius:10px; overflow:hidden; background:var(--code-bg);}
+  .block-head{
+    display:flex; gap:10px; align-items:center; justify-content:space-between;
+    padding:9px 12px; background:rgba(255,255,255,.04); border-bottom:1px solid var(--code-line);
+  }
+  .block-label{font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#8FBFBA;}
+  .copy{
+    border:1px solid #3C555C; background:#1D2F36; color:#CFE6E2; border-radius:6px; cursor:pointer;
+    font:600 11.5px Poppins, system-ui, sans-serif; padding:5px 11px;
+  }
+  .copy:hover{background:#26414A;}
+  .copy:focus-visible{outline:2px solid var(--orange); outline-offset:2px;}
+  .copy.done{background:#22514A; border-color:#3E7D72; color:#D6F0EA;}
+  pre{
+    margin:0; padding:14px 15px; overflow-x:auto; color:var(--code-ink);
+    font:400 12px/1.7 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    white-space:pre-wrap; word-break:normal; overflow-wrap:anywhere;
+  }
+  pre.tight{white-space:pre; overflow-wrap:normal;}
+
+  code{
+    font-family:ui-monospace, "SF Mono", Menlo, monospace; font-size:12.5px;
+    background:var(--teal-wash-2); border:1px solid var(--line); padding:1px 5px; border-radius:4px; color:var(--teal);
+  }
+
+  table.codes{width:100%; border-collapse:collapse; font-size:13px; margin-top:2px;}
+  table.codes th, table.codes td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);}
+  table.codes th{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); font-weight:600;}
+  table.codes td:first-child{font-weight:600; font-family:ui-monospace, Menlo, monospace; color:var(--teal); width:78px;}
+
+  .divider{height:1px; background:var(--line-soft); border:0; margin:2px 0;}
+  .trouble{background:var(--red-wash); border:1px solid var(--red); color:var(--red); border-radius:10px; padding:14px 16px; font-size:13px; display:flex; flex-direction:column; gap:7px;}
+  .trouble h3{margin:0; font-size:14px; font-weight:600;}
+  .trouble p, .trouble li{max-width:64ch;}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">WCIB Maths · SoW tracker</div>
+    <h1>Building the two My Week changes in Replit</h1>
+    <p class="standfirst">Seven steps. Four of them are text to copy and paste — two prompts for the Replit Agent, one Firestore rule, and a field you add by hand in Firebase. Do them in order; step 4 must be done before step 5 or the reminders won’t save.</p>
+  </header>
+
+  <div class="callout">
+    <strong>Before you start</strong>
+    <span>Your <code>index.html</code> is over 5,800 lines. Replit Agent will happily rewrite a file that size and quietly break something, so both prompts below tell it exactly which files it may touch. Don’t remove those lines when you paste.</span>
+  </div>
+
+  <!-- 1 -->
+  <div class="step">
+    <div class="step-head"><span class="num">1</span><div><h2>Take a checkpoint first</h2><div class="where">In Replit</div></div></div>
+    <p>Open the Repl, then in the left sidebar open <strong>History</strong> (or <strong>Version control</strong>) and make sure you can see a recent checkpoint. If your Repl is connected to GitHub, commit anything outstanding now with a message like <code>before my-week changes</code>.</p>
+    <p class="muted">This is your undo button for the whole job. Everything below is reversible if you have it.</p>
+  </div>
+
+  <!-- 2 -->
+  <div class="step">
+    <div class="step-head"><span class="num">2</span><div><h2>Prompt 1 — stop the week shifting</h2><div class="where">Paste into Replit Agent</div></div></div>
+    <p>This is the fix for what happened on Thursday. It makes the tracker record which lesson you taught in which slot, instead of working it out fresh every time.</p>
+
+    <div class="block">
+      <div class="block-head"><span class="block-label">Prompt 1 · pinning fix</span><button type="button" class="copy" data-copy="p1">Copy</button></div>
+      <pre id="p1">In this project, only edit my-week.js. Do not reformat, restructure or rewrite index.html — the one exception is the single line in point 6 below. If any other change to index.html seems necessary, stop and tell me first.
+
+THE PROBLEM
+In my-week.js, mwAssignments() decides which lesson sits in which timetable slot by finding the first lesson whose status is not "Done" (lessons.findIndex(l => getStatus(l.id,set) !== 'Done')) and then counting back over the slots earlier in the week (s.day &lt; currentInfo.day). Today's own slots are not counted, so the moment a teacher marks today's lesson "Done" the pointer moves forward and the entire week's row shifts by one lesson: Monday takes Tuesday's lesson and today's cell jumps to a lesson that has not been taught. Nothing records what was actually taught when, so past weeks are reconstructed rather than remembered.
+
+THE FIX
+Record the lesson against the slot, and lay the week out from those records.
+
+1. STORAGE. Use the existing shared Firestore document (window.WCIB_DB, which is sow/progress). Add one new top-level map field called "taught". Key each entry as:
+   TEACHER__YG-SET__YYYY-MM-DD__Pn
+   for example SSW__9-Ma4__2026-09-24__P2
+   The value is the lesson id string, for example "y9_13".
+   Write it with doc.set({ taught: { [key]: lessonId } }, { merge: true }) so nothing else in the document is disturbed. To clear one, write firebase.firestore.FieldValue.delete() for that key.
+   Read "taught" inside the existing mwListen() snapshot handler alongside "resources", hold it in a module-level variable, and re-render when it changes.
+
+2. DATES. Build each slot's date from info.monday plus slot.day, and format it YYYY-MM-DD from the local date parts (getFullYear, getMonth()+1, getDate(), zero-padded). Do NOT use toISOString() — this site is used in UTC+7 and that would record the wrong day.
+
+3. PIN WHEN A STATUS IS SET. In the change listener at the bottom of the file (the one for [data-mw-status]), after setStatusValue(...):
+   - "Done", "In progress" or "N/A" writes the taught record for that slot.
+   - "Not started" deletes the taught record for that slot.
+
+4. LAY THE WEEK OUT FROM THE RECORDS. Rewrite the per-class loop inside mwAssignments() as follows:
+   - Build this class's ordered list of slots for the week being displayed.
+   - For each slot, if "taught" holds a record and that lesson id exists in this class's lesson list, that slot's lesson is fixed.
+   - Walk the slots forwards. After a fixed slot the cursor becomes that lesson's index + 1, except when that lesson's status is "In progress", where the cursor stays on the same index so the next slot repeats the same lesson — a lesson carried over into the next period. Slots that are not fixed take the cursor and advance it by one.
+   - Then walk backwards and fill any unfixed slots that come before the first fixed one: each takes the index of the slot after it, minus one.
+   - If a week has no records at all (a future week, or any week before this feature existed), fall back to the current behaviour: first lesson not marked "Done", counted back over the earlier slots.
+   - Keep the existing beforeStart handling for indexes below zero, and keep the existing "No remaining SoW lesson" message.
+
+5. SHOW IT. When a slot's lesson comes from a record, add a short line under the status dropdown reading "Pinned · taught Thu 24 Sep" (the slot's own date). Reuse the existing .mw-slot class for its styling so no new CSS is needed anywhere.
+
+6. ONE EXISTING BUG. In index.html, inside syncFromServer(), the first-run write window.WCIB_DB.set(_toDoc(local)) has no merge option and would erase "resources" and "taught". Change that one call to window.WCIB_DB.set(_toDoc(local), { merge: true }). This is the only edit to index.html.
+
+Do not change the timetable data, mwClassFor, the Slides and Practice Qs link feature, the progress ticks, or the sign-in.</pre>
+    </div>
+
+    <p class="muted">When it finishes, read its summary. If it says it changed anything in <code>index.html</code> beyond that one <code>merge</code> line, tell it to undo that part before you go on.</p>
+  </div>
+
+  <!-- 3 -->
+  <div class="step">
+    <div class="step-head"><span class="num">3</span><div><h2>Test the fix in the preview</h2><div class="where">In Replit</div></div></div>
+    <ol class="checks">
+      <li>Open the preview, go to <strong>My Week</strong>, sign in and pick your own initials.</li>
+      <li>Set one of today’s lessons to <strong>Done</strong>. Nothing else in that row should move — only the next slot for that class rolls on to the next lesson.</li>
+      <li>Reload the page. The lesson should still be sitting in the slot you taught it in.</li>
+      <li>Set the same slot to <strong>In progress</strong>. The next slot for that class should now repeat the same lesson.</li>
+      <li>Set it back to <strong>Not started</strong>. The pin should disappear and the week should go back to how it was.</li>
+      <li>Click the back arrow to last week. It should stay put now instead of redrawing when you tick something.</li>
+    </ol>
+    <p class="muted">If anything is wrong, tell the Agent what you saw rather than starting over — it still has the context.</p>
+  </div>
+
+  <!-- 4 -->
+  <div class="step">
+    <div class="step-head"><span class="num">4</span><div><h2>Add each teacher’s initials in Firebase</h2><div class="where">Firebase console — do this before step 5</div></div></div>
+    <p>The reminders need to know which teacher is signed in. Your sign-in already checks a <code>teachers</code> collection, with one document per email address. Add a field to each of those documents.</p>
+    <p>Go to <strong>Firebase console → Firestore Database → <code>teachers</code></strong>. Open each teacher’s document, click <strong>Add field</strong>, name it <code>code</code>, type <strong>string</strong>, and enter their initials exactly as they appear in the tracker:</p>
+    <table class="codes">
+      <thead><tr><th>Code</th><th>Teaches</th></tr></thead>
+      <tbody>
+        <tr><td>SSW</td><td>Y9 Ma4, Y10 FM, Y11 Ma1, Y12 Pure &amp; Stats, Y13 FM S2/S3</td></tr>
+        <tr><td>FTA</td><td>Y7 Ma4, Y8 Ma3, Y9 Ma1, Y10 Ma3, Y11 Ma2, Y12 Pure</td></tr>
+        <tr><td>MKM</td><td>Y7 Ma1, Y8 Ma2, Y9 Ma3, Y11 Ma4, Y12 FM Pure</td></tr>
+        <tr><td>HPA</td><td>Y7 Ma2, Y8 Ma4, Y9 Ma2, Y10 Ma2, Y13 FM Pure</td></tr>
+        <tr><td>ADE</td><td>Y7 Ma3, Y8 Ma1, Y10 Ma1, Y11 Ma3, Y13 P3/P4 and M1</td></tr>
+        <tr><td>XLN</td><td>Y12 FM M1, Y13 D1, Y13 FM M2</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">Six documents, one field each. Any teacher without a <code>code</code> simply won’t see the reminders panel — nothing else breaks.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="step">
+    <div class="step-head"><span class="num">5</span><div><h2>Make the reminders genuinely private</h2><div class="where">Firebase console → Firestore → Rules</div></div></div>
+    <p>Hiding the panel in the browser isn’t privacy — anyone who knows where to look could still read the data. This rule is what actually stops it. A teacher can read and write only the document named after their own signed-in email.</p>
+
+    <div class="callout">
+      <strong>Don’t replace the whole rules file.</strong>
+      <span>Paste this block <em>inside</em> the existing <code>match /databases/{database}/documents { … }</code> section, just before its closing brace, leaving your current rules for <code>sow</code> and <code>teachers</code> exactly as they are. Then click <strong>Publish</strong>.</span>
+    </div>
+
+    <div class="block">
+      <div class="block-head"><span class="block-label">Firestore rule · add, don’t replace</span><button type="button" class="copy" data-copy="p2">Copy</button></div>
+<pre class="tight" id="p2">// Private reminders — each teacher reads and writes only their own.
+match /notes/{email} {
+  allow read, write: if request.auth != null
+    &amp;&amp; request.auth.token.email != null
+    &amp;&amp; request.auth.token.email.lower() == email;
+}</pre>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="step">
+    <div class="step-head"><span class="num">6</span><div><h2>Prompt 2 — the reminders panel</h2><div class="where">Paste into Replit Agent</div></div></div>
+    <p>Almost all of this goes into a new file, so there is very little to go wrong in <code>index.html</code>.</p>
+
+    <div class="block">
+      <div class="block-head"><span class="block-label">Prompt 2 · private reminders</span><button type="button" class="copy" data-copy="p3">Copy</button></div>
+      <pre id="p3">Add a private reminders panel to the My Week page.
+
+FILES
+Put all new code in a NEW file called notes.js. In index.html you may make exactly three changes and nothing else:
+  a) one new line &lt;script src="./notes.js"&gt;&lt;/script&gt; immediately after the existing &lt;script src="./my-week.js"&gt;&lt;/script&gt; line;
+  b) one empty container &lt;div id="mw-notes"&gt;&lt;/div&gt; directly after &lt;div id="mw-content"&gt;&lt;/div&gt; inside &lt;div id="view-week"&gt;;
+  c) the few lines described in point 1 below.
+Do not reformat or restructure index.html in any other way.
+
+WHO SEES WHAT
+Reminders are private to each teacher. A teacher sees their own and nobody else's, including the head of department. I have already added a "code" field holding each teacher's initials (SSW, FTA, MKM, HPA, ADE, XLN) to the documents in the teachers collection, and published a Firestore rule allowing each signed-in teacher to read and write only notes/&lt;their own email&gt;.
+
+1. KNOWING WHO IS SIGNED IN. The sign-in block in index.html already looks the user up with firebase.firestore().collection('teachers').doc(email.toLowerCase()).get() inside checkAllowed(). In that same function, when the document exists, also set:
+   window.WCIB_ME = { email: &lt;the signed-in email, lower case&gt;, code: &lt;the document's code field, or null&gt; };
+   and then call window.WCIB_NOTES_REFRESH &amp;&amp; window.WCIB_NOTES_REFRESH();
+   When nobody is signed in or the address is not on the list, set window.WCIB_ME = null and call the same refresh. Keep this to those few lines.
+
+2. STORAGE. A separate Firestore collection called notes, one document per teacher, the document id being the signed-in email in lower case. Shape:
+   { items: [ { id, text, colour, done, created, updated } ] }
+   colour is "amber", "teal" or "grey"; done is a boolean; created and updated are millisecond timestamps.
+   Only ever read and write notes/&lt;my own email&gt;. Never query the notes collection as a whole, and never touch another teacher's document. Use onSnapshot on that single document so a teacher's reminders stay in sync across their laptop and phone.
+
+3. WHEN THE PANEL SHOWS. Re-check all of this whenever the #mw-teacher dropdown changes and whenever the sign-in state changes:
+   - Not signed in: one muted line, "Sign in with your school email to use your reminders." No input, no Firestore call.
+   - Signed in, and the Teacher dropdown is set to my own code: the full panel.
+   - Signed in, but the dropdown is set to another teacher: hide the panel and show one muted line, "Reminders are private to each teacher." Make no Firestore call at all.
+
+4. THE PANEL. A heading "My reminders", the number of unticked items, and a collapse/expand control that remembers its state in localStorage (wrap every localStorage call in try/catch).
+   - An input with placeholder "Add a reminder…", maximum 160 characters, three colour swatches (amber, teal, grey) and an Add button. Pressing Enter also adds.
+   - Each reminder shows a tickbox, the text, "Added &lt;weekday and date&gt;", an Edit button that edits in place (Enter or Save commits) and a Delete button.
+   - Ticked reminders stay in the list, struck through and greyed, until deleted. A "Clear ticked" button deletes only those.
+   - Reminders never expire, never reset at the start of a week, and are only ever removed by the teacher.
+   - Empty state: "Nothing here yet."
+
+5. STYLE. Match the existing My Week look exactly: Poppins, the teal palette already used by .mw-pill and .mw-popover, small radii, no purple, no emoji. Inject the CSS from notes.js as a &lt;style&gt; element at load so index.html is not touched for styling.
+
+6. ERRORS. Handle Firestore failures the way my-week.js already does — a small message inside the panel, never an alert() and never a silent failure.
+
+Do not change the week grid, the timetable data, the progress ticks, or the sign-in logic beyond point 1.</pre>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="step">
+    <div class="step-head"><span class="num">7</span><div><h2>Test the privacy, then publish</h2><div class="where">Replit, then GitHub</div></div></div>
+    <ol class="checks">
+      <li>Signed out, My Week should offer the sign-in line and nothing else.</li>
+      <li>Signed in as yourself with the dropdown on <strong>SSW</strong>: add a reminder, edit it, tick it, delete one.</li>
+      <li>Switch the Teacher dropdown to a colleague. The panel must disappear and say reminders are private.</li>
+      <li>Open the preview on your phone and sign in. Your reminders should already be there.</li>
+      <li>Ask one colleague to sign in and confirm they see their own empty panel, not yours. <strong>This is the test that matters</strong> — if they can see yours, the rule in step 5 didn’t publish.</li>
+      <li>When it all works: commit and push to GitHub. GitHub Pages rebuilds <code>wcibmaths.github.io/sow</code> in a minute or two. Hard-refresh the live site (Ctrl/Cmd + Shift + R) before deciding anything is wrong.</li>
+    </ol>
+  </div>
+
+  <div class="trouble">
+    <h3>If the Agent goes off the rails</h3>
+    <p>Don’t try to talk it back into shape across several messages — that’s how the file gets worse. Open <strong>History</strong> in Replit, restore the checkpoint from step 1, and paste the prompt again with one sentence at the top saying what it did wrong last time.</p>
+    <p>If the reminders panel appears but nothing saves, it is almost always the rule in step 5: open the browser console, and a red “Missing or insufficient permissions” line confirms it. Re-check that the rule was published and that you’re signed in with the same address that’s in the <code>teachers</code> collection.</p>
+  </div>
+
+  <div class="callout plain">
+    <strong>One thing to decide later, not now</strong>
+    <span>Once lessons are pinned, past weeks become a real record, so the back arrow could usefully go further than one week — it’s currently capped at one. Worth doing after a few weeks of real data, when there’s something to look back at.</span>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  Array.prototype.forEach.call(document.querySelectorAll('.copy'), function(btn){
+    btn.addEventListener('click', function(){
+      var pre = document.getElementById(btn.getAttribute('data-copy'));
+      if(!pre) return;
+      var text = pre.textContent;
+      var settle = function(label){
+        btn.textContent = label;
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('done'); }, 2200);
+      };
+      try{
+        navigator.clipboard.writeText(text).then(function(){ settle('Copied'); }, function(){ selectIt(pre, settle); });
+      }catch(e){
+        selectIt(pre, settle);
+      }
+    });
+  });
+
+  function selectIt(pre, settle){
+    try{
+      var range = document.createRange();
+      range.selectNodeContents(pre);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      settle('Selected — copy it');
+    }catch(e){
+      settle('Select it by hand');
+    }
+  }
+})();
+</script>
+
+</body></html>

@@ -193,46 +193,52 @@ function mwPinKey(info,slot){
   return `${slot.teacher}__${slot.yg}-${slot.set}__${day}__P${slot.period}`;
 }
 
+function mwAssignIndexes(weekInfo,slotsForThatWeek,lessons,set,startIndex){
+  const fixed=slotsForThatWeek.map(slot=>{
+    const id=mwTaught[mwPinKey(weekInfo,slot)];
+    return typeof id==='string' ? lessons.findIndex(lesson=>lesson.id===id) : -1;
+  });
+  const first=fixed.findIndex(index=>index>=0);
+  const indexes=[];
+  let cursor=startIndex;
+  for(let i=0;i<slotsForThatWeek.length;i++){
+    if(fixed[i]>=0){
+      indexes[i]=fixed[i];
+      cursor=fixed[i]+(getStatus(lessons[fixed[i]].id,set)==='In progress'?0:1);
+    }else if(first<0 || i>first){
+      indexes[i]=cursor++;
+    }
+  }
+  if(first>=0){
+    for(let i=first-1;i>=0;i--) indexes[i]=indexes[i+1]-1;
+  }
+  return {indexes,cursor};
+}
+
 function mwAssignments(teacher,info){
   const days=mwSlots[teacher+'|'+info.cycle]||[[],[],[],[],[]];
   const grouped=mwGroupSlots(teacher,info.cycle);
   const currentInfo=mwWeekInfo(new Date(),0);
   const currentGrouped=mwGroupSlots(teacher,currentInfo.cycle);
-  const previousGrouped=info.offset<0 ? mwGroupSlots(teacher,info.cycle) : null;
   const assigned=new Map();
   grouped.forEach((slots,key)=>{
     const {yg,set}=tvClassFromKey(key);
     const lessons=getTeachable(sowFor(yg,set)||[]);
     const pointer=lessons.findIndex(l=>getStatus(l.id,set)!=='Done');
     const next=pointer<0?lessons.length:pointer;
-    // Anchor the pointer to today, then move by this class's actual slot
-    // counts; adjacent weeks may have different timetable cycles.
+    // Anchor the current week to today, then carry its pinned cursor forward.
     const currentSlots=currentGrouped.get(key)||[];
     const currentWeekStart=next-currentSlots.filter(s=>s.day<currentInfo.day).length;
-    const start=info.offset>0 ? currentWeekStart+currentSlots.length
-      : info.offset<0 ? currentWeekStart-(previousGrouped.get(key)||[]).length
+    const current=mwAssignIndexes(currentInfo,currentSlots,lessons,set,currentWeekStart);
+    const start=info.offset>0 ? current.cursor
+      : info.offset<0 ? (current.indexes[0]??currentWeekStart)-slots.length
       : currentWeekStart;
-    const fixed=slots.map(slot=>{
-      const id=mwTaught[mwPinKey(info,slot)];
-      return typeof id==='string' ? lessons.findIndex(lesson=>lesson.id===id) : -1;
-    });
-    const first=fixed.findIndex(index=>index>=0);
-    const indexes=[];
-    let cursor=start;
-    for(let i=0;i<slots.length;i++){
-      if(fixed[i]>=0){
-        indexes[i]=fixed[i];
-        cursor=fixed[i]+(getStatus(lessons[fixed[i]].id,set)==='In progress'?0:1);
-      }else if(first<0 || i>first){
-        indexes[i]=cursor++;
-      }
-    }
-    if(first>=0){
-      for(let i=first-1;i>=0;i--) indexes[i]=indexes[i+1]-1;
-    }
+    const {indexes}=mwAssignIndexes(info,slots,lessons,set,start);
     slots.forEach((slot,index)=>{
       const position=indexes[index];
-      assigned.set(slot,{lesson:lessons[position]||null,beforeStart:position<0,pinned:fixed[index]>=0});
+      const pinnedId=mwTaught[mwPinKey(info,slot)];
+      assigned.set(slot,{lesson:lessons[position]||null,beforeStart:position<0,
+        pinned:typeof pinnedId==='string' && lessons[position]?.id===pinnedId});
     });
   });
   return {days,grouped,assigned};

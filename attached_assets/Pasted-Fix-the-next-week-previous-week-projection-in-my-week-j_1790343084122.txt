@@ -1,0 +1,52 @@
+Fix the next-week / previous-week projection in my-week.js. Only edit my-week.js.
+
+THE BUG
+In mwAssignments(), lesson positions for any week other than the current one come from:
+
+  const pointer = lessons.findIndex(l => getStatus(l.id,set)!=='Done');
+  const next = pointer<0 ? lessons.length : pointer;
+  const currentWeekStart = next - currentSlots.filter(s => s.day < currentInfo.day).length;
+  const start = info.offset>0 ? currentWeekStart + currentSlots.length : ...
+
+That makes next week start at (pointer + this week's slots falling on today or later).
+Today's slot is counted as still to be taught even when it has already been taught and
+pinned, so next week starts one lesson too far on and the lesson in between is never shown.
+
+Real example: Year 12 Ma1 P1/P2 (SSW). This week's Friday slot is pinned to "Revision",
+taught Fri 25 Sept, marked Done. The next lesson is "Unit Test: P1.2. Quadratics P1.3.
+Equations and Inequalities". Next Monday shows "P1.4.1 Cubic Graphs" instead. Year 12
+Ma1 S1 skips "Unit Test 1: S1.1 & S1.2" the same way.
+
+THE FIX
+Stop re-deriving the start from the pointer for other weeks. Work the current week out
+first, pins and all, and carry its cursor forward.
+
+Inside the per-class loop in mwAssignments():
+
+1. Factor the existing "assign indexes to slots" logic into a helper taking
+   (weekInfo, slotsForThatWeek, lessons, set, startIndex) and returning { indexes, cursor }.
+   indexes is what the loop already builds: pinned slots take their pinned lesson, unpinned
+   slots take cursor++, a pinned lesson whose status is "In progress" leaves the cursor where
+   it is, and the backward fill for slots before the first pin still applies. cursor is the
+   value after the final slot — the index of the next lesson still to be taught.
+
+2. Always run that helper for the CURRENT week first, using the existing pointer-based start
+   (next minus the slots before today). Keep that part as it is; it is correct for this week.
+
+3. For info.offset > 0, use the current week's returned cursor as the start, instead of
+   currentWeekStart + currentSlots.length.
+
+4. For info.offset < 0, use the current week's first assigned index minus the number of slots
+   the displayed week has for this class, instead of currentWeekStart - previousSlots.length.
+
+5. Then run the helper again for the week being displayed, with that start, and use its indexes.
+
+Keep everything else: pins still win over the projection in any week, the "In progress"
+carry-over still works, beforeStart still flags negative indexes, and "No remaining SoW
+lesson" still shows when the index runs past the end of the list.
+
+CHECK AFTER
+With Year 12 Ma1 P1/P2 selected and Friday still pinned to Revision, next Monday must read
+"Unit Test: P1.2. Quadratics P1.3. Equations and Inequalities". Year 12 Ma1 S1's next
+unpinned slot must read "Unit Test 1: S1.1 Mathematical Modelling & S1.2 Measures of
+Location". Year 9 Ma4 must not change — next Monday is pinned there and pins must still win.

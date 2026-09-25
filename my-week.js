@@ -36,6 +36,10 @@ function mwClassFor(teacher, code){
   const special = {
     '11/Fm':[11,'Ma1'],
     '10z/Fm':[10,'Ma1'],
+    // Year 10 timetable names use the new labels; progress and SoW keys retain the old set numbers.
+    '10z/Ma1':[10,'Ma2'],
+    '10z/Ma2':[10,'Ma3'],
+    '10z/Ma3':[10,'Ma4'],
     '13A/M1':[13,'M1'],
     '13A/Ma':[13,'P34'],
     '13A/D1':[13,'D1'],

@@ -1316,7 +1316,114 @@ const Y9_ASSESSMENT_FOLDERS = {
   12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/A.%20Key%20Stage%203/Year_9/Unit_12_Probability/Unit_12_Assessment?csf=1&web=1',
 };
 const UNIT_FOLDERS_BY_YG     = { 7: UNIT_FOLDERS, 8: Y8_UNIT_FOLDERS, 9: Y9_UNIT_FOLDERS };
-const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDERS, 9: Y9_ASSESSMENT_FOLDERS };
+// ── Unit test folders, generated from the Resources tree ───────────────
+// Every unit test lives at  4. Resources / <key stage> / <year> /
+// <unit folder> / Unit_<n>_Assessment.  The folder names below are the real
+// names on SharePoint, so they are the only thing to edit if one is renamed.
+// Unit 0 (Start/End of Year) has no folder and correctly gets no link.
+const ASSESSMENT_ROOT='https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources';
+const ASSESSMENT_YEAR_PATH={
+  7 :'A.%20Key%20Stage%203/Year_7',
+  8 :'A.%20Key%20Stage%203/Year_8',
+  9 :'A.%20Key%20Stage%203/Year_9',
+  10:'B.%20Key%20Stage%204/Year%2010',
+  11:'B.%20Key%20Stage%204/Year%2011'
+};
+const ASSESSMENT_UNIT_FOLDER={
+  7:{
+    1:'Unit_1_Analysing_and_Displaying_Data', 2:'Unit_2_Number',
+    3:'Unit_3_Equations_Functions_and_Formulae', 4:'Unit_4_Fractions',
+    5:'Unit_5_Angles_and_Shapes', 6:'Unit_6_Decimals_and_Percentages',
+    7:'Unit_7_Ratio_and_Proportion', 8:'Unit_8_Measures_and_Shapes',
+    9:'Unit_9_Sequences_and_Graphs', 10:'Unit_10_Transformations',
+    11:'Unit_11_Probability'
+  },
+  8:{
+    1:'Unit_1_Number', 2:'Unit_2_Equations_and_Formulae',
+    3:'Unit_3_Working_with_Powers', 4:'Unit_4_2D_Shapes_and_3D_Solids',
+    5:'Unit_5_Graphs', 6:'Unit_6_Fractions_Decimals_Ratio_and_Proportion',
+    7:'Unit_7_Probability', 8:'Unit_8_Percentages_and_Ratios',
+    9:'Unit_9_Shapes_and_Angles', 10:'Unit_10_Charts_and_Diagrams',
+    11:'Unit_11_Straight_Line_Graphs'
+  },
+  9:{
+    1:'Unit_1_Significant_Figures_Powers_and_Standard_Form',
+    2:'Unit_2_2D_Shapes_and_3D_Solids', 3:'Unit_3_Quadratics',
+    4:'Unit_4_Constructions', 5:'Unit_5_Inequalities_Equations_and_Formulae',
+    6:'Unit_6_Collecting_and_Analysing_Data', 7:'Unit_7_Multiplicative_Reasoning',
+    8:'Unit_8_Scale_Drawings_and_Measures', 9:'Unit_9_Accuracy_and_Measures',
+    10:'Unit_10_Graphical_Solutions', 11:'Unit_11_Trigonometry',
+    12:'Unit_12_Probability'
+  },
+  10:{
+    '1A':'Unit_1A_Core_Number_and_Accuracy',
+    '1B':'Unit_1B_Percentages_Bounds_and_Applied_Number',
+    2:'Unit_2_Ratio_Proportion_and_Measures',
+    '3A':'Unit_3A_Algebra_Equations_and_Inequalities',
+    '3B':'Unit_3B_Linear_Graphs_and_Simultaneous_Equations',
+    4:'Unit_4_Sequences',
+    '5A':'Unit_5A_Expanding_Factorising_and_Quadratics',
+    '5B':'Unit_5B_Formulae_Rearranging_and_Algebraic_Fractions',
+    6:'Unit_6_Inequalities_and_Advanced_Algebra_Review',
+    '7A':'Unit_7A_Angles_Polygons_Symmetry_and_Bearings',
+    '7B':'Unit_7B_Constructions_Loci_and_Scale_Drawings',
+    '7C':'Unit_7C_Transformations',
+    '8A':'Unit_8A_Pythagoras_and_Right_Angled_Trigonometry',
+    '8B':'Unit_8B_Mensuration_and_Mixed_Geometry',
+    9:'Unit_9_3D_Geometry_and_Similarity',
+    '10A':'Unit_10A_Core_Statistics', '10B':'Unit_10B_Advanced_Statistics'
+  },
+  11:{
+    1:'Unit_1_Quadratic_Equations_Graphs_and_Algebraic_Fractions',
+    2:'Unit_2_Graphs_and_Proportional_Relationships',
+    3:'Unit_3_Algebra_and_Bounds',
+    4:'Unit_4_Linear_Graphs_Inequalities_and_Quadratics',
+    5:'Unit_5_Proofs_Sectors_and_Data_Representation',
+    6:'Unit_6_Volume_Surface_Area_Similarity_and_Trigonometry',
+    7:'Unit_7_3D_Geometry_Similar_Shapes_and_Functions',
+    8:'Unit_8_Sets_Probability_and_Circle_Theorems',
+    9:'Unit_9_Differentiation',
+    10:'Unit_10_Sequences_Quadratic_Graphs_and_Inequalities',
+    11:'Unit_11_Trigonometric_Graphs_and_Graph_Transformations',
+    12:'Unit_12_Vectors'
+  }
+};
+function buildAssessmentUrl(yg,unit){
+  const yearPath=ASSESSMENT_YEAR_PATH[yg];
+  const folder=(ASSESSMENT_UNIT_FOLDER[yg]||{})[unit];
+  if(!yearPath || !folder) return '';
+  return `${ASSESSMENT_ROOT}/${yearPath}/${folder}/Unit_${unit}_Assessment?csf=1&web=1`;
+}
+const ASSESSMENT_FOLDERS_BY_YG = (()=>{
+  const out={};
+  Object.keys(ASSESSMENT_UNIT_FOLDER).forEach(yg=>{
+    const y=Number(yg); out[y]={};
+    Object.keys(ASSESSMENT_UNIT_FOLDER[y]).forEach(unit=>{
+      out[y][unit]=buildAssessmentUrl(y,unit);
+    });
+  });
+  return out;
+})();
+
+// Accelerated sets sit on the scheme of work of the year above, so their unit
+// tests live in that year's folder rather than their own.
+const ACCELERATED_FOLDER_YEAR = { '8|Ma1':9, '9|Ma1':10 };
+
+// The SharePoint unit-test folder for an assessment, or '' when there isn't one.
+function assessmentFolderUrl(yg,set,unit){
+  if(unit===null || unit===undefined || unit==='') return '';
+  const y=Number(yg);
+  if(y===12) return (set==='Ma1P12'||set==='Ma2P12')
+    ? (Y12_P12_ASSESSMENT_FOLDERS[unit]||'') : '';
+  const lookupYear = ACCELERATED_FOLDER_YEAR[`${y}|${set}`] || y;
+  const map=ASSESSMENT_FOLDERS_BY_YG[lookupYear];
+  return (map && map[unit]) || '';
+}
+
+function assessmentFolderLink(yg,set,unit){
+  const url=assessmentFolderUrl(yg,set,unit);
+  return url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="assess-link" style="display:inline-block;margin-top:8px;">Open test folder</a>`:'';
+}
 
 // ── Year 12 IAL Pure 1 & 2 — unit folder links (SharePoint) ───────
 // Keys are the `unit` numbers used in Y12_P12_SOW (1-13).
@@ -3709,7 +3816,7 @@ function assessmentsFromSow(sow, explicitSchedule){
   const source=Array.isArray(explicitSchedule)
     ? explicitSchedule
     : (sow||[]).filter(r=>r.type==='assessment').map(r=>({
-        name:r.lessonName, sub:r.unitName||'', week:r.week, dates:r.dates, term:r.term
+        name:r.lessonName, sub:r.unitName||'', week:r.week, dates:r.dates, term:r.term, unit:r.unit
       }));
   return source.map(r=>({
     name:r.name||r.lessonName,
@@ -3717,6 +3824,7 @@ function assessmentsFromSow(sow, explicitSchedule){
     week:r.week||'',
     dates:r.dates||'',
     term:r.term||'',
+    unit:r.unit,
     slot:r.slot||'',
     obj:r.obj||r.reporting||'',
     external:!!r.external
@@ -3756,6 +3864,7 @@ function assessmentScheduleEntries(){
         name, sub, week:a.week||'', dates:a.dates||'', term:a.term||'',
         start, tentative, source, slot:a.slot||'', obj:a.obj||'',
         external:!!a.external,
+        assessmentUrl:assessmentFolderUrl(yg,(sets||[])[0],a.unit),
         dedupeKey:`assessment|${yg}|${start.toISOString().slice(0,10)}|${name}|${sub}|${a.week||''}|${index}`
       });
     });
@@ -4757,7 +4866,7 @@ function formatEventScopes(scopes){
 function getInternalEvents(start, end){
   // map: key -> {date,event,details,scopes:Set,type}
   const map=new Map();
-  const add=(date,event,details,scope,type,dedupeKey)=>{
+  const add=(date,event,details,scope,type,dedupeKey,assessmentUrl)=>{
     if(!date) return;
     if(date<start || date>end) return;
     if(type!=='Internal Assessment' && type!=='Mock Exam' && EXTERNAL_EVENT_RX.test(event+' '+details)) return;
@@ -4767,7 +4876,7 @@ function getInternalEvents(start, end){
       `${date.toISOString().slice(0,10)}|${event}|${perScope?scope:''}`;
     let row=map.get(key);
     if(!row){
-      row={date,event,details,scopes:new Set(),type};
+      row={date,event,details,scopes:new Set(),type,assessmentUrl};
       map.set(key,row);
     }
     row.scopes.add(scope);
@@ -4806,7 +4915,7 @@ function getInternalEvents(start, end){
     const type=/mock|exam/i.test(a.name)?'Mock Exam':'Internal Assessment';
     a.scopes.forEach(scope=>{
       const details=[a.sub,a.slot,a.obj].filter(Boolean).join(' · ');
-      add(a.start, a.name, details, scope, type, a.dedupeKey);
+      add(a.start, a.name, details, scope, type, a.dedupeKey, a.assessmentUrl);
     });
   });
   // Render-friendly rows: collapse scopes nicely
@@ -4815,7 +4924,7 @@ function getInternalEvents(start, end){
     // If event spans many sets in same year, summarise as "Year X (all sets)"
     let appliesTo;
     appliesTo=formatEventScopes(scopes);
-    return {date:r.date,event:r.event,details:r.details,appliesTo,type:r.type};
+    return {date:r.date,event:r.event,details:r.details,appliesTo,type:r.type,assessmentUrl:r.assessmentUrl};
   }).sort((a,b)=>a.date-b.date);
   return out;
 }
@@ -5201,6 +5310,7 @@ function renderHOD(){
             <span class="dash-event-content">
               <span class="dash-event-name">${esc(e.event)}${e.tentative?` <span class="dash-tentative">Tentative</span>`:''}</span>
               <span class="dash-event-meta">${esc(e.appliesTo)}${e.details?` · ${esc(e.details)}`:''} ${typePill(e)}</span>
+              ${e.assessmentUrl?`<a href="${esc(e.assessmentUrl)}" target="_blank" rel="noopener noreferrer" class="assess-link" style="display:inline-block;margin-top:4px;">Open test folder</a>`:''}
             </span>
           </li>`).join('')}</ul>
       </section>`).join('')}</div>`;
@@ -5856,6 +5966,7 @@ function renderAssessments(){
           <div class="assess-date">📅 ${esc(a.dates)}</div>
           ${a.slot?`<div class="assess-sub" style="margin-top:5px;"><strong>Timing:</strong> ${esc(a.slot)}</div>`:''}
           ${a.obj?`<div class="assess-sub" style="margin-top:5px;">${esc(a.obj)}</div>`:''}
+          ${assessmentFolderLink(ygInt,'Ma1',a.unit)}
         </div></div>`;
       });
       html += '</div></div>';
@@ -5886,6 +5997,7 @@ function renderAssessments(){
           <div class="assess-sub">${esc(a.sub)}</div>
           <div class="assess-date">📅 ${a.dates}</div>
           ${a.eoy?`<div class="assess-flag" style="color:var(--navy);">${ygInt===11?'IGCSE External Examinations':'Year ${ygInt} Exams'}</div>`:''}
+          ${assessmentFolderLink(ygInt,'Ma4',a.unit)}
         </div></div>`;
       });
       html+='</div></div>';
@@ -5925,6 +6037,7 @@ function renderAssessments(){
           <div class="assess-sub">${esc(a.sub)}</div>
           <div class="assess-date">📅 ${a.dates}</div>
           ${a.eoy?'<div class="assess-flag" style="color:var(--navy);">Year 8 Summer Exams</div>':''}
+          ${assessmentFolderLink(ygInt,'Ma1',a.unit)}
         </div></div>`;
       });
       html+='</div></div>';
@@ -5958,6 +6071,7 @@ function renderAssessments(){
           <div class="assess-sub">${esc(a.sub)}</div>
           <div class="assess-date">📅 ${a.dates}</div>
           ${a.eoy?'<div class="assess-flag" style="color:var(--navy);">Full year — 2 papers</div>':''}
+          ${assessmentFolderLink(ygInt,'Ma1',a.unit)}
         </div></div>`;
       });
       html+='</div></div>';
@@ -5984,9 +6098,8 @@ function renderAssessments(){
       <div class="assess-grid">`;
     ta.forEach(a=>{
       const cls=a.eoy?'eoy':a.interim?'interim':'';
-      const ygFolders=ASSESSMENT_FOLDERS_BY_YG[ygInt]||{};
-      const assessUrl=a.unit?ygFolders[a.unit]:'';
-      const cardOpen=assessUrl?`<a href="${assessUrl}" target="_blank" style="text-decoration:none;color:inherit;display:block;">`:'<div>';
+      const assessUrl=assessmentFolderUrl(ygInt,'',a.unit);
+      const cardOpen=assessUrl?`<a href="${esc(assessUrl)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;display:block;">`:'<div>';
       const cardClose=assessUrl?'</a>':'</div>';
       html+=`${cardOpen}<div class="assess-card ${cls}" style="${assessUrl?'cursor:pointer;':''}">
         <div class="assess-week">${a.week}</div>
@@ -5995,7 +6108,7 @@ function renderAssessments(){
         <div class="assess-date">📅 ${a.dates}</div>
         ${a.interim?'<div class="assess-flag">★ INTERIM DATA DROP</div>':''}
         ${a.eoy?'<div class="assess-flag" style="color:var(--navy);">Full year — 2 papers</div>':''}
-        ${assessUrl?`<span class="assess-link" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;">📋 Unit Test Folder</span>`:''}
+        ${assessUrl?`<span class="assess-link" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;">Open test folder</span>`:''}
         ${a.eoy&&!assessUrl?`<span style="font-size:11px;color:var(--dark-gray);display:block;margin-top:8px;">See individual unit folders above</span>`:''}
       </div>${cardClose}`;
     });

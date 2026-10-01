@@ -1,0 +1,126 @@
+Make two edits to index.html. This replaces the folder lookup added earlier so that
+every Year 7-11 unit test links to its folder under 4. Resources.
+
+EDIT 1 — replace the folder maps with a generator.
+Find this single line:
+
+  const ASSESSMENT_FOLDERS_BY_YG = { 7: ASSESSMENT_FOLDERS, 8: Y8_ASSESSMENT_FOLDERS, 9: Y9_ASSESSMENT_FOLDERS };
+
+Replace that whole line with:
+
+// ── Unit test folders, generated from the Resources tree ───────────────
+// Every unit test lives at  4. Resources / <key stage> / <year> /
+// <unit folder> / Unit_<n>_Assessment.  The folder names below are the real
+// names on SharePoint, so they are the only thing to edit if one is renamed.
+// Unit 0 (Start/End of Year) has no folder and correctly gets no link.
+const ASSESSMENT_ROOT='https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources';
+const ASSESSMENT_YEAR_PATH={
+  7 :'A.%20Key%20Stage%203/Year_7',
+  8 :'A.%20Key%20Stage%203/Year_8',
+  9 :'A.%20Key%20Stage%203/Year_9',
+  10:'B.%20Key%20Stage%204/Year%2010',
+  11:'B.%20Key%20Stage%204/Year%2011'
+};
+const ASSESSMENT_UNIT_FOLDER={
+  7:{
+    1:'Unit_1_Analysing_and_Displaying_Data', 2:'Unit_2_Number',
+    3:'Unit_3_Equations_Functions_and_Formulae', 4:'Unit_4_Fractions',
+    5:'Unit_5_Angles_and_Shapes', 6:'Unit_6_Decimals_and_Percentages',
+    7:'Unit_7_Ratio_and_Proportion', 8:'Unit_8_Measures_and_Shapes',
+    9:'Unit_9_Sequences_and_Graphs', 10:'Unit_10_Transformations',
+    11:'Unit_11_Probability'
+  },
+  8:{
+    1:'Unit_1_Number', 2:'Unit_2_Equations_and_Formulae',
+    3:'Unit_3_Working_with_Powers', 4:'Unit_4_2D_Shapes_and_3D_Solids',
+    5:'Unit_5_Graphs', 6:'Unit_6_Fractions_Decimals_Ratio_and_Proportion',
+    7:'Unit_7_Probability', 8:'Unit_8_Percentages_and_Ratios',
+    9:'Unit_9_Shapes_and_Angles', 10:'Unit_10_Charts_and_Diagrams',
+    11:'Unit_11_Straight_Line_Graphs'
+  },
+  9:{
+    1:'Unit_1_Significant_Figures_Powers_and_Standard_Form',
+    2:'Unit_2_2D_Shapes_and_3D_Solids', 3:'Unit_3_Quadratics',
+    4:'Unit_4_Constructions', 5:'Unit_5_Inequalities_Equations_and_Formulae',
+    6:'Unit_6_Collecting_and_Analysing_Data', 7:'Unit_7_Multiplicative_Reasoning',
+    8:'Unit_8_Scale_Drawings_and_Measures', 9:'Unit_9_Accuracy_and_Measures',
+    10:'Unit_10_Graphical_Solutions', 11:'Unit_11_Trigonometry',
+    12:'Unit_12_Probability'
+  },
+  10:{
+    '1A':'Unit_1A_Core_Number_and_Accuracy',
+    '1B':'Unit_1B_Percentages_Bounds_and_Applied_Number',
+    2:'Unit_2_Ratio_Proportion_and_Measures',
+    '3A':'Unit_3A_Algebra_Equations_and_Inequalities',
+    '3B':'Unit_3B_Linear_Graphs_and_Simultaneous_Equations',
+    4:'Unit_4_Sequences',
+    '5A':'Unit_5A_Expanding_Factorising_and_Quadratics',
+    '5B':'Unit_5B_Formulae_Rearranging_and_Algebraic_Fractions',
+    6:'Unit_6_Inequalities_and_Advanced_Algebra_Review',
+    '7A':'Unit_7A_Angles_Polygons_Symmetry_and_Bearings',
+    '7B':'Unit_7B_Constructions_Loci_and_Scale_Drawings',
+    '7C':'Unit_7C_Transformations',
+    '8A':'Unit_8A_Pythagoras_and_Right_Angled_Trigonometry',
+    '8B':'Unit_8B_Mensuration_and_Mixed_Geometry',
+    9:'Unit_9_3D_Geometry_and_Similarity',
+    '10A':'Unit_10A_Core_Statistics', '10B':'Unit_10B_Advanced_Statistics'
+  },
+  11:{
+    1:'Unit_1_Quadratic_Equations_Graphs_and_Algebraic_Fractions',
+    2:'Unit_2_Graphs_and_Proportional_Relationships',
+    3:'Unit_3_Algebra_and_Bounds',
+    4:'Unit_4_Linear_Graphs_Inequalities_and_Quadratics',
+    5:'Unit_5_Proofs_Sectors_and_Data_Representation',
+    6:'Unit_6_Volume_Surface_Area_Similarity_and_Trigonometry',
+    7:'Unit_7_3D_Geometry_Similar_Shapes_and_Functions',
+    8:'Unit_8_Sets_Probability_and_Circle_Theorems',
+    9:'Unit_9_Differentiation',
+    10:'Unit_10_Sequences_Quadratic_Graphs_and_Inequalities',
+    11:'Unit_11_Trigonometric_Graphs_and_Graph_Transformations',
+    12:'Unit_12_Vectors'
+  }
+};
+function buildAssessmentUrl(yg,unit){
+  const yearPath=ASSESSMENT_YEAR_PATH[yg];
+  const folder=(ASSESSMENT_UNIT_FOLDER[yg]||{})[unit];
+  if(!yearPath || !folder) return '';
+  return `${ASSESSMENT_ROOT}/${yearPath}/${folder}/Unit_${unit}_Assessment?csf=1&web=1`;
+}
+const ASSESSMENT_FOLDERS_BY_YG = (()=>{
+  const out={};
+  Object.keys(ASSESSMENT_UNIT_FOLDER).forEach(yg=>{
+    const y=Number(yg); out[y]={};
+    Object.keys(ASSESSMENT_UNIT_FOLDER[y]).forEach(unit=>{
+      out[y][unit]=buildAssessmentUrl(y,unit);
+    });
+  });
+  return out;
+})();
+
+EDIT 2 — route the accelerated sets to the year above.
+Find the existing assessmentFolderUrl function (added in an earlier change) and
+replace the whole function, including its comment lines, with:
+
+// Accelerated sets sit on the scheme of work of the year above, so their unit
+// tests live in that year's folder rather than their own.
+const ACCELERATED_FOLDER_YEAR = { '8|Ma1':9, '9|Ma1':10 };
+
+// The SharePoint unit-test folder for an assessment, or '' when there isn't one.
+function assessmentFolderUrl(yg,set,unit){
+  if(unit===null || unit===undefined || unit==='') return '';
+  const y=Number(yg);
+  if(y===12) return (set==='Ma1P12'||set==='Ma2P12')
+    ? (Y12_P12_ASSESSMENT_FOLDERS[unit]||'') : '';
+  const lookupYear = ACCELERATED_FOLDER_YEAR[`${y}|${set}`] || y;
+  const map=ASSESSMENT_FOLDERS_BY_YG[lookupYear];
+  return (map && map[unit]) || '';
+}
+
+Leave the old ASSESSMENT_FOLDERS, Y8_ASSESSMENT_FOLDERS and Y9_ASSESSMENT_FOLDERS
+constants where they are — they are now unused but harmless, and deleting them
+risks breaking something else. Do NOT touch Y12_P12_ASSESSMENT_FOLDERS, which is
+still used by the Year 12 Pure 1/2 lesson buttons.
+
+Confirm the page loads with no console errors, and that Year 10 and Year 11
+assessments now show an "Open test folder" link on the Dashboard and on the
+Assessment Schedule page.

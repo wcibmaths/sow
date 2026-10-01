@@ -581,6 +581,23 @@
   .tc-term-bar.amber{background:var(--amber);}
   .tc-term-bar.red{background:var(--accent);}
   .tc-pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+  .tc-now{border:1px solid var(--mid-gray);border-radius:9px;padding:9px 11px;
+    margin-bottom:13px;background:var(--gray);}
+  .tc-now-row{display:flex;gap:9px;align-items:flex-start;}
+  .tc-now-row + .tc-now-row{margin-top:8px;padding-top:8px;border-top:1px dashed var(--mid-gray);}
+  .tc-now-tag{flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:0.06em;
+    padding:3px 6px;border-radius:4px;margin-top:1px;text-transform:uppercase;min-width:38px;
+    text-align:center;}
+  .tc-now-tag.now{background:#EAF1F6;color:var(--dark-amber);}
+  .tc-now-tag.next{background:var(--mid-gray);color:var(--dark-gray);}
+  .tc-now-tag.fin{background:#E8F4EE;color:var(--dark-green);}
+  .tc-now-body{min-width:0;flex:1;}
+  .tc-now-unit{font-size:10px;font-weight:700;color:var(--dark-gray);text-transform:uppercase;
+    letter-spacing:0.04em;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tc-now-lesson{font-size:12.5px;font-weight:600;color:var(--navy);line-height:1.35;}
+  .tc-now-when{font-size:10.5px;font-weight:600;color:var(--dark-gray);margin-top:3px;}
+  .tc-now-none{font-size:12px;color:var(--dark-gray);font-style:italic;line-height:1.35;}
+  .tc-updated{display:inline-block;margin-top:4px;}
   .teacher-card.progress-card{cursor:pointer;position:relative;}
   .teacher-card.progress-card:focus{outline:3px solid rgba(110,138,165,.42);outline-offset:2px;}
   .teacher-card.progress-card:focus-visible{box-shadow:0 0 0 4px rgba(168,191,209,.35),0 6px 18px rgba(47,54,64,.08);}
@@ -4853,6 +4870,59 @@ function getTeacherWeekEvents(week, dates, term, yg){
 }
 
 // Pace / progress for a single (yg,set) using existing helpers.
+// NOW  = the lesson currently marked In progress (first one, in scheme order).
+// NEXT = the first Not-started lesson AFTER it. Deliberately not the earliest gap
+//        anywhere in the scheme: if someone forgot to tick lesson 4 but is now
+//        teaching lesson 10, the next thing they teach is 11, not 4.
+function getClassPosition(yg,set){
+  const sow=sowFor(yg,set);
+  if(!sow) return null;
+  const teachable=getTeachable(sow);
+  if(!teachable.length) return null;
+  const statuses=teachable.map(l=>getStatus(l.id,set));
+  const curIdx=statuses.indexOf('In progress');
+  let nextIdx=-1;
+  for(let i=(curIdx>=0?curIdx+1:0);i<teachable.length;i++){
+    if(statuses[i]==='Not started'){ nextIdx=i; break; }
+  }
+  let lastDoneIdx=-1;
+  for(let i=teachable.length-1;i>=0;i--){ if(statuses[i]==='Done'){ lastDoneIdx=i; break; } }
+  return {
+    current : curIdx>=0      ? teachable[curIdx]      : null,
+    next    : nextIdx>=0     ? teachable[nextIdx]     : null,
+    lastDone: lastDoneIdx>=0 ? teachable[lastDoneIdx] : null,
+    complete: curIdx<0 && nextIdx<0,
+    started : curIdx>=0 || lastDoneIdx>=0
+  };
+}
+// Unit is numeric in most schemes but free text in a few (Y11 accelerated uses
+// "Course opening"), and some unit names already carry their own number
+// ("0. Start of Year"), so only prefix "Unit n" when it is a real number.
+function posUnit(l){
+  if(!l) return '';
+  const name=String(l.unitName||'').trim();
+  const u=l.unit;
+  const n=String(u==null?'':u).trim();
+  if(!/^\d+$/.test(n) || Number(n)<=0) return name;
+  if(name.indexOf(n)===0) return name;
+  return `Unit ${n} · ${name}`;
+}
+// KS3 rows already begin with their own number ("1.1 Averages and range"), and
+// some rows use a marker instead ("Revision", "★") which would read "LRevision —".
+function posLesson(l){
+  if(!l) return '';
+  const name=String(l.lessonName||'').trim();
+  const no=String(l.lessonNo||'').trim();
+  if(!no || name.indexOf(no)===0) return name;
+  if(!/^\d/.test(no)) return name;
+  return `L${no} — ${name}`;
+}
+// '22-26 Sep 2026' -> '22-26 Sep'. The year is noise when every card shares it.
+function posWhen(l){
+  if(!l||!l.dates) return '';
+  return String(l.dates).replace(/\s*\b(20\d\d)\b\s*$/,'').trim();
+}
+
 function getClassPace(yg, set, today){
   const sow=sowFor(yg,set);
   if(!sow) return null;
@@ -4960,18 +5030,72 @@ function renderHOD(){
       ? ialInfo.label.replace(/\s*\([^)]*\)\s*$/, '')
       : displaySet(hodYear,set);
     const subLine = `Year ${hodYear} · ${p.done} of ${p.total} lessons done`;
+    const pa=window.WCIB_PROGRESS_ACTIVITY;
+    let lastAt=null;
+    if(pa){
+      teacherNamesForClass(hodYear,set).forEach(t=>{
+        const at=pa.lastUpdated(t,hodYear,set);
+        if(at && (!lastAt || at>lastAt)) lastAt=at;
+      });
+    }
+    const upd=pa?pa.status(lastAt):null;
+    const updHtml=upd
+      ? `<div class="tc-updated"><span class="pill ${upd.tone}" title="${
+          lastAt?esc(pa.format(lastAt)):'No progress recorded for this class yet'
+        }">${esc(upd.label)}</span></div>`
+      : '';
+    const pace=getClassPace(hodYear,set,today);
+    let paceHtml='';
+    if(pace && pace.behindBy>=1){
+      paceHtml=` <span class="behind-pill">${pace.behindBy} lesson${pace.behindBy===1?'':'s'} behind</span>`;
+    }else if(pace && pace.aheadBy>=1){
+      paceHtml=` <span class="pace-ahead">${pace.aheadBy} ahead</span>`;
+    }else if(pace){
+      paceHtml=` <span class="pace-even">On schedule</span>`;
+    }
+    const pos=getClassPosition(hodYear,set);
+    const nowRow=(tone,label,l,trail)=>`
+      <div class="tc-now-row">
+        <span class="tc-now-tag ${tone}">${label}</span>
+        <div class="tc-now-body">
+          ${posUnit(l)?`<div class="tc-now-unit">${esc(posUnit(l))}</div>`:''}
+          <div class="tc-now-lesson">${esc(posLesson(l))}</div>
+          ${posWhen(l)?`<div class="tc-now-when">Scheduled ${esc(posWhen(l))}${trail||''}</div>`:''}
+        </div>
+      </div>`;
+    const noteRow=(tone,label,text,trail)=>`
+      <div class="tc-now-row">
+        <span class="tc-now-tag ${tone}">${label}</span>
+        <div class="tc-now-body"><div class="tc-now-none">${text}${trail||''}</div></div>
+      </div>`;
+    let nowHtml='';
+    if(pos){
+      let rows='';
+      if(pos.complete){
+        rows=noteRow('fin','Done','Whole scheme of work marked complete.');
+      }else{
+        if(pos.current)        rows+=nowRow('now','Now',pos.current,paceHtml);
+        else if(!pos.started)  rows+=noteRow('now','Now','Not started — nothing ticked yet.',paceHtml);
+        else                   rows+=noteRow('now','Now',
+                                 `Nothing in progress. Last completed: ${esc(posLesson(pos.lastDone))}`,paceHtml);
+        if(pos.next) rows+=nowRow('next','Next',pos.next);
+      }
+      nowHtml=`<div class="tc-now">${rows}</div>`;
+    }
     cardsHtml+=`<div class="teacher-card progress-card" tabindex="0" role="button" aria-label="View progress for Year ${hodYear} ${esc(setDisplay)}, ${esc(teacher)}" data-progress-yg="${hodYear}" data-progress-set="${esc(set)}">
       <div class="tc-header">
         <div class="tc-avatar">${teacher.length>5?teacher.slice(0,5):teacher}</div>
         <div>
           <div class="tc-name">${teacher} &nbsp;<span style="font-weight:400;color:var(--dark-gray);font-size:13px;">· ${setDisplay}</span></div>
           <div class="tc-sub">${subLine}</div>
+          ${updHtml}
         </div>
         <div style="margin-left:auto;font-size:22px;font-weight:800;">
           <span style="color:${p.pct>=70?'var(--green)':p.pct>=40?'var(--amber)':'var(--red)'}">${p.pct}%</span>
         </div>
       </div>
       <div class="tc-body">
+        ${nowHtml}
         <div style="font-size:11px;color:var(--dark-gray);font-weight:600;margin-bottom:5px;">OVERALL YEAR PROGRESS</div>
         <div class="tc-year-bar-wrap" style="margin-bottom:14px;">
           <div class="tc-year-bar ${overallBc}" style="width:${p.pct}%"></div>
@@ -5150,8 +5274,7 @@ function renderHOD(){
   const healthPanelHtml = card('',ICN.chart,'Year Group Health Overview','',healthHtml);
 
   document.getElementById('hod-content').innerHTML=insightsHtml;
-  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+
-    window.WCIB_PROGRESS_ACTIVITY.renderTable(hodYear,hodSets)+cardsHtml;
+  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
   document.getElementById('hod-health-content').innerHTML=healthPanelHtml;
   document.querySelectorAll('#teacher-progress-content .progress-card').forEach(card=>{
     const open=()=>openDashboardClassProgress(card.dataset.progressYg,card.dataset.progressSet);

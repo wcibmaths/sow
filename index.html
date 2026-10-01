@@ -278,6 +278,14 @@
   .teacher-progress-panel{background:#FFFFFF;border:1px solid var(--mid-gray);border-radius:12px;
     box-shadow:var(--soft-shadow);padding:14px 16px;margin-top:16px;}
   #hod-health-content{margin-top:16px;}
+  .activity-table-wrap{margin:16px 0 20px;overflow-x:auto;}
+  .activity-table{min-width:720px;}
+  .activity-table time,.activity-table .pill{white-space:nowrap;}
+  .activity-caption{text-align:left;font-size:11px;color:var(--dark-gray);padding-bottom:9px;}
+  .activity-detail{font-size:11px;color:var(--dark-gray);margin-top:4px;}
+  .activity-class-link{border:0;background:none;color:var(--navy);font:inherit;text-align:left;
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;}
+  .activity-class-link:focus-visible{outline:2px solid var(--mint-d);outline-offset:3px;}
 
   /* ── HoD table ── */
   .hod-table{width:100%;border-collapse:collapse;}
@@ -1159,6 +1167,7 @@ if(!window.WCIB_DB){
 <script src="./exam-dates.js?v=pearson-final-2026-11-r2"></script>
 <script src="./y10-fm-sow.js?v=2026-08-29-v2-fm-anchored"></script>
 <script src="./y11-ma1-sow.js?v=2026-08-29-v6"></script>
+<script src="./progress-activity.js"></script>
 
 <script>
 'use strict';
@@ -3848,14 +3857,30 @@ function validateIalSow(yg, set){
 //     collection "sow"  →  document "progress"
 // Shape stored in Firestore:
 //   { entries:   { "<lessonId>__<set>": "Done", ... },
-//     updatedAt: { "<lessonId>__<set>": 1712345678901, ... } }
+//     updatedAt: { "<lessonId>__<set>": 1712345678901, ... },
+//     progressActivity: { "<teacher>__<year>-<set>": 1712345678901, ... } }
 //
 // If Firebase has not been configured yet, the page still works and
 // quietly falls back to this browser's own storage (the old behaviour).
 
 let _cache = {};
+let _progressSavePending = false;
 
 function loadAll(){ return _cache; }
+
+async function withProgressSave(change){
+  if(_progressSavePending) throw new Error('Another progress change is saving. Please try again in a moment.');
+  _progressSavePending=true;
+  const controls=[...document.querySelectorAll('.status-sel,#btn-reset')];
+  const disabled=controls.map(control=>control.disabled);
+  controls.forEach(control=>{control.disabled=true;});
+  try{
+    return await change();
+  }finally{
+    _progressSavePending=false;
+    controls.forEach((control,index)=>{control.disabled=disabled[index];});
+  }
+}
 
 function _lsLoad(){
   try{ const r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):{}; }
@@ -3873,47 +3898,89 @@ function _fromDoc(d){
   d = d || {};
   const out = Object.assign({}, d.entries || {});
   out.__updatedAt = Object.assign({}, d.updatedAt || {});
+  out.__progressActivity = Object.assign({}, d.progressActivity || {});
   return out;
 }
 // flat shape  →  Firestore document
 function _toDoc(data){
   data = data || {};
   const entries = {};
-  Object.keys(data).forEach(k=>{ if(k!=='__updatedAt') entries[k]=data[k]; });
-  return { entries: entries, updatedAt: Object.assign({}, data.__updatedAt || {}) };
+  Object.keys(data).forEach(k=>{ if(k!=='__updatedAt' && k!=='__progressActivity') entries[k]=data[k]; });
+  return { entries: entries, updatedAt: Object.assign({}, data.__updatedAt || {}),
+    progressActivity: Object.assign({}, data.__progressActivity || {}) };
 }
 
 // Replace progress on reset while preserving shared lesson resources and
 // any other fields on this document. A transaction retries concurrent edits.
-function saveAll(data){
-  _cache = data;
-  _lsSave(data);
-  flashSync();
+async function saveAll(data,resetKeys,activity){
+  let savedActivity=activity;
   if(window.WCIB_DB){
     const db=firebase.firestore();
-    db.runTransaction(async transaction=>{
+    await db.runTransaction(async transaction=>{
       const snap=await transaction.get(window.WCIB_DB);
-      transaction.set(window.WCIB_DB,{...(snap.data()||{}),..._toDoc(data)});
-    }).catch(e=>console.warn('Firebase save failed',e));
+      const current=snap.data()||{};
+      if(resetKeys){
+        // Reset only this class; keep concurrent edits and activity in other classes.
+        const entries={...(current.entries||{})},updatedAt={...(current.updatedAt||{})};
+        const changed=resetKeys.some(key=>(entries[key]||'Not started')!=='Not started');
+        resetKeys.forEach(key=>{delete entries[key];delete updatedAt[key];});
+        const progressActivity={...(current.progressActivity||{})};
+        savedActivity=changed && activity
+          ? window.WCIB_PROGRESS_ACTIVITY.resolve(activity,_fromDoc(current)) : null;
+        if(savedActivity) Object.assign(progressActivity,savedActivity.patch);
+        transaction.set(window.WCIB_DB,{...current,entries,updatedAt,progressActivity});
+      }else{
+        transaction.set(window.WCIB_DB,{...current,..._toDoc(data)});
+      }
+    });
   }
+  if(resetKeys){
+    const latest=loadAll();
+    resetKeys.forEach(key=>{
+      if(activity && (latest.__updatedAt?.[key]||0)>activity.at) return;
+      delete latest[key];
+      if(latest.__updatedAt) delete latest.__updatedAt[key];
+    });
+    window.WCIB_PROGRESS_ACTIVITY.apply(latest,savedActivity);
+    _cache=latest;
+  }else{
+    _cache=data;
+  }
+  _lsSave(_cache);
+  flashSync();
 }
 
 // Save ONE tick. Only that one field is sent, so two teachers ticking at
 // the same moment can never wipe out each other's work.
-function _saveOne(key, val, ts, extra){
-  _lsSave(_cache);
-  flashSync();
+function _saveOne(key, val, ts, extra, activity){
   if(window.WCIB_DB){
+    if(activity){
+      return firebase.firestore().runTransaction(async transaction=>{
+        const snap=await transaction.get(window.WCIB_DB);
+        const current=snap.data()||{};
+        if(((current.entries||{})[key]||'Not started')===val){
+          // Another device already made this change. Preserve its time and
+          // still save any requested timetable pin without inventing activity.
+          if(extra) transaction.set(window.WCIB_DB,extra,{merge:true});
+          return {timestamp:current.updatedAt?.[key]||null,activity:null};
+        }
+        const resolved=window.WCIB_PROGRESS_ACTIVITY.resolve(activity,_fromDoc(current));
+        transaction.set(window.WCIB_DB,{
+          entries:{[key]:val},updatedAt:{[key]:ts},
+          ...(extra||{}),progressActivity:resolved.patch
+        },{merge:true});
+        return {timestamp:ts,activity:resolved};
+      });
+    }
     const patch = { entries:{}, updatedAt:{} };
     patch.entries[key] = val;
     patch.updatedAt[key] = ts;
     if(extra) Object.assign(patch,extra);
-    const saved=window.WCIB_DB.set(patch, {merge:true});
-    if(extra) return saved;
-    saved.catch(e=>console.warn('Firebase save failed',e));
+    return window.WCIB_DB.set(patch, {merge:true}).then(()=>({timestamp:ts,activity:null}));
   }else if(extra){
     return Promise.reject(new Error('Shared progress storage is unavailable.'));
   }
+  return Promise.resolve({timestamp:ts,activity:null});
 }
 
 async function syncFromServer(){
@@ -3924,7 +3991,7 @@ async function syncFromServer(){
       // First ever run: if this browser already holds ticks from before
       // Firebase was switched on, seed the shared copy with them.
       const local=_lsLoad();
-      const hasLocal=Object.keys(local).some(k=>k!=='__updatedAt');
+      const hasLocal=Object.keys(local).some(k=>k!=='__updatedAt' && k!=='__progressActivity');
       _cache = hasLocal ? local : {};
       if(hasLocal) await window.WCIB_DB.set(_toDoc(local), {merge:true});
     } else {
@@ -3950,27 +4017,29 @@ async function syncFromServer(){
 
 function makeKey(lessonId,set){ return lessonId+'__'+set; }
 function getStatus(lessonId,set){ return loadAll()[makeKey(lessonId,set)]||'Not started'; }
-function setStatusValue(lessonId,set,val,extra){
-  if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return;  // viewing only
-  const d=loadAll(); const k=makeKey(lessonId,set); const ts=Date.now();
-  const previous=d[k],previousTime=d.__updatedAt?.[k];
-  d[k]=val;
-  if(!d.__updatedAt || typeof d.__updatedAt!=='object') d.__updatedAt={};
-  d.__updatedAt[k]=ts;
-  _cache=d;
-  const saved=_saveOne(k,val,ts,extra);
-  if(!extra) return saved;
-  return saved.catch(err=>{
-    const latest=loadAll();
-    if(latest[k]===val && latest.__updatedAt?.[k]===ts){
-      if(previous===undefined) delete latest[k];
-      else latest[k]=previous;
-      if(previousTime===undefined) delete latest.__updatedAt[k];
-      else latest.__updatedAt[k]=previousTime;
-      _cache=latest;
-      _lsSave(latest);
+async function setStatusValue(lessonId,set,val,extra){
+  if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return Promise.resolve();  // viewing only
+  return withProgressSave(async ()=>{
+    const d=loadAll(); const k=makeKey(lessonId,set); const ts=Date.now();
+    if((d[k]||'Not started')===val){
+      // A repeated status can still pin a timetable slot, but is not a progress edit.
+      if(!extra) return;
+      if(!window.WCIB_DB) throw new Error('Shared progress storage is unavailable.');
+      await window.WCIB_DB.set(extra,{merge:true});
+      return;
     }
-    throw err;
+    const activity=window.WCIB_PROGRESS_ACTIVITY.recordLesson(d,lessonId,set,ts);
+    const result=await _saveOne(k,val,ts,extra,activity);
+    // Publish locally only after success; failures cannot become activity baselines.
+    const latest=loadAll();
+    if((latest.__updatedAt?.[k]||0)<=(result.timestamp||ts)){
+      latest[k]=val;
+      latest.__updatedAt={...(latest.__updatedAt||{})};
+      if(result.timestamp) latest.__updatedAt[k]=result.timestamp;
+      else delete latest.__updatedAt[k];
+    }
+    window.WCIB_PROGRESS_ACTIVITY.apply(latest,result.activity);
+    _cache=latest;_lsSave(latest);flashSync();
   });
 }
 function getStatusUpdatedAt(lessonId,set){
@@ -4562,7 +4631,7 @@ function migrateY10ProgressAliases(rows){
     candidates.sort((a,b)=>(updates[b]||0)-(updates[a]||0));
     const source=candidates[0];
     entries[target]=entries[source];
-    updates[target]=updates[source]||Date.now();
+    if(updates[source]) updates[target]=updates[source];
     changed=true;
   });
   if(!changed) return;
@@ -4585,7 +4654,7 @@ function migrateY11ProgressAliases(rows){
     candidates.sort((a,b)=>(updates[b]||0)-(updates[a]||0));
     const source=candidates[0];
     entries[target]=entries[source];
-    updates[target]=updates[source]||Date.now();
+    if(updates[source]) updates[target]=updates[source];
     changed=true;
   });
   if(!changed) return;
@@ -5076,12 +5145,13 @@ function renderHOD(){
     </div>
     <div class="hod-footer">
       <span>Data is based on lessons and assessments up to today (${fmtY(today)}).</span>
-      <span class="hf-refresh">Last updated: ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}, ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
+      <span class="hf-refresh">Dashboard refreshed: ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}, ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
     </div>`;
   const healthPanelHtml = card('',ICN.chart,'Year Group Health Overview','',healthHtml);
 
   document.getElementById('hod-content').innerHTML=insightsHtml;
-  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
+  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+
+    window.WCIB_PROGRESS_ACTIVITY.renderTable(hodYear,hodSets)+cardsHtml;
   document.getElementById('hod-health-content').innerHTML=healthPanelHtml;
   document.querySelectorAll('#teacher-progress-content .progress-card').forEach(card=>{
     const open=()=>openDashboardClassProgress(card.dataset.progressYg,card.dataset.progressSet);
@@ -5466,34 +5536,39 @@ function toggleTerm(termId){
   header.classList.toggle('collapsed',collapsed);
 }
 
-function handleChange(e){
+async function handleChange(e){
   const sel=e.target, id=sel.dataset.lessonId, set=sel.dataset.set, val=sel.value;
-  setStatusValue(id,set,val);
-  sel.className='status-sel '+statusClass(val);
-  // Update progress bar
-  const {yg:yg2,set:set2}=selectedTvClass();
-  const p=getProgress(set2,sowFor(yg2,set2)||Y7_SOW);
-  const bar=document.getElementById('tv-bar');
-  const pct=document.getElementById('tv-pct');
-  const lbl=document.getElementById('tv-lbl');
-  if(bar)bar.style.width=p.pct+'%';
-  if(pct)pct.textContent=p.pct+'%';
-  if(lbl)lbl.textContent=`${p.done} of ${p.total} lessons completed (${p.pct}%)`;
+  try{
+    await setStatusValue(id,set,val);
+  }catch(err){
+    console.error('Could not save progress',err);
+    alert('Could not save SOW progress: '+err.message);
+    renderTeacher();
+    return;
+  }
+  // Refresh term totals as well as the overall bar after the confirmed save.
+  renderTeacher();
 }
 
-function resetProgress(){
+async function resetProgress(){
   if(window.WCIB_CAN_EDIT && !window.WCIB_CAN_EDIT()) return;  // viewing only
   if(!confirm('Reset all progress for this class? This cannot be undone.'))return;
   const {yg,set}=selectedTvClass();
   const sow=sowFor(yg,set)||Y7_SOW;
-  const d=loadAll();
-  sow.forEach(l=>{
-    const k=makeKey(l.id,set);
-    delete d[k];
-    if(d.__updatedAt && typeof d.__updatedAt==='object') delete d.__updatedAt[k];
-  });
-  saveAll(d);
-  renderTeacher();
+  try{
+    await withProgressSave(async ()=>{
+      const before=loadAll();
+      const resetKeys=sow.map(l=>makeKey(l.id,set));
+      if(!resetKeys.some(key=>(before[key]||'Not started')!=='Not started')) return;
+      const activity=window.WCIB_PROGRESS_ACTIVITY.record(before,yg,set,Date.now());
+      await saveAll(before,resetKeys,activity);
+    });
+    renderTeacher();
+  }catch(err){
+    console.error('Could not reset progress',err);
+    alert('Could not reset SOW progress: '+err.message);
+    renderTeacher();
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════

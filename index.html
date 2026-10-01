@@ -5115,23 +5115,6 @@ function renderHOD(){
   });
   cardsHtml+='</div>';
 
-  // ── Department term summary ──────────────────────────────────────
-  let summaryHtml=`<div class="dash-summary">
-    <div class="dash-summary-title">Department Average — Term Targets</div>`;
-  terms.forEach((term,i)=>{
-    const label=['Target 100% by Dec','Target 100% by Apr','Target 100% by Jul'][i];
-    let sumDone=0,sumTotal=0;
-    hodSets.forEach(set=>{const cs=sowFor(hodYear,set)||hodSow;const tp2=getTermProgress(set,term,cs);sumDone+=tp2.done;sumTotal+=tp2.total;});
-    const avgPct=sumTotal?Math.round(sumDone/sumTotal*100):0;
-    const bc=barClass(avgPct);
-    summaryHtml+=`<div class="term-summary-row">
-      <div class="term-summary-label">${term}<div style="font-size:10px;font-weight:400;color:var(--dark-gray)">${label}</div></div>
-      <div class="term-summary-bar-wrap"><div class="term-summary-bar ${bc}" style="width:${avgPct}%"></div></div>
-      <div class="term-summary-pct" style="color:${avgPct>=70?'var(--dark-green)':avgPct>=40?'var(--dark-amber)':'var(--red)'}">${avgPct}%</div>
-    </div>`;
-  });
-  summaryHtml+='</div>';
-
   // ── HoD insight aggregation (all year groups, browser-date-driven) ──
   const allPairs=allClassPairs();
   const paces=allPairs.map(({yg,set})=>getClassPace(yg,set,today)).filter(Boolean);
@@ -5274,7 +5257,7 @@ function renderHOD(){
   const healthPanelHtml = card('',ICN.chart,'Year Group Health Overview','',healthHtml);
 
   document.getElementById('hod-content').innerHTML=insightsHtml;
-  document.getElementById('teacher-progress-content').innerHTML=summaryHtml+cardsHtml;
+  document.getElementById('teacher-progress-content').innerHTML=cardsHtml;
   document.getElementById('hod-health-content').innerHTML=healthPanelHtml;
   document.querySelectorAll('#teacher-progress-content .progress-card').forEach(card=>{
     const open=()=>openDashboardClassProgress(card.dataset.progressYg,card.dataset.progressSet);

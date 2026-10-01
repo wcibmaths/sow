@@ -1,0 +1,135 @@
+Two scoped UI changes to index.html in the WCIB SoW tracker. Do not change any
+other markup, styling, data, or logic. Do not refactor. Do not touch the SoW
+arrays, Firebase, or the auth gate.
+
+=========================================================
+CHANGE 1 — Dashboard "Next 7 days": folder link becomes an aligned icon button
+=========================================================
+
+1a. In the <style> block, REPLACE this rule:
+
+    .dash-event-list li{display:flex;align-items:flex-start;gap:6px;min-width:0;}
+
+    with:
+
+    .dash-event-list li{display:grid;grid-template-columns:10px minmax(0,1fr) 32px;
+      gap:6px;align-items:center;min-width:0;}
+    .dash-event-list li .dash-event-bullet{align-self:start;}
+
+1b. In the same <style> block, ADD these new rules directly after the
+    .dash-tentative rule:
+
+    .dash-event-action{width:32px;height:32px;display:inline-flex;align-items:center;
+      justify-content:center;border:1px solid var(--mid-gray);background:var(--gray);
+      border-radius:8px;color:var(--blue-d);text-decoration:none;justify-self:end;
+      transition:background .15s,border-color .15s,color .15s;}
+    .dash-event-action svg{width:15px;height:15px;}
+    .dash-event-action:hover{background:var(--light-blue);border-color:var(--blue);
+      color:#43607B;}
+    .dash-event-action:focus-visible{outline:2px solid var(--blue-d);outline-offset:2px;}
+    @media(max-width:700px){
+      .dash-event-list li{grid-template-columns:10px minmax(0,1fr) 40px;}
+      .dash-event-action{width:40px;height:40px;}
+    }
+
+1c. Inside the renderGroupedDates helper (it lives in renderHOD), the list item
+    template currently ends with an assess-link anchor INSIDE the
+    dash-event-content span. Move it OUT and make it an icon button.
+
+    Replace the whole <li> template with:
+
+    <li>
+      <span class="dash-event-bullet">&bull;</span>
+      <span class="dash-event-content">
+        <span class="dash-event-name">${esc(e.event)}${e.tentative?` <span class="dash-tentative">Tentative</span>`:''}</span>
+        <span class="dash-event-meta">${esc(e.appliesTo)}${e.details?` &middot; ${esc(e.details)}`:''} ${typePill(e)}</span>
+      </span>
+      ${e.assessmentUrl
+        ? `<a href="${esc(e.assessmentUrl)}" target="_blank" rel="noopener noreferrer"
+             class="dash-event-action" title="Open unit test folder"
+             aria-label="Open unit test folder for ${esc(e.event)}"><svg viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+             stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0
+             0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></a>`
+        : '<span></span>'}
+    </li>
+
+    The empty <span></span> on the else branch is required — it holds the third
+    grid column so every row's action aligns on the same vertical line.
+
+=========================================================
+CHANGE 2 — Assessment Schedule: make the whole card the clickable object
+=========================================================
+
+2a. In the <style> block, REPLACE this rule:
+
+    .assess-card:hover{box-shadow:0 6px 18px rgba(47,54,64,0.08);transform:translateY(-1px);}
+
+    with:
+
+    .assess-card-link{display:block;text-decoration:none;color:inherit;border-radius:14px;}
+    .assess-card-link:focus-visible{outline:2px solid var(--blue-d);outline-offset:3px;}
+    .assess-card-link:hover .assess-card{border-color:var(--blue);
+      box-shadow:0 6px 18px rgba(47,54,64,0.10);transform:translateY(-1px);}
+    .assess-card-link:hover .assess-foot{color:#43607B;}
+    .assess-card-link:hover .af-chev{transform:translateX(3px);}
+
+2b. ADD these new rules after the .assess-link rules (leave the .assess-link
+    rules themselves in place — other code may still reference them):
+
+    .assess-date{display:flex;align-items:center;gap:6px;}
+    .assess-foot{display:flex;align-items:center;gap:6px;margin-top:14px;padding-top:11px;
+      border-top:1px solid var(--border-2);font-size:11.5px;font-weight:600;
+      color:var(--blue-d);transition:color .15s;}
+    .assess-foot svg{width:13px;height:13px;flex:none;}
+    .assess-foot .af-chev{margin-left:auto;transition:transform .15s;}
+    .assess-card.is-static{background:#FBF8F4;box-shadow:none;border-color:var(--border-2);
+      border-left-color:var(--mid-gray);}
+    .assess-card.is-static .assess-foot{color:var(--dark-gray);font-weight:500;}
+
+2c. In renderAssessments, in the ta.forEach loop:
+
+    - Give the opening anchor the class: cardOpen becomes
+      `<a href="..." target="_blank" rel="noopener noreferrer" class="assess-card-link">`
+      and drop the inline style="text-decoration:none;color:inherit;display:block;"
+      (the class now does that).
+    - When there is NO assessUrl, keep rendering a plain <div> wrapper as now,
+      and add is-static to the card's class list.
+    - Remove the inline style="cursor:pointer;" and put cursor:pointer in
+      .assess-card-link instead.
+    - Change the date line from   <div class="assess-date">📅 ${a.dates}</div>
+      to:
+      <div class="assess-date"><svg viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" style="width:13px;height:13px;color:var(--dark-gray)">
+        <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line></svg>${esc(a.dates)}</div>
+    - DELETE the <span class="assess-link">Open test folder</span> line and the
+      "See individual unit folders above" span. Replace BOTH with one footer:
+
+      ${assessUrl
+        ? `<div class="assess-foot"><svg viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+             stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2
+             0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>Unit test folder<span
+             class="af-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline
+             points="9 18 15 12 9 6"></polyline></svg></span></div>`
+        : `<div class="assess-foot"><svg viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+             stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+             No folder — see unit cards above</div>`}
+
+=========================================================
+AFTER THE EDITS
+=========================================================
+Check and report back on:
+- Dashboard → "Next 7 days": assessment rows have a folder icon button on the
+  right, all buttons sit on one vertical line, every row is still two lines tall,
+  and rows without a folder leave that column empty.
+- Assessment Schedule: hovering anywhere on a card lifts it and slides the
+  chevron; tabbing reaches each card once and shows a focus ring; End-of-Year
+  cards look visibly flat and non-clickable.
+- No console errors, and nothing else on the page changed.

@@ -1,0 +1,104 @@
+Remove the four stat tiles from the top of the Dashboard in index.html.
+Delete only what is listed. Do not refactor anything else, do not touch the
+SoW arrays, Firebase, or the auth gate.
+
+=========================================================
+STEP 1 — Delete the markup
+=========================================================
+In <div id="view-hod" class="view active">, delete the ENTIRE
+<div class="stats-grid"> … </div> block — all four <div class="stat …"> tiles
+and their wrapper. It is the first child of #view-hod and ends immediately
+before <div id="hod-content"></div>.
+
+Leave #hod-content, .teacher-progress-panel and #hod-health-content exactly
+as they are. The Dashboard will now begin with the "Next 7 Days" /
+"Upcoming Exams" row.
+
+=========================================================
+STEP 2 — Delete the CSS
+=========================================================
+In the <style> block, delete the whole "Stat tiles" section — every rule from
+.stats-grid through .stat-trend .arr inclusive. That is these selectors:
+
+  .stats-grid                      #view-hod .stats-grid
+  .stat                            #view-hod .stat
+  .stat-icon                       .stat-icon svg
+  .stat.green .stat-icon           .stat.amber .stat-icon
+  .stat.blue .stat-icon            .stat.slate .stat-icon
+  .stat-body                       .stat-num
+  #view-hod .stat-num              .stat-label
+  #view-hod .stat-label            .stat-sub
+  .stat-trend                      .stat-trend.up
+  .stat-trend.warn                 .stat-trend .arr
+
+Then fix the two media queries — CAREFULLY, because one selector is shared:
+
+  In @media(max-width:1000px), DELETE this line:
+      #view-hod .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  Keep the #view-hod .dash-grid line below it.
+
+  In @media(max-width:700px), this line is shared — do NOT delete it, EDIT it:
+      from:  #view-hod .stats-grid,#view-hod .dash-grid{grid-template-columns:1fr;}
+      to:    #view-hod .dash-grid{grid-template-columns:1fr;}
+
+=========================================================
+STEP 3 — Delete the JS that fills them
+=========================================================
+3a. In renderHOD, in the early-return branch inside  if(!hodSets.length){ … },
+    delete these 8 lines (keep the three innerHTML lines above them and the
+    `return;` below them):
+
+      document.getElementById('stat-done').textContent='0';
+      document.getElementById('stat-prog').textContent='0';
+      document.getElementById('stat-behind').textContent='0';
+      document.getElementById('stat-assess').textContent='0';
+      document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
+      document.getElementById('stat-prog-lbl').textContent='Classes behind pace';
+      document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
+      document.getElementById('stat-assess-sub').textContent='Next 30 days';
+
+3b. At the END of renderHOD, delete all 10 remaining stat lines — every line
+    from  document.getElementById('stat-done').textContent=lessonsDoneWeek;
+    down to  document.getElementById('stat-assess-sub').textContent='Next 30 days';
+    (this includes the multi-line stat-prog-sub ternary). They are the last
+    statements in the function, just after the .progress-card event-listener
+    loop. Keep that loop.
+
+=========================================================
+STEP 4 — Delete the now-dead calculations
+=========================================================
+These were computed ONLY for the deleted tiles. Nothing else reads them —
+verify with a project search for each name before deleting, then remove:
+
+  - const weekAgo = …                  (declared near the top of renderHOD)
+  - const allPairs = allClassPairs();
+  - const paces = allPairs.map(…)
+  - the whole  let lessonsDoneWeek=0;  declaration AND the
+    paces.forEach(p=>{ … }) loop that follows it
+  - const assessments7 = …
+  - const in30 = …   and   const extNext30 = …
+  - const behindRows = …   and   const behindYears = …
+  - const noPlannedPace = …
+
+DO NOT delete these, which look similar but are still used:
+  extAll, externalWindows, selectedWindow, extRows, events7, eventRows,
+  in7, today, fmtY, ygRows, healthHtml
+  and especially the line  if(selectedWindow) selectedExternalSeriesId=selectedWindow.id;
+
+Removing the lessonsDoneWeek loop is also a speed-up: it walked every lesson
+of every class on every Dashboard render purely to fill one tile.
+
+=========================================================
+AFTER THE EDITS
+=========================================================
+Check and report back on:
+- Dashboard loads with NO console errors and no "Cannot set properties of null".
+- The Dashboard now starts with "Next 7 Days" and "Upcoming Exams"; both still
+  populate, and the Upcoming Exams series tabs still switch correctly.
+- Teacher / Class Progress cards and Year Group Health Overview are unchanged,
+  and the "behind pace" pills on the teacher cards still appear.
+- Switching to Teacher View / My Week / Assessment Schedule / School Calendar
+  and back to Dashboard still works.
+- At narrow widths (under 700px) the teacher cards still stack to one column.
+- A year group with no SoW (e.g. an empty year) still shows its "Coming soon"
+  panel without errors.

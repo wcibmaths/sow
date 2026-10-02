@@ -157,34 +157,6 @@
   .card-title{font-size:11px;font-weight:700;color:var(--dark-gray);
     text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;}
 
-  /* ── Stat tiles ── */
-  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;margin-bottom:20px;}
-  #view-hod .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:18px;}
-  .stat{background:#FFFFFF;border-radius:14px;padding:18px 20px;
-    box-shadow:var(--soft-shadow);border:1px solid var(--mid-gray);}
-  #view-hod .stat{position:relative;min-height:96px;padding:16px 18px 16px;
-    display:flex;align-items:flex-start;gap:14px;}
-  .stat-icon{width:46px;height:46px;border-radius:13px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;}
-  .stat-icon svg{width:24px;height:24px;stroke-width:1.9;}
-  .stat.green  .stat-icon{background:var(--mint-bg);color:var(--mint-d);}
-  .stat.amber  .stat-icon{background:var(--blush-bg);color:var(--blush-d);}
-  .stat.blue   .stat-icon{background:var(--blue-bg);color:var(--blue-d);}
-  .stat.slate  .stat-icon{background:var(--lavender-bg);color:var(--lavender-d);}
-  .stat-body{display:flex;flex-direction:column;min-width:0;flex:1;}
-  .stat-num{font-size:34px;font-weight:800;color:var(--navy);line-height:1;
-    font-family:var(--font-head);}
-  #view-hod .stat-num{font-size:30px;}
-  .stat-label{font-size:13px;font-weight:600;color:var(--navy);margin-top:6px;line-height:1.2;}
-  #view-hod .stat-label{font-size:12.5px;}
-  .stat-sub{font-size:11px;color:var(--dark-gray);margin-top:3px;line-height:1.25;}
-  .stat-trend{position:absolute;right:16px;bottom:14px;font-size:11px;font-weight:700;
-    display:inline-flex;align-items:center;gap:3px;white-space:nowrap;}
-  .stat-trend.up{color:var(--mint-d);}
-  .stat-trend.warn{color:var(--blush-d);}
-  .stat-trend .arr{font-size:9px;}
-
   /* ── HoD term badge (header, right) ── */
   .term-badge{display:flex;align-items:center;gap:10px;background:var(--accent);
     color:white;border-radius:12px;padding:7px 14px;margin:0 16px;line-height:1.15;}
@@ -714,13 +686,12 @@
     padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;color:var(--navy);}
   .scroll{overflow-x:auto;}
   @media(max-width:1000px){
-    #view-hod .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
     #view-hod .dash-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
   }
   @media(max-width:700px){
     nav{display:none;}
     #view-hod{padding:16px;}
-    #view-hod .stats-grid,#view-hod .dash-grid{grid-template-columns:1fr;}
+    #view-hod .dash-grid{grid-template-columns:1fr;}
     .lesson{grid-template-columns:28px 1fr auto;}
     .lesson .type-badge,.lesson .res-btn{display:none;}
   }
@@ -830,40 +801,6 @@
 </header>
 
 <div id="view-hod" class="view active">
-  <div class="stats-grid">
-    <div class="stat green">
-      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
-      <div class="stat-body">
-        <div class="stat-num" id="stat-done">0</div>
-        <div class="stat-label" id="stat-done-lbl">Lessons completed this week</div>
-        <div class="stat-sub">Across all year groups</div>
-      </div>
-    </div>
-    <div class="stat amber">
-      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
-      <div class="stat-body">
-        <div class="stat-num" id="stat-prog">0</div>
-        <div class="stat-label" id="stat-prog-lbl">Classes behind pace</div>
-        <div class="stat-sub" id="stat-prog-sub">Across all year groups</div>
-      </div>
-    </div>
-    <div class="stat blue">
-      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-      <div class="stat-body">
-        <div class="stat-num" id="stat-behind">0</div>
-        <div class="stat-label">Assessments in next 7 days</div>
-        <div class="stat-sub">Across all year groups</div>
-      </div>
-    </div>
-    <div class="stat slate">
-      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></div>
-      <div class="stat-body">
-        <div class="stat-num" id="stat-assess">0</div>
-        <div class="stat-label" id="stat-assess-lbl">External exams coming soon</div>
-        <div class="stat-sub" id="stat-assess-sub">Next 30 days</div>
-      </div>
-    </div>
-  </div>
   <div id="hod-content"></div>
   <div class="teacher-progress-panel">
     <div class="card-title">Teacher / Class Progress</div>
@@ -5118,7 +5055,6 @@ function renderHOD(){
   const today=new Date(); today.setHours(0,0,0,0);
   // A seven-day window is today plus the following six calendar days.
   const in7=new Date(today); in7.setDate(today.getDate()+6);
-  const weekAgo=new Date(today); weekAgo.setDate(today.getDate()-6);
   const terms=['Michaelmas','Lent','Summer'];
   const termShort={Michaelmas:'Mich.',Lent:'Lent',Summer:'Sum.'};
 
@@ -5129,14 +5065,6 @@ function renderHOD(){
        <p>No scheme of work has been added for Year ${hodYear} yet.</p></div>`;
     document.getElementById('teacher-progress-content').innerHTML='';
     document.getElementById('hod-health-content').innerHTML='';
-    document.getElementById('stat-done').textContent='0';
-    document.getElementById('stat-prog').textContent='0';
-    document.getElementById('stat-behind').textContent='0';
-    document.getElementById('stat-assess').textContent='0';
-    document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
-    document.getElementById('stat-prog-lbl').textContent='Classes behind pace';
-    document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
-    document.getElementById('stat-assess-sub').textContent='Next 30 days';
     return;
   }
   let cardsHtml='<div class="dash-grid">';
@@ -5253,24 +5181,9 @@ function renderHOD(){
   cardsHtml+='</div>';
 
   // ── HoD insight aggregation (all year groups, browser-date-driven) ──
-  const allPairs=allClassPairs();
-  const paces=allPairs.map(({yg,set})=>getClassPace(yg,set,today)).filter(Boolean);
-
-  // Lessons completed this week (today minus 6 days … today) across the department
-  let lessonsDoneWeek=0;
-  paces.forEach(p=>{
-    const sow=sowFor(p.yg,p.set); if(!sow) return;
-    getTeachable(sow).forEach(l=>{
-      const d=parseStartDate(l.dates);
-      if(d && d>=weekAgo && d<=today && getStatus(l.id,p.set)==='Done') lessonsDoneWeek++;
-    });
-  });
-
   // Dashboard event windows are department-wide; the old year toggle is
   // intentionally gone so every year group is always represented.
   const events7=getInternalEvents(today,in7);
-
-  const assessments7=events7.filter(e=>/^(Internal Assessment|Mock Exam|Internal Exam Window)$/.test(e.type)).length;
 
   // Upcoming external examinations — from exam-dates.js
   const extAll=externalExamList()
@@ -5278,8 +5191,6 @@ function renderHOD(){
     .map(e=>({...e, d:parseIsoDate(e.date)}))
     .filter(e=>e.d)
     .sort((a,b)=>a.d-b.d);
-  const in30=new Date(today); in30.setDate(today.getDate()+30);
-  const extNext30=extAll.filter(e=>e.d>=today && e.d<=in30).length;
   const externalWindows=getExternalExamSeriesWindows(today,3);
   const selectedWindow=externalWindows.find(w=>w.id===selectedExternalSeriesId)
                     || externalWindows[0] || null;
@@ -5295,10 +5206,6 @@ function renderHOD(){
             }))
     : [];
 
-  // Teaching pace exceptions. Small differences remain visible here but do
-  // not become alerts unless they need intervention.
-  const behindRows=paces.filter(p=>p.behindBy>=1).sort((a,b)=>b.behindBy-a.behindBy);
-  const behindYears=new Set(behindRows.map(p=>p.yg)).size;
   const eventRows=events7;
 
   // ── Render helpers ──────────────────────────────────────────────────
@@ -5362,8 +5269,6 @@ function renderHOD(){
     : '';
   const extHtml=extTabs+renderGroupedDates(extRows,'No relevant Edexcel Maths or Further Maths exams are scheduled for this series.');
 
-  const noPlannedPace = paces.length>0 && paces.every(p=>p.plannedCt===0);
-
   // ── Card: Year group health overview ────────────────────────────────
   const ygRows=Object.keys(SETS_BY_YG).map(yg=>getYearGroupHealth(yg,today)).filter(Boolean);
   const healthHtml = `<div class="scroll"><table class="hod-table compact"><thead><tr>
@@ -5411,17 +5316,6 @@ function renderHOD(){
       if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}
     });
   });
-  document.getElementById('stat-done').textContent=lessonsDoneWeek;
-  document.getElementById('stat-prog').textContent = noPlannedPace ? '0' : behindRows.length;
-  document.getElementById('stat-behind').textContent=assessments7;
-  document.getElementById('stat-assess').textContent=extNext30;
-  document.getElementById('stat-done-lbl').textContent='Lessons completed this week';
-  document.getElementById('stat-prog-lbl').textContent='Classes behind teaching pace';
-  document.getElementById('stat-prog-sub').textContent = noPlannedPace
-    ? 'Pace tracking begins Thu 27 Aug 2026'
-    : `Across ${behindYears} year group${behindYears===1?'':'s'}`;
-  document.getElementById('stat-assess-lbl').textContent='External exams coming soon';
-  document.getElementById('stat-assess-sub').textContent='Next 30 days';
 }
 
 function renderDashboardProgressDetail(){

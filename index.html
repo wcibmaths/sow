@@ -1378,8 +1378,11 @@ const ACCELERATED_FOLDER_YEAR = { '8|Ma1':9, '9|Ma1':10 };
 function assessmentFolderUrl(yg,set,unit){
   if(unit===null || unit===undefined || unit==='') return '';
   const y=Number(yg);
-  if(y===12) return (set==='Ma1P12'||set==='Ma2P12')
-    ? (Y12_P12_ASSESSMENT_FOLDERS[unit]||'') : '';
+  if(y===12){
+    if(set==='Ma1P12'||set==='Ma2P12') return Y12_P12_ASSESSMENT_FOLDERS[unit]||'';
+    if(set==='Ma1S1'||set==='Ma2S1'||set==='FMS1') return Y12_S1_ASSESSMENT_FOLDERS[unit]||'';
+    return '';
+  }
   const lookupYear = ACCELERATED_FOLDER_YEAR[`${y}|${set}`] || y;
   const map=ASSESSMENT_FOLDERS_BY_YG[lookupYear];
   return (map && map[unit]) || '';
@@ -1444,6 +1447,10 @@ const Y12_P12_ASSESSMENT_FOLDERS = {
 //   unit 7  .../Pure%202/P2.7%20Differentiation/Unit_7_Assessment
 //   unit 8  .../Pure%202/P2.8%20Integration/Unit_8_Assessment
 //   unit 11 .../Pure%202/P2.4%20The%20Binomial%20Expansion/Unit_4_Assessment
+
+// ── Year 12 IAL Statistics 1 — assessment folders (SharePoint) ──────
+// Keys are the `unit` numbers used in Y12_S1_SOW (1-6). URLs pending.
+const Y12_S1_ASSESSMENT_FOLDERS = {};
 
 // ── Y7 SoW Data — v5 (2026-27) ───────────────────────────────────
 const Y7_SOW = [
@@ -3895,7 +3902,7 @@ function ialAssessmentsFor(yg, set){
         out.push({name:'Mock Exam', sub:'Off-timetable mock week', week:r.week, dates:r.dates, term:r.term, kind:'mock', type:'Mock Exam'});
       } else if(/^Unit Test/i.test(r.lessonName)){
         const utName = r.unitName ? ('Unit Test: ' + r.unitName) : r.lessonName;
-        out.push({name:utName, sub:r.obj||'', week:r.week, dates:r.dates, term:r.term, kind:'eou', type:'Unit Test'});
+        out.push({name:utName, sub:r.obj||'', week:r.week, dates:r.dates, term:r.term, kind:'eou', type:'Unit Test', unit:r.unit});
       }
     } else if(r.week==='L2B' && !out.some(o=>o.kind==='mock' && o.week==='L2B')){
       // Mock week L2B can appear as flex/cse — emit a single mock entry
@@ -4299,6 +4306,17 @@ function folderBtn(lesson, yg, set){
     const p12Url = Y12_P12_UNIT_FOLDERS[lesson.unit];
     if(!p12Url) return '';
     return `<a href="${p12Url}" target="_blank" rel="noopener noreferrer" class="res-btn" title="Open unit folder">📂 Folder</a>`;
+  }
+
+  if(Number(yg) === 12 && (set === 'Ma1S1' || set === 'Ma2S1' || set === 'FMS1')){
+    if(!lesson.unit) return '';
+    if(lesson.type === 'assessment'){
+      const sUrl = Y12_S1_ASSESSMENT_FOLDERS[lesson.unit];
+      if(!sUrl) return '';
+      return `<a href="${sUrl}" target="_blank" rel="noopener noreferrer"
+        class="res-btn assess-btn" title="Open unit assessment folder">Test</a>`;
+    }
+    return '';
   }
 
   yg = yg || 7;
@@ -5855,13 +5873,28 @@ function renderAssessments(){
             : a.kind==='eou'
               ? '<div class="assess-flag" style="color:var(--navy);">END-OF-UNIT TEST</div>'
               : '';
-        html += `<div><div class="assess-card ${cls}">
+        const assessUrl=assessmentFolderUrl(ygInt,set,a.unit);
+        const cardOpen=assessUrl?`<a href="${esc(assessUrl)}" target="_blank" rel="noopener noreferrer" class="assess-card-link">`:'<div>';
+        const cardClose=assessUrl?'</a>':'</div>';
+        html += `${cardOpen}<div class="assess-card ${cls}${assessUrl?'':' is-static'}">
           <div class="assess-week">${esc(a.week)}</div>
           <div class="assess-name">${esc(a.name)}</div>
           <div class="assess-sub">${esc(a.sub||header.label)}</div>
           <div class="assess-date">📅 ${esc(a.dates)}</div>
           ${flagHtml}
-        </div></div>`;
+          ${assessUrl
+            ? `<div class="assess-foot"><svg viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+                 stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2
+                 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>Unit test folder<span
+                 class="af-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline
+                 points="9 18 15 12 9 6"></polyline></svg></span></div>`
+            : `<div class="assess-foot"><svg viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.1" stroke-linecap="round"
+                 stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                 No unit test folder</div>`}
+        </div>${cardClose}`;
       });
       html += '</div></div>';
     });

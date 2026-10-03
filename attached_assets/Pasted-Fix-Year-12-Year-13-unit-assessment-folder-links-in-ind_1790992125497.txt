@@ -1,0 +1,99 @@
+Fix Year 12 / Year 13 unit-assessment folder links in index.html.
+Do not change the SoW arrays, Firebase, or the auth gate. Do not refactor.
+
+ROOT CAUSE: ialAssessmentsFor() drops the `unit` field when it builds the
+IAL assessment list, so every downstream call to assessmentFolderUrl() for
+Year 12/13 receives unit=undefined and returns ''. The Y12_P12_ASSESSMENT_FOLDERS
+URLs already exist and are correct — they are simply never reached.
+
+=========================================================
+STEP 1 — Carry `unit` through ialAssessmentsFor()
+=========================================================
+In function ialAssessmentsFor(yg, set), add  unit:r.unit  to the two
+out.push({...}) calls that represent real unit tests. Change:
+
+  out.push({name:utName, sub:r.obj||'', week:r.week, dates:r.dates,
+            term:r.term, kind:'eou', type:'Unit Test'});
+to:
+  out.push({name:utName, sub:r.obj||'', week:r.week, dates:r.dates,
+            term:r.term, kind:'eou', type:'Unit Test', unit:r.unit});
+
+Leave the 'mock' and 'past' push calls WITHOUT a unit — a mock week and a
+past-paper block have no single unit folder, and they must keep returning no link.
+
+=========================================================
+STEP 2 — Show the link on the Assessment Schedule page (Y12/Y13 branch)
+=========================================================
+In renderAssessments, find the  if(ygInt === 12 || ygInt === 13){  branch.
+Inside its ta.forEach(a=>{ … }) card template, the card currently ends with
+${flagHtml}. Add the folder link immediately after it.
+
+The variable `set` is already in scope in this branch (it is resolved from
+Y12_GROUP_REP a few lines above) — pass it through:
+
+          ${flagHtml}
+          ${assessmentFolderLink(ygInt, set, a.unit)}
+
+IF you have already applied the earlier "assessment card as one clickable
+object" change to the Y7-Y11 branch, use the same footer markup here instead
+of assessmentFolderLink, so Year 12 matches the other year groups: wrap the
+card in .assess-card-link when assessmentFolderUrl(ygInt,set,a.unit) returns
+a URL, add .is-static when it does not, and render the .assess-foot strip.
+
+=========================================================
+STEP 3 — Let assessmentFolderUrl() accept the S1 sets
+=========================================================
+In function assessmentFolderUrl(yg,set,unit), the Year 12 branch currently
+accepts ONLY the two P1/P2 sets:
+
+  if(y===12) return (set==='Ma1P12'||set==='Ma2P12')
+    ? (Y12_P12_ASSESSMENT_FOLDERS[unit]||'') : '';
+
+Replace it with a branch that also routes the three S1 sets to a new map
+(created in Part 2 — until then it is an empty object, which correctly
+yields no link):
+
+  if(y===12){
+    if(set==='Ma1P12'||set==='Ma2P12') return Y12_P12_ASSESSMENT_FOLDERS[unit]||'';
+    if(set==='Ma1S1'||set==='Ma2S1'||set==='FMS1') return Y12_S1_ASSESSMENT_FOLDERS[unit]||'';
+    return '';
+  }
+
+Then add this declaration next to Y12_P12_ASSESSMENT_FOLDERS so the reference
+never throws, even before the URLs are filled in:
+
+  // ── Year 12 IAL Statistics 1 — assessment folders (SharePoint) ──────
+  // Keys are the `unit` numbers used in Y12_S1_SOW (1-6). URLs pending.
+  const Y12_S1_ASSESSMENT_FOLDERS = {};
+
+=========================================================
+STEP 4 — Teacher View: add S1 to folderBtn()
+=========================================================
+In function folderBtn(lesson, yg, set), there is already a Year 12 block for
+sets Ma1P12 / Ma2P12. Directly after it, add the S1 equivalent — assessment
+rows only, since there is no S1 lesson-plan folder map:
+
+  if(Number(yg) === 12 && (set === 'Ma1S1' || set === 'Ma2S1' || set === 'FMS1')){
+    if(!lesson.unit) return '';
+    if(lesson.type === 'assessment'){
+      const sUrl = Y12_S1_ASSESSMENT_FOLDERS[lesson.unit];
+      if(!sUrl) return '';
+      return `<a href="${sUrl}" target="_blank" rel="noopener noreferrer"
+        class="res-btn assess-btn" title="Open unit assessment folder">Test</a>`;
+    }
+    return '';
+  }
+
+=========================================================
+AFTER THE EDITS
+=========================================================
+Check and report back on:
+- Assessment Schedule → Year 12 → P1/P2 tab: every "Unit Test: …" card now
+  shows a folder link; the Mock Exam and Past Paper Practice Block cards do NOT.
+- Dashboard → Next 7 days: a Year 12 P1/P2 unit test falling in the window now
+  carries its folder action; mock weeks do not.
+- Assessment Schedule → Year 12 → S1 tab: cards render normally with NO link
+  yet (expected — URLs come in Part 2). No console errors.
+- Year 13 tabs (P34, M1, D1, FMFP12, FMS23, FMM2) still render with no links
+  and no errors.
+- Year 7-11 Assessment Schedule and Teacher View are unchanged.

@@ -2,3 +2,4 @@
 - [SharePoint link validation](sharepoint-link-validation.md) — anonymous HTTP 403 responses cannot establish whether school-only assessment folders exist.
 - [Private notes rule contract](private-notes-rule.md) — published Firestore access expects teacher-code note IDs, not email IDs; an own-code save was user-confirmed.
 - [Progress activity attribution](progress-activity-attribution.md) — historical lesson times lack editor identity; freeze legacy attribution before tracking new teacher-specific edits.
+- [Scoped edit constraints](scoped-edit-constraints.md) — focused UI and folder-link fixes must not change SoW arrays, Firebase, or the auth gate.

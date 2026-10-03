@@ -5715,15 +5715,16 @@ function renderTeacher(){
     const td=tt.filter(l=>getStatus(l.id,set)==='Done').length;
     const tp2=tt.length?Math.round(td/tt.length*100):0;
     const termId='term-'+term.replace(/\s+/g,'-');
+    const termClosed=!searching&&tvFocus.closedTerms.has(term);
     html+=`<div class="term">
-      <div class="term-header" onclick="toggleTerm('${termId}')">
+      <div class="term-header${termClosed?' collapsed':''}" onclick="toggleTerm('${termId}','${term}')">
         <span>${term} Term</span>
         <span style="display:flex;align-items:center;gap:0;">
           <span class="term-progress">${td}/${tt.length} lessons done (${tp2}%)</span>
           <span class="term-chevron">▼</span>
         </span>
       </div>
-      <div class="term-body" id="${termId}">`;
+      <div class="term-body${termClosed?' collapsed':''}" id="${termId}">`;
 
     // Dates are part of the grouping key so separate holiday rows labelled
     // "Break" do not collapse into a single block within the same term.
@@ -5736,9 +5737,23 @@ function renderTeacher(){
       const alertL=wkL.find(l=>l.alert);
       const weekEvents=getTeacherWeekEvents(wk,first.dates,term,yg);
       const cycle=first.cycle||(/^[MLS]?\d+[AB]$/i.test(first.week)?first.week.slice(-1):'—');
-      html+=`<div class="week"><div class="week-header">
+      const wKey=tvWeekKey(wk,weekDates);
+      const wc=tvWeekCounts(wkL,set);
+      const isNow=wKey===nowKey;
+      const open=searching||tvFocus.openWeeks.has(wKey);
+      const isPast=nowIdx>=0&&weekOrder.get(wKey)<nowIdx;
+      let pill='';
+      if(isNow) pill='<span class="week-pill now">This week</span>';
+      else if(wc.tracked===0) pill='';
+      else if(wc.done>=wc.tracked) pill=`<span class="week-pill done">${wc.done}/${wc.tracked} marked</span>`;
+      else if(isPast) pill=`<span class="week-pill todo">${wc.tracked-wc.done} to mark</span>`;
+      else pill=`<span class="week-pill ahead">${wc.tracked} lesson${wc.tracked===1?'':'s'}</span>`;
+
+      html+=`<div class="week${open?'':' collapsed'}${isNow?' is-now':''}"${isNow?' id="tv-now-week"':''}>
+        <div class="week-header" role="button" tabindex="0" aria-expanded="${open}"
+             data-wk="${esc(wk)}" data-wkd="${esc(weekDates)}">
         <div class="week-head-left">
-          <span class="week-icon" aria-hidden="true">🗓️</span>
+          <span class="week-chevron" aria-hidden="true">▼</span>
           <div class="week-title-wrap">
             <span class="week-label">Week ${wk}</span>
             <span class="week-dates">${esc(first.dates)}</span>
@@ -5748,7 +5763,10 @@ function renderTeacher(){
         ${weekEvents.length?`<div class="week-key-events">${weekEvents.map(event=>
           `<span class="week-key-event" title="${esc(event.details?`${event.event} — ${event.details}`:event.event)}">${esc(event.event)}</span>`
         ).join('')}</div>`:''}
-      </div>${alertL?`<div class="week-teaching-note"><strong>Teaching note:</strong> ${esc(alertL.alert)}</div>`:''}`;
+        ${pill}
+      </div>
+      <div class="week-body">
+      ${alertL?`<div class="week-teaching-note"><strong>Teaching note:</strong> ${esc(alertL.alert)}</div>`:''}`;
 
       wkL.forEach(lesson=>{
         // Unit divider when unit name changes
@@ -5818,21 +5836,64 @@ function renderTeacher(){
               </select>`}
         </div>`;
       });
-      html+='</div>';
+      html+='</div></div>';
     });
     html+='</div></div>';
   });
 
   document.getElementById('teacher-content').innerHTML=html;
   document.querySelectorAll('.status-sel').forEach(sel=>sel.addEventListener('change',handleChange));
+  tvSyncHeaderOffset();
+
+  document.querySelectorAll('#teacher-content .week-header').forEach(head=>{
+    const toggle=()=>{
+      const sec=head.parentElement;
+      const key=tvWeekKey(head.dataset.wk,head.dataset.wkd);
+      const collapsed=sec.classList.toggle('collapsed');
+      head.setAttribute('aria-expanded',String(!collapsed));
+      if(collapsed) tvFocus.openWeeks.delete(key); else tvFocus.openWeeks.add(key);
+    };
+    head.addEventListener('click',e=>{ if(e.target.closest('a,button,select')) return; toggle(); });
+    head.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
+    });
+  });
+
+  const jumpBtn=document.getElementById('tv-jump');
+  if(jumpBtn) jumpBtn.addEventListener('click',()=>tvScrollToNow(true));
+
+  const expandBtn=document.getElementById('tv-expand');
+  if(expandBtn) expandBtn.addEventListener('click',()=>{
+    const anyClosed=!!document.querySelector('#teacher-content .week.collapsed, #teacher-content .term-body.collapsed');
+    document.querySelectorAll('#teacher-content .week').forEach(sec=>{
+      sec.classList.toggle('collapsed',!anyClosed);
+      const head=sec.querySelector('.week-header');
+      if(!head) return;
+      head.setAttribute('aria-expanded',String(anyClosed));
+      const key=tvWeekKey(head.dataset.wk,head.dataset.wkd);
+      if(anyClosed) tvFocus.openWeeks.add(key); else tvFocus.openWeeks.delete(key);
+    });
+    document.querySelectorAll('#teacher-content .term-body').forEach(b=>{
+      b.classList.toggle('collapsed',!anyClosed);
+      if(b.previousElementSibling) b.previousElementSibling.classList.toggle('collapsed',!anyClosed);
+    });
+    tvFocus.closedTerms.clear();
+    if(!anyClosed) [...new Set(sow.map(l=>l.term))].forEach(t=>tvFocus.closedTerms.add(t));
+    expandBtn.textContent=anyClosed?'Collapse all':'Expand all';
+  });
+
+  if(tvFocus.scrollPending&&!q){ tvFocus.scrollPending=false; tvScrollToNow(false); }
 }
 
-function toggleTerm(termId){
+function toggleTerm(termId,term){
   const body=document.getElementById(termId);
   const header=body?body.previousElementSibling:null;
   if(!body||!header)return;
   const collapsed=body.classList.toggle('collapsed');
   header.classList.toggle('collapsed',collapsed);
+  if(term&&tvFocus.closedTerms){
+    if(collapsed) tvFocus.closedTerms.add(term); else tvFocus.closedTerms.delete(term);
+  }
 }
 
 async function handleChange(e){

@@ -99,7 +99,7 @@ def get_y10_accelerated_sow():
     workbook_path = os.path.join(
         os.path.dirname(__file__),
         'attached_assets',
-        'KS4_Accelerated_SoW_(3)_1787970692790.xlsx',
+        '0_KS4_Accelerated_SoW_1791014015543.xlsx',
     )
     try:
         workbook = load_workbook(workbook_path, data_only=True, read_only=True)

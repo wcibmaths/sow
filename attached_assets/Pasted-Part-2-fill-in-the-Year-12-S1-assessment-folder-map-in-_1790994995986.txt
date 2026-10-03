@@ -1,0 +1,39 @@
+Part 2 — fill in the Year 12 S1 assessment folder map in index.html.
+Prerequisite: Part 1 must already be applied (ialAssessmentsFor carries `unit`,
+assessmentFolderUrl routes the S1 sets, folderBtn handles S1).
+
+Replace the empty placeholder added in Part 1 Step 3:
+
+  const Y12_S1_ASSESSMENT_FOLDERS = {};
+
+with the map below, verbatim. Do not renumber the keys and do not "correct"
+them to match the folder names — see the warning comment, it is load-bearing.
+
+// ── Year 12 IAL Statistics 1 — assessment folders (SharePoint) ───────
+// Keys are the `unit` numbers used in Y12_S1_SOW (1-6). They deliberately do
+// NOT match the "Unit N" folder names on SharePoint:
+//   SoW unit 1 merges S1.1 Mathematical Modelling + S1.2 Measures of Location
+//   and Spread, and its Unit Test 1 lives in the Unit 2 folder. SharePoint's
+//   "Unit 1 Mathematical Modelling" has no assessment folder at all.
+//   SoW units 3 and 4 are also crossed: SoW 3 (Correlation and Regression) is
+//   SharePoint Unit 5, and SoW 4 (Probability) is SharePoint Unit 4.
+// Shared by Ma1S1, Ma2S1 and FMS1 — the Maths and Further Maths papers sit in
+// the same folders.
+const Y12_S1_ASSESSMENT_FOLDERS = {
+  1: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Statistics%201/Unit%202%20Measures%20of%20location%20and%20spread/Unit_2_Assessment?csf=1&web=1',
+  2: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Statistics%201/Unit%203%20Representation%20of%20data/Unit_3_Assessment?csf=1&web=1',
+  3: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Statistics%201/Unit%205%20Correlation%20and%20Regression/Unit_5_Assessment?csf=1&web=1',
+  4: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Statistics%201/Unit%204%20Probability/Unit_4_Assessment?csf=1&web=1',
+  5: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Statistics%201/Unit%206%20Discrete%20Random%20Variables/Unit_6_Assessment?csf=1&web=1',
+  6: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Statistics%201/Unit%207%20Normal%20Distribution/Unit_7_Assessment?csf=1&web=1',
+};
+
+AFTER THE EDIT — check and report back on:
+- Assessment Schedule → Year 12 → S1 tab: all six "Unit Test: …" cards now show
+  a folder link. Mock Exam and Past Paper Block cards still show none.
+- Teacher View → Year 12 → Ma1 S1 / Ma2 S1: each Unit Test row shows a Test
+  button; ordinary lesson rows show nothing.
+- FM S1 tab shows the same six links as Ma1/Ma2 S1.
+- Dashboard → Next 7 days: an S1 unit test in the window carries its folder action.
+- Year 12 P1/P2 links from Part 1 still work; Year 13 still shows none.
+- No console errors.

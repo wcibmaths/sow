@@ -1,0 +1,91 @@
+Step 2 — Add the helper functions
+
+Insert this block immediately before function renderTeacher(){:
+
+js
+// ════════════════════════════════════════════════════════════════════
+//  WEEK FOCUS — current week, collapsible weeks, finished-term collapse
+// ════════════════════════════════════════════════════════════════════
+let tvFocus={key:'',openWeeks:null,closedTerms:null,scrollPending:false};
+
+function tvTodayDate(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function tvWeekKey(wk,dates){ return String(wk)+'\u001f'+String(dates); }
+
+// Every distinct week of a SoW, in SoW order.
+function tvWeekList(sow){
+  const seen=new Map();
+  sow.forEach(l=>{
+    const k=tvWeekKey(l.week,l.dates);
+    if(seen.has(k)) return;
+    const start=parseStartDate(l.dates);
+    const end=parseEndDate(l.dates)||start;
+    seen.set(k,{key:k,week:l.week,dates:l.dates,term:l.term,start,end});
+  });
+  return [...seen.values()];
+}
+
+// The week containing today; on a weekend or in a holiday, the next week to start.
+function tvCurrentWeekKey(sow){
+  const today=tvTodayDate();
+  const weeks=tvWeekList(sow).filter(w=>w.start);
+  const inWeek=weeks.find(w=>today>=w.start&&today<=w.end);
+  if(inWeek) return inWeek.key;
+  const future=weeks.filter(w=>w.start>today).sort((a,b)=>a.start-b.start);
+  return future.length?future[0].key:null;
+}
+
+// Tracked (core/cse/assessment) and Done counts for one week of one class.
+function tvWeekCounts(lessons,set){
+  const tracked=lessons.filter(l=>l.type==='core'||l.type==='cse'||l.type==='assessment');
+  const done=tracked.filter(l=>getStatus(l.id,set)==='Done').length;
+  return {tracked:tracked.length,done};
+}
+
+// A term is finished once its last dated week has passed.
+function tvTermEnded(sow,term){
+  const today=tvTodayDate();
+  const ends=tvWeekList(sow).filter(w=>w.term===term&&w.end).map(w=>w.end);
+  if(!ends.length) return false;
+  return new Date(Math.max(...ends))<today;
+}
+
+// The sticky bar sits under the site header, whatever height it currently is.
+function tvSyncHeaderOffset(){
+  const h=document.querySelector('header');
+  if(h) document.documentElement.style.setProperty('--hdr-h',h.offsetHeight+'px');
+}
+window.addEventListener('resize',tvSyncHeaderOffset);
+
+function tvWeekBarHtml(nowWeek,tf){
+  return `<div class="tv-weekbar">
+    <span class="tv-wb-now">${nowWeek?'This week':'Showing'}</span>
+    <span class="tv-wb-wk">${nowWeek?'Week '+esc(nowWeek.week):esc(tf==='all'?'All terms':tf)}</span>
+    ${nowWeek?`<span class="tv-wb-dates">${esc(posWhen(nowWeek))}</span>`:''}
+    <span class="tv-wb-spacer"></span>
+    ${nowWeek?`<button type="button" class="tv-wb-btn" id="tv-jump">Jump to this week</button>`:''}
+    <button type="button" class="tv-wb-btn" id="tv-expand">Expand all</button>
+  </div>`;
+}
+
+function tvScrollToNow(smooth){
+  const el=document.getElementById('tv-now-week');
+  if(!el) return;
+  const body=el.closest('.term-body');
+  if(body&&body.classList.contains('collapsed')){
+    body.classList.remove('collapsed');
+    if(body.previousElementSibling) body.previousElementSibling.classList.remove('collapsed');
+  }
+  if(el.classList.contains('collapsed')){
+    el.classList.remove('collapsed');
+    const head=el.querySelector('.week-header');
+    if(head){
+      head.setAttribute('aria-expanded','true');
+      if(tvFocus.openWeeks) tvFocus.openWeeks.add(tvWeekKey(head.dataset.wk,head.dataset.wkd));
+    }
+  }
+  const header=document.querySelector('header');
+  const bar=document.querySelector('.tv-weekbar');
+  const offset=(header?header.offsetHeight:0)+(bar?bar.offsetHeight:0)+14;
+  const top=el.getBoundingClientRect().top+window.scrollY-offset;
+  window.scrollTo({top:Math.max(0,top),behavior:smooth?'smooth':'auto'});
+}

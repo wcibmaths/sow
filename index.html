@@ -5579,8 +5579,42 @@ function renderTeacher(){
   ):base;
   const p=getProgress(set,sow);
 
+  // ── Week focus: recompute defaults only when the class or term filter changes,
+  //    so marking a lesson Done never folds the week away under the teacher.
+  const searching=!!q;
+  const focusKey=`${yg}|${set}|${tf}`;
+  const nowKey=tvCurrentWeekKey(sow);
+  const allWeeks=tvWeekList(sow);
+  const weekOrder=new Map(allWeeks.map((w,i)=>[w.key,i]));
+  const nowIdx=weekOrder.has(nowKey)?weekOrder.get(nowKey):-1;
+  if(tvFocus.key!==focusKey){
+    tvFocus.key=focusKey;
+    tvFocus.openWeeks=null;
+    tvFocus.closedTerms=null;
+    tvFocus.scrollPending=true;
+  }
+  if(!tvFocus.openWeeks){
+    const open=new Set();
+    allWeeks.forEach((w,i)=>{
+      const wkLessons=sow.filter(l=>tvWeekKey(l.week,l.dates)===w.key);
+      const c=tvWeekCounts(wkLessons,set);
+      const isNow=w.key===nowKey;
+      const isNext=nowIdx>=0&&i===nowIdx+1;
+      const isPast=nowIdx>=0&&i<nowIdx;
+      const unmarked=c.tracked>0&&c.done<c.tracked;
+      // Open: this week, next week, any past week still missing marks.
+      // If the year is over, open everything rather than hiding the lot.
+      if(nowIdx<0||isNow||isNext||(isPast&&unmarked)) open.add(w.key);
+    });
+    tvFocus.openWeeks=open;
+    const closed=new Set();
+    [...new Set(sow.map(l=>l.term))].forEach(t=>{ if(tvTermEnded(sow,t)) closed.add(t); });
+    tvFocus.closedTerms=closed;
+  }
+  const nowWeek=allWeeks.find(w=>w.key===nowKey)||null;
+
   const unitLabel = `lessons completed (${p.pct}%)`;
-  let html=`<div class="card"><div class="tv-header">
+  let html=tvWeekBarHtml(nowWeek,tf)+`<div class="card"><div class="tv-header">
     <div>
        <div class="tv-title">${selectedTeacher} — ${tvClassLabel(yg,set)}</div>
       <div id="tv-lbl" style="font-size:12px;color:var(--dark-gray);margin-top:4px;">

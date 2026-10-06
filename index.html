@@ -1429,57 +1429,40 @@ function assessmentFolderLink(yg,set,unit){
 // ── Year 12 IAL Pure 1 & 2 — unit folder links (SharePoint) ───────
 // Keys are the `unit` numbers used in Y12_P12_SOW (1-13).
 const Y12_P12_UNIT_FOLDERS = {
-  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.1%20Algebraic%20Expressions?csf=1&web=1',
-  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.2%20Quadratics?csf=1&web=1',
-  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.4%20Graphs%20and%20Transformations?csf=1&web=1',
-  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.5%20Straight%20Line%20Graphs?csf=1&web=1',
-  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.6%20Trigonometric%20Ratios?csf=1&web=1',
-  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.7%20Radians?csf=1&web=1',
-  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.8%20Differentiation?csf=1&web=1',
-  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.9%20Integration?csf=1&web=1',
-  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.1%20Algebraic%20Methods?csf=1&web=1',
-  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.2%20Coordinate%20Geometry%20in%20the%20%28x%2Cy%29%20Plane?csf=1&web=1',
-  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.3%20Exponentials%20and%20Logarithms?csf=1&web=1',
-  12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.5%20Sequences%20and%20Series?csf=1&web=1',
-  13: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.6%20Trigonometric%20Identities%20and%20Equations?csf=1&web=1',
+  1: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_01_P1.1_Algebraic_Expressions?csf=1&web=1',
+  2: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_02_P1.2-1.3_Quadratics_and_Equations_and_Inequalities?csf=1&web=1',
+  3: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_03_P1.4_Graphs_and_Transformations?csf=1&web=1',
+  4: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_04_P1.5_Straight_Line_Graphs?csf=1&web=1',
+  5: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_05_P1.6_Trigonometric_Ratios?csf=1&web=1',
+  6: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_06_P1.7_Radians?csf=1&web=1',
+  7: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_07_P1.8-P2.7_Differentiation?csf=1&web=1',
+  8: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_08_P1.9-P2.8_Integration?csf=1&web=1',
+  9: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_09_P2.1_Algebraic_Methods?csf=1&web=1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_10_P2.2_Coordinate_Geometry_in_the_xy_Plane?csf=1&web=1',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_11_P2.3-2.4_Exponentials_Logarithms_and_Binomial_Expansion?csf=1&web=1',
+  12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_12_P2.5_Sequences_and_Series?csf=1&web=1',
+  13: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_13_P2.6_Trigonometric_Identities_and_Equations?csf=1&web=1',
 };
-
-// Four SoW units cover two textbook chapters. The button opens the first
-// chapter's folder; the partner folders are listed here for reference only.
-//   unit 2  also: .../Pure%201/P1.3%20Equations%20and%20Inequalities
-//   unit 7  also: .../Pure%202/P2.7%20Differentiation
-//   unit 8  also: .../Pure%202/P2.8%20Integration
-//   unit 11 also: .../Pure%202/P2.4%20The%20Binomial%20Expansion
 
 // ── Year 12 IAL Pure 1 & 2 — assessment folders (SharePoint) ──────
-// Each chapter folder contains its own Unit_#_Assessment subfolder, where the
-// # is the chapter number WITHIN ITS MODULE, not the SoW unit number:
-// P1.4 -> Unit_4_Assessment, P2.2 -> Unit_2_Assessment. Do not "correct" these
-// numbers to match the keys — the keys are Y12_P12_SOW unit numbers (1-13) and
-// they are deliberately different from the folder numbers.
+// Keys are Y12_P12_SOW unit numbers (1-13). Since the Oct 2026 reorganisation
+// these match the Unit_NN_ folder numbers one-to-one, and units spanning two
+// chapters (02, 07, 08, 11) are single folders holding both.
 const Y12_P12_ASSESSMENT_FOLDERS = {
-  1:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.1%20Algebraic%20Expressions/Unit_1_Assessment?csf=1&web=1',
-  2:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.3%20Equations%20and%20Inequalities/Unit_3_Assessment?csf=1&web=1',
-  3:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.4%20Graphs%20and%20Transformations/Unit_4_Assessment?csf=1&web=1',
-  4:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.5%20Straight%20Line%20Graphs/Unit_5_Assessment?csf=1&web=1',
-  5:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.6%20Trigonometric%20Ratios/Unit_6_Assessment?csf=1&web=1',
-  6:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.7%20Radians/Unit_7_Assessment?csf=1&web=1',
-  7:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.8%20Differentiation/Unit_8_Assessment?csf=1&web=1',
-  8:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%201/P1.9%20Integration/Unit_9_Assessment?csf=1&web=1',
-  9:  'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.1%20Algebraic%20Methods/Unit_1_Assessment?csf=1&web=1',
-  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.2%20Coordinate%20Geometry%20in%20the%20%28x%2Cy%29%20Plane/Unit_2_Assessment?csf=1&web=1',
-  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.3%20Exponentials%20and%20Logarithms/Unit_3_Assessment?csf=1&web=1',
-  12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.5%20Sequences%20and%20Series/Unit_5_Assessment?csf=1&web=1',
-  13: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Pure%202/P2.6%20Trigonometric%20Identities%20and%20Equations/Unit_6_Assessment?csf=1&web=1',
+  1: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_01_P1.1_Algebraic_Expressions/Unit_01_Assessment?csf=1&web=1',
+  2: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_02_P1.2-1.3_Quadratics_and_Equations_and_Inequalities/Unit_02_Assessment?csf=1&web=1',
+  3: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_03_P1.4_Graphs_and_Transformations/Unit_03_Assessment?csf=1&web=1',
+  4: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_04_P1.5_Straight_Line_Graphs/Unit_04_Assessment?csf=1&web=1',
+  5: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_05_P1.6_Trigonometric_Ratios/Unit_05_Assessment?csf=1&web=1',
+  6: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_06_P1.7_Radians/Unit_06_Assessment?csf=1&web=1',
+  7: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_07_P1.8-P2.7_Differentiation/Unit_07_Assessment?csf=1&web=1',
+  8: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_08_P1.9-P2.8_Integration/Unit_08_Assessment?csf=1&web=1',
+  9: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_09_P2.1_Algebraic_Methods/Unit_09_Assessment?csf=1&web=1',
+  10: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_10_P2.2_Coordinate_Geometry_in_the_xy_Plane/Unit_10_Assessment?csf=1&web=1',
+  11: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_11_P2.3-2.4_Exponentials_Logarithms_and_Binomial_Expansion/Unit_11_Assessment?csf=1&web=1',
+  12: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_12_P2.5_Sequences_and_Series/Unit_12_Assessment?csf=1&web=1',
+  13: 'https://wcibth.sharepoint.com/:f:/r/sites/Mathematics/Shared%20Documents/Maths%20Team%20Hub/4.%20Resources/C.%20Key%20Stage%205/Pure%201%20and%202/Unit_13_P2.6_Trigonometric_Identities_and_Equations/Unit_13_Assessment?csf=1&web=1',
 };
-
-// Units covering two chapters use the first chapter's assessment folder,
-// except unit 2, whose test is in P1.3 rather than the empty P1.2 folder.
-// The partner folders, if ever needed:
-//   unit 2  .../Pure%201/P1.2%20Quadratics/Unit_2_Assessment (empty)
-//   unit 7  .../Pure%202/P2.7%20Differentiation/Unit_7_Assessment
-//   unit 8  .../Pure%202/P2.8%20Integration/Unit_8_Assessment
-//   unit 11 .../Pure%202/P2.4%20The%20Binomial%20Expansion/Unit_4_Assessment
 
 // ── Year 12 IAL Statistics 1 — assessment folders (SharePoint) ───────
 // Keys are the `unit` numbers used in Y12_S1_SOW (1-6). They deliberately do

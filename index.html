@@ -51,7 +51,7 @@
 // Capture calendar navigation before the unchanged email sign-in code can strip the URL.
 try{
   window.WCIB_CALENDAR_REQUESTED=location.hash==='#calendar'||
-    Date.now()-Number(localStorage.getItem('wcib_school_calendar_route')||0)<86400000;
+    (!location.hash&&Date.now()-Number(localStorage.getItem('wcib_school_calendar_route')||0)<86400000);
   if(location.hash==='#calendar')localStorage.setItem('wcib_school_calendar_route',String(Date.now()));
 }catch(e){window.WCIB_CALENDAR_REQUESTED=location.hash==='#calendar';}
 </script>
@@ -1251,10 +1251,10 @@ const CALENDAR_ROUTE_KEY='wcib_school_calendar_route';
 let calendarRequested=!!window.WCIB_CALENDAR_REQUESTED||location.hash==='#calendar';
 try{
   if(calendarRequested)localStorage.setItem(CALENDAR_ROUTE_KEY,String(Date.now()));
-  else calendarRequested=Date.now()-Number(localStorage.getItem(CALENDAR_ROUTE_KEY)||0)<86400000;
+  else if(!location.hash)calendarRequested=Date.now()-Number(localStorage.getItem(CALENDAR_ROUTE_KEY)||0)<86400000;
 }catch(e){}
 function finishCalendarNavigation(){
-  if(calendarRequested&&window.WCIB_ME){
+  if(window.WCIB_ME){
     try{localStorage.removeItem(CALENDAR_ROUTE_KEY);}catch(e){}
   }
 }
@@ -6412,8 +6412,9 @@ async function init(){
   initWeek();
   renderYearTabs();
   renderHOD();
-  if(calendarRequested){showView('calendar');finishCalendarNavigation();}
+  if(calendarRequested)showView('calendar');
   else if(location.hash==='#week') showView('week');
+  finishCalendarNavigation();
 }
 
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();

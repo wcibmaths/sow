@@ -81,6 +81,10 @@ def notes_source():
 def progress_activity_source():
     return send_file('progress-activity.js', mimetype='application/javascript')
 
+@app.route('/school-calendar.js')
+def school_calendar_source():
+    return send_file('school-calendar.js', mimetype='application/javascript')
+
 @app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(load_data())

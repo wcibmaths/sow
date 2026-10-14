@@ -47,6 +47,14 @@
   #wcib-gate .wcib-err{ color:#B47267; font-size:12.5px; margin:12px 0 0; }
 </style>
 <script>document.documentElement.classList.add('wcib-sealed');</script>
+<script>
+// Capture calendar navigation before the unchanged email sign-in code can strip the URL.
+try{
+  window.WCIB_CALENDAR_REQUESTED=location.hash==='#calendar'||
+    Date.now()-Number(localStorage.getItem('wcib_school_calendar_route')||0)<86400000;
+  if(location.hash==='#calendar')localStorage.setItem('wcib_school_calendar_route',String(Date.now()));
+}catch(e){window.WCIB_CALENDAR_REQUESTED=location.hash==='#calendar';}
+</script>
 <title>WCIB Maths Department — Scheme of Work 2026/27</title>
 <link rel="icon" type="image/png" href="./wellington-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1183,6 +1191,7 @@ if(!window.WCIB_DB){
 <script src="./y10-fm-sow.js?v=2026-10-03-v7-consolidated-units"></script>
 <script src="./y11-ma1-sow.js?v=2026-08-29-v6"></script>
 <script src="./progress-activity.js"></script>
+<script src="./school-calendar.js?v=2026-10-14"></script>
 
 <script>
 'use strict';
@@ -1229,8 +1238,32 @@ const FIRST_TEACHING_DAY  = new Date(2026, 7, 27);  // Thu 27 Aug 2026
 const KEY_DATES_URL =
   'https://wcibmaths.github.io/teacher-hub/data/wcib_academic_key_dates_2026_27.csv';
 const KEY_DATES_CACHE_KEY = 'wcib_key_dates_2026_27';
-const KEY_DATES_CACHE_MS  = 24 * 60 * 60 * 1000;    // 24 hours
 let KEY_DATES = [];
+const SCHOOL_CALENDAR=window.WCIB_SCHOOL_CALENDAR;
+const keyDatesStore=SCHOOL_CALENDAR.createStore(KEY_DATES_CACHE_KEY,state=>{
+  KEY_DATES=state.rows;
+  if(document.getElementById('calendar-content'))renderCalendar();
+  refreshActiveView();
+});
+function calendarNotice(){return SCHOOL_CALENDAR.notice(keyDatesStore.state,'loadKeyDates()');}
+// Preserve only calendar navigation when the email sign-in URL loses its hash.
+const CALENDAR_ROUTE_KEY='wcib_school_calendar_route';
+let calendarRequested=!!window.WCIB_CALENDAR_REQUESTED||location.hash==='#calendar';
+try{
+  if(calendarRequested)localStorage.setItem(CALENDAR_ROUTE_KEY,String(Date.now()));
+  else calendarRequested=Date.now()-Number(localStorage.getItem(CALENDAR_ROUTE_KEY)||0)<86400000;
+}catch(e){}
+function finishCalendarNavigation(){
+  if(calendarRequested&&window.WCIB_ME){
+    try{localStorage.removeItem(CALENDAR_ROUTE_KEY);}catch(e){}
+  }
+}
+if(typeof MutationObserver!=='undefined'){
+  new MutationObserver(finishCalendarNavigation).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+}
+window.addEventListener('hashchange',()=>{
+  if(location.hash==='#calendar'){calendarRequested=true;showView('calendar');}
+});
 
 // Unit codes this department actually enters students for.
 const RELEVANT_EXTERNAL_CODES = new Set([
@@ -2822,27 +2855,6 @@ const ASSESSMENTS_MA4 = {
   ],
 };
 
-const CALENDAR_EVENTS = [
-  {term:'Michaelmas', label:'Michaelmas Half Term',    dates:'19–23 Oct 2026',          type:'break'},
-  {term:'Michaelmas', label:'National Holiday',        dates:'Tue 13 Oct 2026',         type:'holiday', note:'Reduced lessons M8B'},
-  {term:'Michaelmas', label:'National Holidays',       dates:'Mon 7 + Thu 10 Dec 2026', type:'holiday', note:'Reduced lessons M15A'},
-  {term:'Michaelmas', label:'Term ends 12pm',          dates:'Wed 16 Dec 2026',         type:'partial', note:'M16B partial week'},
-  {term:'Michaelmas', label:'Y12 CAT4 Testing',        dates:'31 Aug–4 Sep 2026',       type:'exams',   note:'Year 12 CAT4 baseline (M2B)'},
-  {term:'Michaelmas', label:'Y12 Progress Check',      dates:'28 Sep–2 Oct 2026',       type:'exams',   note:'Year 12 progress check (M6B)'},
-  {term:'Michaelmas', label:'Y12 Parents Consultation',dates:'Thu 26 Nov 2026',         type:'inset',   note:'Y12 PTC (M13A)'},
-  {term:'Michaelmas', label:'Options Fair',            dates:'Tue 8 Dec 2026',          type:'inset',   note:'Y12 options fair (M15A)'},
-  {term:'Lent',       label:'INSET Day',               dates:'Wed 6 Jan 2027',          type:'inset',   note:'Teaching starts Thu 7 Jan'},
-  {term:'Lent',       label:'⚠️ Y12 & Y13 Mock Week',  dates:'11–15 Jan 2027',          type:'exams',   note:'L2B — off normal timetable, no teaching'},
-  {term:'Lent',       label:'Mock Review Weeks',       dates:'18–29 Jan 2027',          type:'inset',   note:'L3A–L4B mock results review'},
-  {term:'Lent',       label:'Lent Half Term',          dates:'15–19 Feb 2027',          type:'break'},
-  {term:'Lent',       label:'⚠️ Adventure Week (Y7–9)',dates:'22–26 Feb 2027',          type:'adventure',note:'Full week lost — no Y7 teaching'},
-  {term:'Lent',       label:'IAL First-Teaching Deadline', dates:'19 Mar 2027',         type:'exams',   note:'End of L10B — Y12/Y13 IAL first teaching complete'},
-  {term:'Lent',       label:'⭐ IAL Past-paper Block', dates:'22 Mar–2 Apr 2027',        type:'exams',   note:'L11A–L12B protected: no new teaching'},
-  {term:'Summer',     label:'National Holidays',       dates:'Thu 3 + Fri 4 Jun 2027',  type:'holiday', note:'Reduced lessons S7A'},
-  {term:'Summer',     label:'⚠️ Y7–9 Summer Exams',    dates:'31 May–4 Jun 2027',       type:'exams',   note:'No curriculum teaching S7A'},
-  {term:'Summer',     label:'IAL External Exams',      dates:'May 2027 onwards',        type:'exams',   note:'Y12/Y13 study leave begins after S4B'},
-  {term:'Summer',     label:'Term ends 12pm',          dates:'Wed 30 Jun 2027',         type:'partial', note:'S11A partial week'},
-];
 
 // ══════════════════════════════════════════════════════════════════
 //  External examination timetable placeholders
@@ -4649,26 +4661,7 @@ function parseCsv(text){
 }
 
 async function loadKeyDates(){
-  try{
-    const raw=localStorage.getItem(KEY_DATES_CACHE_KEY);
-    const cached=raw?JSON.parse(raw):null;
-    if(cached && Array.isArray(cached.rows) && (Date.now()-cached.savedAt)<KEY_DATES_CACHE_MS){
-      KEY_DATES=cached.rows;
-      return;
-    }
-  }catch(e){ /* unreadable cache — just refetch */ }
-  try{
-    const res=await fetch(KEY_DATES_URL,{cache:'no-store'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const rows=parseCsv(await res.text()).filter(r=>r.event_id);
-    if(!rows.length) throw new Error('empty CSV');
-    KEY_DATES=rows;
-    try{ localStorage.setItem(KEY_DATES_CACHE_KEY,
-      JSON.stringify({savedAt:Date.now(),rows})); }catch(e){}
-  }catch(err){
-    KEY_DATES=[];
-    console.warn('Key dates unavailable — using the built-in calendar instead:',err);
-  }
+  return keyDatesStore.refresh();
 }
 
 function normaliseY10IdentityText(value){
@@ -4828,6 +4821,7 @@ async function loadY10AcceleratedSow(){
 }
 
 function keyDateType(row){
+  if(row.event_type==='reporting_deadline')return 'Reporting Deadline';
   const c=String(row.category||'').toLowerCase();
   if(/holiday|break|closed/.test(c))       return 'Holiday';
   if(/term|orientation/.test(c))            return 'Term Date';
@@ -4905,20 +4899,8 @@ function getInternalEvents(start, end){
       const d=parseIsoDate(r.start_date); if(!d) return;
       const name=String(r.event||'').trim(); if(!name) return;
       const isTbc=String(r.is_tbc||'').toUpperCase()==='TRUE';
-      add(d, name + (isTbc?' (TBC)':''), r.notes||'',
-          formatEventAudience(r.audience,name+' '+(r.notes||'')), keyDateType(r), `key|${r.event_id}`);
-    });
-  } else {
-    // Offline fallback so the panel still works if the CSV can't be fetched.
-    (CALENDAR_EVENTS||[]).forEach(r=>{
-      const d=parseStartDate(r.dates); if(!d) return;
-      const typeLbl = r.type==='break'?'Holiday'
-                    : r.type==='holiday'?'Holiday'
-                    : r.type==='partial'?'Term Date'
-                    : r.type==='exams'?'Internal Exam Window'
-                    : 'Whole-school';
-      add(d, r.label, r.note||'', formatEventAudience('',`${r.label} ${r.note||''}`), typeLbl,
-          `fallback|${r.label}|${d.toISOString().slice(0,10)}`);
+      add(d, name + (isTbc?' (TBC)':''), SCHOOL_CALENDAR.details(r),
+          SCHOOL_CALENDAR.audience(r), keyDateType(r), `key|${r.event_id}`);
     });
   }
 
@@ -4953,7 +4935,7 @@ function weekCodeVariants(week, term){
 
 function eventAudienceApplies(audience, yg){
   const text=String(audience||'').toLowerCase();
-  const years=[...text.matchAll(/\b(?:y|year)\s*(\d{1,2})\b/gi)].map(m=>Number(m[1]));
+  const years=SCHOOL_CALENDAR.years({audience});
   if(years.length) return years.includes(Number(yg));
   return /all staff|school|staff/.test(text);
 }
@@ -4979,14 +4961,7 @@ function getTeacherWeekEvents(week, dates, term, yg){
       const end=parseIsoDate(row.end_date||row.start_date)||start;
       const tbc=String(row.is_tbc||'').toUpperCase()==='TRUE';
       add(String(row.event||'').trim()+(tbc?' (TBC)':''),start,end,
-          row.week_code,row.audience,row.event_id,row.category,row.notes);
-    });
-  }else{
-    (CALENDAR_EVENTS||[]).forEach(row=>{
-      const start=parseStartDate(row.dates);
-      const end=parseEndDate(row.dates)||start;
-      add(row.label,start,end,'','All staff / school',
-          `fallback|${row.label}|${row.dates}`,row.type,row.note);
+          row.week_code,row.audience,row.event_id,row.category,SCHOOL_CALENDAR.details(row));
     });
   }
   return [...found.values()].sort((a,b)=>a.start-b.start||a.event.localeCompare(b.event));
@@ -5232,7 +5207,9 @@ function renderHOD(){
   // ── HoD insight aggregation (all year groups, browser-date-driven) ──
   // Dashboard event windows are department-wide; the old year toggle is
   // intentionally gone so every year group is always represented.
-  const events7=getInternalEvents(today,in7);
+  const schoolToday=parseIsoDate(SCHOOL_CALENDAR.todayISO());
+  const schoolIn7=new Date(schoolToday);schoolIn7.setDate(schoolIn7.getDate()+6);
+  const events7=getInternalEvents(schoolToday,schoolIn7);
 
   // Upcoming external examinations — from exam-dates.js
   const extAll=externalExamList()
@@ -5308,7 +5285,7 @@ function renderHOD(){
   };
 
   // ── Card: Next 7 days ──────────────────────────────────────────────
-  const eventsHtml=renderGroupedDates(eventRows,'No school events or assessments in the next 7 days.');
+  const eventsHtml=calendarNotice()+renderGroupedDates(eventRows,'No school events or assessments in the next 7 days.');
 
   // ── Card: Upcoming Edexcel external exams ──────────────────────────
   const extTabs = externalWindows.length
@@ -6316,23 +6293,26 @@ function renderCalendar(){
   const td={'Michaelmas':'Wed 26 Aug – Wed 16 Dec 2026','Lent':'Thu 7 Jan – Fri 2 Apr 2027','Summer':'Mon 19 Apr – Wed 30 Jun 2027'};
   let html='';
   ['Michaelmas','Lent','Summer'].forEach(term=>{
-    const evs=CALENDAR_EVENTS.filter(e=>e.term===term);
+    const evs=KEY_DATES.filter(e=>e.term===term&&!SCHOOL_CALENDAR.isExternal(e))
+      .sort((a,b)=>String(a.start_date||'9999').localeCompare(String(b.start_date||'9999'))||a.event_id.localeCompare(b.event_id));
     html+=`<div style="margin-bottom:24px;">
       <div style="background:${tc[term]};color:white;padding:10px 16px;border-radius:8px;font-weight:600;margin-bottom:12px;">
         ${term} Term · <span style="font-weight:400;font-size:13px;">${td[term]}</span></div>`;
     evs.forEach(e=>{
-      const isAd=e.type==='adventure'||e.type==='exams';
-      const bg=isAd?'#F5E7E4':e.type==='break'?'#EAF1F6':e.type==='inset'?'#FBF8F4':'#FBF8F4';
-      const bd=isAd?'var(--red)':e.type==='break'?'var(--blue)':e.type==='inset'?'var(--amber)':'var(--mid-gray)';
-      html+=`<div style="background:${bg};border-left:4px solid ${bd};border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;">
-        <div style="font-weight:600;font-size:13px;">${e.label}</div>
-        <div style="font-size:12px;color:var(--dark-gray);margin-top:2px;">📅 ${e.dates}</div>
-        ${e.note?`<div style="font-size:12px;color:${isAd?'var(--red)':'var(--dark-gray)'};margin-top:3px;font-weight:${isAd?'600':'400'}">${e.note}</div>`:''}
+      const category=String(e.category||'').toLowerCase();
+      const isAd=/adventure|exam|assessment/.test(category)||e.event_type==='reporting_deadline';
+      const isBreak=/holiday|half.term|break/.test(category);
+      const bg=isAd?'#F5E7E4':isBreak?'#EAF1F6':'#FBF8F4';
+      const bd=isAd?'var(--red)':isBreak?'var(--blue)':/inset|training/.test(category)?'var(--amber)':'var(--mid-gray)';
+      html+=`<div data-calendar-event="${esc(e.event_id)}" style="background:${bg};border-left:4px solid ${bd};border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;">
+        <div style="font-weight:600;font-size:13px;">${esc(e.event)}</div>
+        <div style="font-size:12px;color:var(--dark-gray);margin-top:2px;">📅 ${esc(SCHOOL_CALENDAR.dates(e))}</div>
+        <div style="font-size:12px;color:${isAd?'var(--red)':'var(--dark-gray)'};margin-top:3px;font-weight:${isAd?'600':'400'}">${esc(SCHOOL_CALENDAR.details(e))}</div>
       </div>`;
     });
     html+='</div>';
   });
-  document.getElementById('calendar-content').innerHTML=html;
+  document.getElementById('calendar-content').innerHTML=calendarNotice()+html;
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -6432,7 +6412,8 @@ async function init(){
   initWeek();
   renderYearTabs();
   renderHOD();
-  if(location.hash==='#week') showView('week');
+  if(calendarRequested){showView('calendar');finishCalendarNavigation();}
+  else if(location.hash==='#week') showView('week');
 }
 
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();

@@ -18,6 +18,10 @@ author = "agent"
 task = "workflow.run"
 args = "Start application"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Teacher Hub calendar preview"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -29,6 +33,22 @@ outputType = "webview"
 task = "shell.exec"
 args = "python3 server.py"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Teacher Hub calendar preview"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 -m http.server 3000 --bind 0.0.0.0 --directory .local/calendar-release/teacher-hub"
+waitForPort = 3000
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
 
 [[ports]]
 localPort = 5000

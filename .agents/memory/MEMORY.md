@@ -4,3 +4,4 @@
 - [Progress activity attribution](progress-activity-attribution.md) — historical lesson times lack editor identity; freeze legacy attribution before tracking new teacher-specific edits.
 - [Scoped edit constraints](scoped-edit-constraints.md) — focused UI and folder-link fixes must not change SoW arrays, Firebase, or the auth gate.
 - [Teacher progress preservation](teacher-progress-preservation.md) — SoW reference updates must retain existing progress, timestamps, attribution, and records for removed lessons.
+- [School reporting requirements](school-reporting-requirements.md) — same-date reporting actions are distinct; retain event IDs and use the Bangkok deadline clock.

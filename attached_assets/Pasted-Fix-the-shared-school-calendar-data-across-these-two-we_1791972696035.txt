@@ -1,0 +1,148 @@
+Fix the shared school-calendar data across these two websites:
+
+SoW: https://wcibmaths.github.io/sow/
+Teacher Hub: https://wcibmaths.github.io/teacher-hub/
+
+Keep the current design, layout, colours, fonts and existing sections.
+This is a data-connection fix, not a redesign.
+
+IMPORTANT: Do not include external exams in the SoW School Calendar.
+Keep the existing Upcoming External Exams sections, their data source
+and display unchanged.
+
+1. ONE SHARED SCHOOL-CALENDAR SOURCE
+
+Use the existing file as the single source for non-external school events:
+
+teacher-hub/data/wcib_academic_key_dates_2026_27.csv
+
+Published URL:
+https://wcibmaths.github.io/teacher-hub/data/wcib_academic_key_dates_2026_27.csv
+
+This source should contain school events, holidays, INSET, reporting
+deadlines, internal/mock exam windows, parent conferences and other
+school-calendar dates.
+
+Do not create a separate reporting calendar or maintain duplicate
+event lists inside each website.
+
+Keep external exams in their existing shared exam-dates.js source.
+Do not copy those records into the school-calendar CSV.
+
+2. CONNECT THE EXISTING DISPLAYS
+
+SoW School Calendar:
+- In sow/index.html, update renderCalendar() to use the shared
+  KEY_DATES data instead of the independent CALENDAR_EVENTS list.
+- Preserve the current term-grouped calendar layout.
+- Sort events chronologically within each term.
+- Show the full academic year, including past dates.
+- Include reporting deadlines alongside other school events.
+- Exclude external exams.
+- Reconcile the old built-in list with the CSV before removing its
+  use, so no valid school event disappears.
+
+SoW dashboard:
+- Continue using the same shared CSV for school key dates.
+- Ensure reporting deadlines appear alongside other upcoming events.
+- Leave existing external-exam displays unchanged.
+
+Teacher Hub left panel:
+- Keep the existing Academic/Key Dates and Upcoming External Exams
+  sections in their current positions and styles.
+- Show school events and reporting deadlines together in Academic,
+  ordered by date.
+- Do not add a separate Reporting Deadlines subsection.
+- Keep the compact five-event preview, but add “Show more” so later
+  events are accessible rather than silently hidden.
+- Add “View full calendar”, opening the SoW School Calendar directly.
+  Make this navigation work with the existing sign-in flow.
+- Leave Upcoming External Exams unchanged.
+
+3. RECONCILE THE REPORTING DEADLINES
+
+Use these 14 records as the confirmed reporting schedule.
+Every deadline is at 12:00 PM, Asia/Bangkok.
+
+Term       | Cycle        | Year groups    | Date       | Week
+Michaelmas | Interim 0    | Y7-Y13         | 2026-10-07 | M7A
+Michaelmas | Interim 1    | Y12            | 2026-11-12 | M11A
+Michaelmas | Mock Results | Y11            | 2026-11-13 | M11A
+Michaelmas | Interim 1    | Y7-Y11 and Y13 | 2026-11-17 | M12B
+Lent       | Mock Results | Y12-Y13        | 2027-01-27 | L4B
+Lent       | Interim 2    | Y12-Y13        | 2027-01-27 | L4B
+Lent       | Interim 2    | Y7-Y11         | 2027-01-28 | L4B
+Lent       | Interim 3    | Y7-Y10         | 2027-03-09 | L9A
+Lent       | Mock Results | Y11            | 2027-03-11 | L9A
+Lent       | Full         | Y11-Y13        | 2027-03-12 | L9A
+Summer     | EoY Results  | Y10            | 2027-05-25 | S6B
+Summer     | Full         | Y10            | 2027-05-25 | S6B
+Summer     | EoY Results  | Y7-Y9          | 2027-06-15 | S9A
+Summer     | Full         | Y7-Y9          | 2027-06-15 | S9A
+
+Update matching CSV records and preserve their existing event_id values.
+Add missing records with stable, unique IDs.
+
+In particular:
+- Add separate EoY Results deadlines for Y10 and Y7-Y9.
+- Include Y13 in the audience for Interim 1 on 17 November.
+- Keep separate requirements sharing the same date. Never deduplicate
+  by date alone.
+- Preserve report-opening dates, HoD checking deadlines, publication
+  dates and exam sittings as separate events.
+
+Store deadline time, timezone and reporting cycle as structured fields.
+Mark these deadlines as high priority and identify them explicitly
+as reporting deadlines, including Mock Results and EoY Results.
+
+Display cycle, year groups, date, week and 12:00 PM clearly, using the
+existing event cards and sidebar styling.
+
+4. NORMALISE DATA WITHOUT CHANGING OTHER FEATURES
+
+Map the existing CSV term names consistently:
+- Term 1 / Michaelmas Term -> Michaelmas
+- Term 2 / Lent Term -> Lent
+- Term 3 / Summer Term -> Summer
+
+Preserve the CSV parser’s handling of quoted fields and UTF-8 BOM.
+Use structured audience values rather than guessing year groups
+from event titles.
+
+Keep teaching plans, lesson IDs, assessment schedules, saved progress,
+SharePoint links, permissions and sign-in unchanged.
+
+5. REFRESH AND FAILURE HANDLING
+
+Revalidate the school-calendar CSV on each page load.
+Do not let the current 24-hour SoW cache delay corrections.
+
+Refresh affected displays after fresh data loads.
+Invalidate only the calendar cache when necessary.
+Never clear all localStorage or teacher progress.
+
+On a fetch failure:
+- Keep the last successful calendar data.
+- Show a small “Calendar data unavailable” or “Showing saved dates”
+  message with Retry, as appropriate.
+- Do not silently display an empty or incomplete calendar.
+
+6. VERIFY BEFORE FINISHING
+
+Check both Replit previews and GitHub Pages deployments:
+
+- All 14 deadlines appear in the full-year SoW School Calendar.
+- No external exams appear in that calendar.
+- Existing external-exam panels remain unchanged.
+- Teacher Hub Academic dates include upcoming reporting deadlines.
+- Show more exposes events beyond the first five.
+- View full calendar opens the correct SoW tab.
+- The past 7 October deadline remains in the full-year calendar.
+- Both deadlines remain separate on 27 January, 25 May and 15 June.
+- Y13 appears correctly on the 17 November deadline.
+- Dates, weekdays and noon deadlines use Bangkok time.
+- Refresh retrieves calendar corrections without affecting progress.
+
+Report the files changed in each repository and the checks completed.
+If either repository or deployment is inaccessible, state which part
+still needs updating. Do not report both sites as fixed unless verified.

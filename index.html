@@ -805,6 +805,47 @@ try{
   .mw-form button{border:0;border-radius:5px;padding:7px;background:#247d79;color:white;font:600 11px Poppins,Arial,sans-serif}
   .mw-form button:disabled{opacity:.5;cursor:wait}
   .mw-popover-note{font-size:11px;color:#66777b;margin-top:9px}
+  /* Holiday weeks and single-day closures */
+  .mw-holiday{background:#eaf4f2;color:#195f61;line-height:1.6}
+  .mw-holiday strong{display:block;margin-bottom:3px;font-size:13px}
+  .mw-grid .mw-off{background:#f4f6f6!important;color:#8b9699!important;background-image:repeating-linear-gradient(135deg,transparent,transparent 7px,#e7ecec 7px,#e7ecec 14px)}
+  .mw-off-tag{display:block;font-size:10px;font-weight:600;color:#7d8a8d;margin-top:3px}
+  .mw-off-toggle{display:inline-block;margin-top:5px;border:1px solid #cbd7d7;background:#fff;color:#5d6e72;border-radius:4px;padding:2px 6px;font:500 10px Inter,'Segoe UI',Arial,sans-serif;cursor:pointer}
+  .mw-off-toggle:hover{border-color:#247d79;color:#1d6a66}
+  .mw-off-toggle:focus-visible{outline:2px solid #d48925;outline-offset:2px}
+  /* Lessons passed over earlier in the scheme */
+  .mw-catchup{display:inline-block;margin-top:4px;background:#fdecd4;color:#8a5a12;border-radius:4px;padding:2px 6px;font-size:10px;font-weight:600;cursor:help}
+  /* Choosing a different lesson for one slot */
+  .mw-topic-pick{display:block;width:100%;text-align:left;border:0;background:transparent;padding:0;font:600 12px Poppins,Arial,sans-serif;cursor:pointer;border-bottom:1px dotted #a9c4c2}
+  .mw-topic-pick:hover{color:#15696b;border-bottom-color:#15696b}
+  .mw-topic-pick:focus-visible{outline:2px solid #d48925;outline-offset:2px}
+  .mw-picker{min-width:240px;max-width:300px}
+  .mw-picks{list-style:none;margin:5px 0 0;padding:0;max-height:210px;overflow-y:auto}
+  .mw-pick{display:flex;align-items:baseline;justify-content:space-between;gap:6px;width:100%;text-align:left;border:0;border-radius:5px;background:transparent;padding:5px 6px;font:500 11px Poppins,Arial,sans-serif;color:#213746;cursor:pointer}
+  .mw-pick:hover{background:#eaf4f2}
+  .mw-pick.current{background:#fdf3e2;font-weight:700}
+  .mw-pick-name{overflow-wrap:anywhere}
+  .mw-pick-status{flex:none;font-size:9px;opacity:.75}
+  .mw-unpin{margin-top:8px;border:1px solid #e0cfca;border-radius:5px;background:#fff;color:#a04830;padding:5px 7px;font:500 11px Poppins,Arial,sans-serif;width:100%}
+  /* Free-text notes and links, shared by My Week and the planning pages */
+  .mw-pill.solo{border-radius:20px}
+  .mw-notes-chip{border-radius:20px;border-left:1px solid #E2DDD7;gap:4px}
+  .mw-notes-chip.filled{border-color:#b7d1cd;background:#eaf4f2;color:#1d6a66;font-weight:600}
+  .mw-dot{width:5px;height:5px;border-radius:50%;background:#247d79;display:inline-block}
+  .mw-notes-panel{min-width:240px;max-width:320px}
+  .mw-notes-panel textarea{width:100%;min-width:0;box-sizing:border-box;resize:vertical;padding:7px;border:1px solid #cbd7d7;border-radius:5px;font:12px/1.5 Poppins,Arial,sans-serif;color:#213746}
+  .mw-notes-panel textarea:focus-visible{outline:2px solid #d48925;outline-offset:1px}
+  .mw-notes-actions{display:flex;gap:6px}
+  .mw-notes-actions button{flex:1;border:0;border-radius:5px;padding:7px;background:#247d79;color:#fff;font:600 11px Poppins,Arial,sans-serif;cursor:pointer}
+  .mw-notes-actions button:disabled{opacity:.5;cursor:wait}
+  .mw-notes-cancel{background:#eef2f2!important;color:#5d6e72!important}
+  .mw-notes-read{font-size:11.5px;line-height:1.6;color:#2b4450;margin-top:9px;overflow-wrap:anywhere}
+  .mw-notes-read a{color:#196e70}
+  .mw-notes-preview{border-top:1px dashed #dbe4e3;padding-top:8px}
+  /* On a planning page the panel floats clear of the lesson row */
+  .lesson-notes{position:relative;display:inline-flex;align-items:center}
+  .lesson-notes .mw-popover{position:absolute;right:0;top:calc(100% + 6px);width:290px;z-index:30;text-align:left}
+  @media(max-width:760px){.lesson-notes .mw-popover{right:auto;left:0;width:min(290px,78vw)}}
   @media(max-width:650px){#view-week{padding:16px}.mw-header h2{font-size:20px}}
 </style>
 </head>
@@ -5813,6 +5854,13 @@ function renderTeacher(){
             </div>
             ${lesson.obj?`<div class="lesson-detail">${esc(lesson.obj)}</div>`:''}
           </div>
+          ${(()=>{
+            const notes=window.WCIB_LESSON_NOTES;
+            if(!notes || !selectedTeacher) return '<span></span>';
+            const noteKey=notes.key(selectedTeacher,yg,set,lesson.id);
+            return `<span class="lesson-notes">${notes.chip(noteKey,notes.isOpen(noteKey))}
+              ${notes.isOpen(noteKey)?notes.panel(noteKey):''}</span>`;
+          })()}
           ${lesson.tier
             ? `<span class="tier-badge ${lesson.tier==='EXPOSURE'?'t-exposure':lesson.tier.includes('ACCESS')?'t-access':'t-core'}">${esc(lesson.tier)}</span>`
             : `<span class="type-badge ${bc}">${bt}</span>`}
@@ -6420,8 +6468,8 @@ async function init(){
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 
 </script>
-<script src="./my-week.js"></script>
-<script src="./notes.js"></script>
+<script src="./my-week.js?v=2026-10-25-holiday-weeks"></script>
+<script src="./notes.js?v=2026-10-25-checklists"></script>
 
 </body>
 </html>

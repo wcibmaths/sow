@@ -205,6 +205,7 @@ try{
   .dash-event-content{min-width:0;display:flex;flex-direction:column;gap:2px;}
   .dash-event-name{font-size:12.5px;font-weight:700;color:var(--navy);line-height:1.28;}
   .dash-event-meta{font-size:10.5px;color:var(--dark-gray);line-height:1.35;}
+  .dash-event-when{display:block;font-size:10.5px;font-weight:600;color:var(--navy);line-height:1.35;}
   .dash-event-meta .type-pill{margin-left:3px;vertical-align:1px;}
   .dash-tentative{display:inline-block;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--dark-amber);background:#F4E7D6;padding:1px 5px;border-radius:999px;vertical-align:2px;}
   .dash-event-action{width:32px;height:32px;display:inline-flex;align-items:center;
@@ -350,10 +351,17 @@ try{
   .week-dates{font-size:12px;color:#6C7480;font-weight:500;}
   .week-cycle{font-size:11px;font-weight:700;color:#5F7386;background:#EAF1F6;
     border:1px solid #D9E4ED;padding:3px 8px;border-radius:999px;white-space:nowrap;}
-  .week-key-events{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;}
-  .week-key-event{font-size:11px;color:#5A7190;background:#EAF1F6;border:1px solid #D9E4ED;
-    padding:4px 9px;border-radius:999px;font-weight:600;white-space:nowrap;max-width:290px;
-    overflow:hidden;text-overflow:ellipsis;}
+  /* Key dates sit on their own quiet line below the week title, so the cycle
+     letter and the lesson count stay the only things competing at the top. */
+  .week-key-line{flex-basis:100%;display:flex;align-items:baseline;gap:14px;
+    flex-wrap:wrap;margin:-2px 0 0 82px;}
+  .week-key-event{font-size:11px;color:#6C7480;font-weight:500;white-space:nowrap;
+    max-width:330px;overflow:hidden;text-overflow:ellipsis;}
+  .week-key-event.urgent{color:#9A6520;font-weight:600;}
+  .week-key-when{color:#9AA3AC;font-weight:400;margin-left:5px;}
+  .week-key-event.urgent .week-key-when{color:#B08A55;}
+  .week-key-more{font-size:11px;color:#8A939B;font-weight:500;cursor:help;
+    border-bottom:1px dotted #C3CBD2;}
   .week-teaching-note{font-size:11.5px;color:#7A4A43;background:#FBF1EF;border-top:1px solid #E8C9C4;
     padding:8px 16px;line-height:1.45;}
   .week-teaching-note strong{font-weight:700;color:#B06B62;}
@@ -388,7 +396,8 @@ try{
   .week-pill.todo{background:#F5E7E4;color:#B47267;border-color:#DBA39D;}
   .week-pill.ahead{background:#FBF8F4;color:#6C7480;border-color:#E2DDD7;}
   @media(max-width:700px){
-    .week.collapsed .week-key-events{display:none;}
+    .week.collapsed .week-key-line{display:none;}
+    .week-key-line{margin-left:0;}
   }
   .lesson-detail{font-size:11px;color:var(--dark-gray);margin-top:4px;line-height:1.45;
     white-space:normal;}
@@ -842,6 +851,39 @@ try{
   .mw-notes-read{font-size:11.5px;line-height:1.6;color:#2b4450;margin-top:9px;overflow-wrap:anywhere}
   .mw-notes-read a{color:#196e70}
   .mw-notes-preview{border-top:1px dashed #dbe4e3;padding-top:8px}
+  /* ── School calendar: what's coming first, the year's history folded ── */
+  .cal-upcoming{background:#FBF8F4;border:1px solid #E2DDD7;border-radius:10px;
+    padding:14px 16px;margin-bottom:20px;}
+  .cal-upcoming-head{display:flex;align-items:baseline;justify-content:space-between;
+    gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .cal-upcoming-head h3{margin:0;font-size:14px;font-weight:700;color:var(--navy);}
+  .cal-upcoming-head span{font-size:12px;color:var(--dark-gray);}
+  .cal-empty{margin:0;font-size:13px;color:var(--dark-gray);}
+  .cal-months{display:flex;flex-direction:column;gap:8px;}
+  .cal-month{border:1px solid var(--mid-gray);border-radius:9px;overflow:hidden;background:#fff;}
+  .cal-month-head{display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+    font-family:var(--font);font-size:13px;font-weight:600;color:var(--navy);
+    background:#FBF8F4;border:0;border-bottom:1px solid #E2DDD7;padding:11px 15px;cursor:pointer;}
+  .cal-month-head:hover{background:#F4EFE8;}
+  .cal-month-head:focus-visible{outline:2px solid var(--blue-d);outline-offset:-2px;}
+  .cal-month-chevron{font-size:10px;color:#6C7480;transition:transform 0.2s;}
+  .cal-month.collapsed .cal-month-chevron{transform:rotate(-90deg);}
+  .cal-month.collapsed .cal-month-head{border-bottom:0;}
+  .cal-month.collapsed .cal-month-body{display:none;}
+  .cal-month-name{flex:0 0 auto;}
+  .cal-month-term{font-size:11px;font-weight:500;color:#6C7480;background:#EAF1F6;
+    border:1px solid #D9E4ED;border-radius:999px;padding:2px 8px;}
+  .cal-month-count{margin-left:auto;font-size:11.5px;font-weight:500;color:var(--dark-gray);}
+  .cal-month-body{padding:10px 12px;display:flex;flex-direction:column;gap:7px;}
+  .cal-event{background:#FBF8F4;border-left:4px solid var(--mid-gray);
+    border-radius:0 6px 6px 0;padding:9px 13px;}
+  .cal-event.is-key{background:#F5E7E4;border-left-color:var(--red);}
+  .cal-event.is-break{background:#EAF1F6;border-left-color:var(--blue);}
+  .cal-event.is-past{opacity:.62;}
+  .cal-event-name{font-weight:600;font-size:13px;}
+  .cal-event-when{font-size:12px;color:var(--dark-gray);margin-top:2px;}
+  .cal-event.is-key .cal-event-when{color:var(--red);font-weight:600;}
+  .cal-event-meta{font-size:12px;color:var(--dark-gray);margin-top:3px;}
   /* On a planning page the panel floats clear of the lesson row */
   .lesson-notes{position:relative;display:inline-flex;align-items:center}
   .lesson-notes .mw-popover{position:absolute;right:0;top:calc(100% + 6px);width:290px;z-index:30;text-align:left}
@@ -4912,28 +4954,68 @@ function formatEventScopes(scopes){
   }).join('; ') || clean.join('; ') || 'Whole school';
 }
 
+// A multi-day window often reaches us as several daily rows, some of them
+// suffixed "(start)" or "(end)". Strip the marker so those rows describe one
+// event rather than three.
+const WINDOW_SUFFIX_RX=/\s*[(\[](?:start|starts|starting|begin|begins|end|ends|ending|day\s*\d+(?:\s*of\s*\d+)?)[)\]]\s*$/i;
+function windowEventName(name){
+  let out=String(name||'').trim(), prev='';
+  while(out!==prev){ prev=out; out=out.replace(WINDOW_SUFFIX_RX,'').trim(); }
+  return out;
+}
+// "Aggregated from 3 consecutive daily entries" is internal plumbing: the
+// merged date range already says it, so it never reaches a teacher.
+function cleanEventDetails(details){
+  return String(details||'')
+    .split(/\s*·\s*/)
+    .filter(part=>!/^aggregated from \d+ consecutive daily entries\.?$/i.test(part.trim()))
+    .join(' · ');
+}
+function eventYears(scopes){
+  const years=new Set();
+  [...(scopes||[])].forEach(scope=>
+    [...String(scope).matchAll(/\bYear\s+(\d+)\b/g)].forEach(m=>years.add(Number(m[1]))));
+  return years;
+}
+
 function getInternalEvents(start, end){
-  // map: key -> {date,event,details,scopes:Set,type}
+  // map: key -> {start,end,dates:Set,event,details,scopes:Set,type}
   const map=new Map();
-  const add=(date,event,details,scope,type,dedupeKey,assessmentUrl)=>{
+  const add=(date,event,details,scope,type,dedupeKey,assessmentUrl,endDate)=>{
     if(!date) return;
-    if(date<start || date>end) return;
+    const last=(endDate && endDate>date) ? endDate : date;
+    // Overlap, not "starts inside": a window running across the boundary is
+    // still happening this week and must not drop out of the panel.
+    if(last<start || date>end) return;
+    // A term-length row ("Michaelmas Term", 26 Aug – 16 Dec) overlaps every
+    // week of its term. It is background, not something coming up.
+    if((last-date)/86400000>21) return;
     if(type!=='Internal Assessment' && type!=='Mock Exam' && EXTERNAL_EVENT_RX.test(event+' '+details)) return;
-    // Assessments are class-specific (keep per-scope); everything else merges.
-    const perScope = (type==='Internal Assessment' || type==='Mock Exam');
-    const key = dedupeKey ||
-      `${date.toISOString().slice(0,10)}|${event}|${perScope?scope:''}`;
+    const name=windowEventName(event);
+    // Per-class assessments stay separate; whole-school dates and mock
+    // windows merge, including across the separate daily rows of one window.
+    const perScope=(type==='Internal Assessment');
+    const key=dedupeKey || `${name}|${perScope?scope:''}`;
     let row=map.get(key);
     if(!row){
-      row={date,event,details,scopes:new Set(),type,assessmentUrl};
+      row={start:date,end:last,dates:new Set(),event:name,
+        details:cleanEventDetails(details),scopes:new Set(),type,assessmentUrl,
+        spans:last>date,
+        // Rows from the school calendar carry the officially published wording.
+        official:String(dedupeKey||'').startsWith('key|')};
       map.set(key,row);
     }
+    if(date<row.start) row.start=date;
+    if(last>row.end) row.end=last;
+    if(last>date) row.spans=true;
+    row.dates.add(date.toISOString().slice(0,10));
     row.scopes.add(scope);
-    if(!row.details && details) row.details=details;
+    if(!row.details && details) row.details=cleanEventDetails(details);
   };
 
-  // Whole-school dates — from the shared CSV, keyed on event_id so wording
-  // can never split one event into several rows.
+  // Whole-school dates — from the shared CSV. Keyed on the window name rather
+  // than event_id, because one window is published as several daily rows with
+  // separate ids; the name is what tells us they are the same thing.
   if(KEY_DATES.length){
     KEY_DATES.forEach(r=>{
       if(!r.start_date) return;                       // undated / TBC-only rows
@@ -4941,7 +5023,9 @@ function getInternalEvents(start, end){
       const name=String(r.event||'').trim(); if(!name) return;
       const isTbc=String(r.is_tbc||'').toUpperCase()==='TRUE';
       add(d, name + (isTbc?' (TBC)':''), SCHOOL_CALENDAR.details(r),
-          SCHOOL_CALENDAR.audience(r), keyDateType(r), `key|${r.event_id}`);
+          SCHOOL_CALENDAR.audience(r), keyDateType(r),
+          `key|${windowEventName(name)}|${SCHOOL_CALENDAR.audience(r)}`,
+          undefined, parseIsoDate(r.end_date||r.start_date));
     });
   }
 
@@ -4952,18 +5036,78 @@ function getInternalEvents(start, end){
     const type=/mock|exam/i.test(a.name)?'Mock Exam':'Internal Assessment';
     a.scopes.forEach(scope=>{
       const details=[a.sub,a.slot,a.obj].filter(Boolean).join(' · ');
+      // No end date: a.dates is the SoW week the assessment sits in, not how
+      // long it runs, so using it would stretch a one-lesson test across the
+      // whole week. A real window's span comes from the school calendar row.
       add(a.start, a.name, details, scope, type, a.dedupeKey, a.assessmentUrl);
     });
   });
-  // Render-friendly rows: collapse scopes nicely
-  const out=[...map.values()].map(r=>{
-    const scopes=[...r.scopes];
-    // If event spans many sets in same year, summarise as "Year X (all sets)"
-    let appliesTo;
-    appliesTo=formatEventScopes(scopes);
-    return {date:r.date,event:r.event,details:r.details,appliesTo,type:r.type,assessmentUrl:r.assessmentUrl};
-  }).sort((a,b)=>a.date-b.date);
-  return out;
+
+  const rows=[...map.values()];
+  return mergeMockWindows(rows).map(r=>({
+    date:r.start,endDate:r.spans?r.end:null,dates:[...r.dates].sort(),
+    event:r.event,details:r.details,appliesTo:formatEventScopes([...r.scopes]),
+    type:r.type,assessmentUrl:r.assessmentUrl
+  })).sort((a,b)=>a.date-b.date||a.event.localeCompare(b.event));
+}
+
+// One mock window arrives from the school calendar AND from each set's own
+// schedule, under a different name each time ("Mock 1", "Year 11 Mock 1",
+// "Shorter Year 11 mock examinations"). Names can't merge them, so overlapping
+// mock rows for the same single year group are merged instead, keeping the
+// school calendar's wording as the official one.
+function mergeMockWindows(rows){
+  const mocks=[], rest=[];
+  rows.forEach(row=>{
+    const years=eventYears(row.scopes);
+    if(row.type==='Mock Exam' && years.size===1) mocks.push({row,year:[...years][0]});
+    else rest.push(row);
+  });
+  const groups=new Map();
+  mocks.sort((a,b)=>a.row.start-b.row.start);
+  mocks.forEach(({row,year})=>{
+    const bucket=groups.get(year)||[];
+    // Touching or overlapping windows are the same mock period.
+    const joins=bucket.find(existing=>{
+      const gap=(row.start-existing.end)/86400000;
+      return row.start<=existing.end || (gap>0 && gap<=3);
+    });
+    if(!joins){ bucket.push(row); groups.set(year,bucket); return; }
+    if(row.start<joins.start) joins.start=row.start;
+    if(row.end>joins.end){ joins.end=row.end; joins.spans=true; }
+    if(joins.end>joins.start) joins.spans=true;
+    row.dates.forEach(d=>joins.dates.add(d));
+    row.scopes.forEach(s=>joins.scopes.add(s));
+    // Prefer the school calendar's name and details over a per-set one.
+    if(row.official && !joins.official){ joins.event=row.event; joins.official=true; joins.details=row.details||joins.details; }
+    if(!joins.details && row.details) joins.details=row.details;
+    if(!joins.assessmentUrl && row.assessmentUrl) joins.assessmentUrl=row.assessmentUrl;
+  });
+  return rest.concat(...[...groups.values()]);
+}
+
+// Key dates read as one quiet line under the week title rather than a row of
+// competing pills. Deadlines and closures are tinted so the ones that change
+// what a teacher does stand out from the ones that are merely informative.
+function tvWeekEventsLine(events){
+  const dayName=d=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  const when=event=>{
+    const dates=[...new Set((event.dates||[event.start]).map(d=>d.getTime()))]
+      .sort().map(t=>new Date(t));
+    if(event.end && event.end>dates[0] && dates.length===1)
+      return `${dayName(dates[0])} – ${dayName(event.end)}`;
+    return dates.map(dayName).join(' and ');
+  };
+  const urgent=event=>/deadline|report|closed|holiday|mock|exam/i
+    .test(`${event.event} ${event.type||''}`);
+  const shown=events.slice(0,2), hidden=events.slice(2);
+  const title=events.map(event=>
+    `${event.event} — ${when(event)}${event.details?` · ${event.details}`:''}`).join('\n');
+  return shown.map(event=>
+      `<span class="week-key-event${urgent(event)?' urgent':''}" title="${esc(
+        event.details?`${event.event} — ${event.details}`:event.event)}">${esc(event.event)}
+        <span class="week-key-when">${esc(when(event))}</span></span>`).join('')
+    +(hidden.length?`<span class="week-key-more" title="${esc(title)}">+${hidden.length} more</span>`:'');
 }
 
 function weekCodeVariants(week, term){
@@ -4992,8 +5136,19 @@ function getTeacherWeekEvents(week, dates, term, yg){
     if(code && !codes.has(String(code).trim())) return;
     if(!eventAudienceApplies(audience,yg)) return;
     if(EXTERNAL_EVENT_RX.test(`${event} ${details||''}`)) return;
-    const key=id || `${start.toISOString().slice(0,10)}|${event}`;
-    if(!found.has(key)) found.set(key,{event,start,type,details});
+    // Term-length rows ("Michaelmas Term", 26 Aug – 16 Dec) match every week
+    // of their term. They are background, not news, and the term heading
+    // already says it — so they never become week chips.
+    if((end-start)/86400000>10) return;
+    // Two closures in one week are one "School closed" chip with both dates,
+    // not the same word printed twice.
+    const name=windowEventName(event);
+    const key=name.toLowerCase();
+    if(!found.has(key)) found.set(key,{event:name,start,end,type,details,dates:[]});
+    const row=found.get(key);
+    row.dates.push(start);
+    if(start<row.start) row.start=start;
+    if(!row.details && details) row.details=details;
   };
 
   if(KEY_DATES.length){
@@ -5303,6 +5458,15 @@ function renderHOD(){
       if(!groups.has(key)) groups.set(key,[]);
       groups.get(key).push(row);
     });
+    const dayName=d=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    // A window shows its span once, under its start date, instead of one row
+    // per day. Scattered days that merged under one name are listed instead.
+    const whenLabel=e=>{
+      if(e.endDate && e.endDate>e.date) return `${dayName(e.date)} – ${dayName(e.endDate)}`;
+      if(e.dates && e.dates.length>1)
+        return e.dates.map(iso=>dayName(parseIsoDate(iso))).join(' and ');
+      return '';
+    };
     return `<div class="dash-date-groups">${[...groups.values()].map(group=>`
       <section class="dash-date-group">
         <div class="dash-date-label">${group[0].date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
@@ -5311,6 +5475,7 @@ function renderHOD(){
             <span class="dash-event-bullet">&bull;</span>
             <span class="dash-event-content">
               <span class="dash-event-name">${esc(e.event)}${e.tentative?` <span class="dash-tentative">Tentative</span>`:''}</span>
+              ${whenLabel(e)?`<span class="dash-event-when">${esc(whenLabel(e))}</span>`:''}
               <span class="dash-event-meta">${esc(e.appliesTo)}${e.details?` &middot; ${esc(e.details)}`:''} ${typePill(e)}</span>
             </span>
             ${e.assessmentUrl
@@ -5629,16 +5794,16 @@ function renderTeacher(){
   }
   if(!tvFocus.openWeeks){
     const open=new Set();
+    // Open this week and the rest of the current term; collapse what has
+    // already been taught and anything in a later term. Weeks behind that
+    // still need marking stay collapsed but keep their "N to mark" pill, so
+    // nothing is hidden — the page just opens where the teaching is.
+    const nowTerm=nowIdx>=0?allWeeks[nowIdx].term:null;
     allWeeks.forEach((w,i)=>{
-      const wkLessons=sow.filter(l=>tvWeekKey(l.week,l.dates)===w.key);
-      const c=tvWeekCounts(wkLessons,set);
       const isNow=w.key===nowKey;
-      const isNext=nowIdx>=0&&i===nowIdx+1;
-      const isPast=nowIdx>=0&&i<nowIdx;
-      const unmarked=c.tracked>0&&c.done<c.tracked;
-      // Open: this week, next week, any past week still missing marks.
+      const restOfTerm=nowIdx>=0&&i>nowIdx&&w.term===nowTerm;
       // If the year is over, open everything rather than hiding the lot.
-      if(nowIdx<0||isNow||isNext||(isPast&&unmarked)) open.add(w.key);
+      if(nowIdx<0||isNow||restOfTerm) open.add(w.key);
     });
     tvFocus.openWeeks=open;
     const closed=new Set();
@@ -5794,10 +5959,8 @@ function renderTeacher(){
           </div>
         </div>
         <span class="week-cycle">Cycle ${esc(cycle)}</span>
-        ${weekEvents.length?`<div class="week-key-events">${weekEvents.map(event=>
-          `<span class="week-key-event" title="${esc(event.details?`${event.event} — ${event.details}`:event.event)}">${esc(event.event)}</span>`
-        ).join('')}</div>`:''}
         ${pill}
+        ${weekEvents.length?`<div class="week-key-line">${tvWeekEventsLine(weekEvents)}</div>`:''}
       </div>
       <div class="week-body">
       ${alertL?`<div class="week-teaching-note"><strong>Teaching note:</strong> ${esc(alertL.alert)}</div>`:''}`;
@@ -6336,31 +6499,106 @@ function renderAssessments(){
 // ════════════════════════════════════════════════════════════════════
 //  CALENDAR
 // ════════════════════════════════════════════════════════════════════
-function renderCalendar(){
-  const tc={Michaelmas:'#3E4655',Lent:'#5E5670',Summer:'#DBA39D'};
-  const td={'Michaelmas':'Wed 26 Aug – Wed 16 Dec 2026','Lent':'Thu 7 Jan – Fri 2 Apr 2027','Summer':'Mon 19 Apr – Wed 30 Jun 2027'};
-  let html='';
-  ['Michaelmas','Lent','Summer'].forEach(term=>{
-    const evs=KEY_DATES.filter(e=>e.term===term&&!SCHOOL_CALENDAR.isExternal(e))
-      .sort((a,b)=>String(a.start_date||'9999').localeCompare(String(b.start_date||'9999'))||a.event_id.localeCompare(b.event_id));
-    html+=`<div style="margin-bottom:24px;">
-      <div style="background:${tc[term]};color:white;padding:10px 16px;border-radius:8px;font-weight:600;margin-bottom:12px;">
-        ${term} Term · <span style="font-weight:400;font-size:13px;">${td[term]}</span></div>`;
-    evs.forEach(e=>{
-      const category=String(e.category||'').toLowerCase();
-      const isAd=/adventure|exam|assessment/.test(category)||e.event_type==='reporting_deadline';
-      const isBreak=/holiday|half.term|break/.test(category);
-      const bg=isAd?'#F5E7E4':isBreak?'#EAF1F6':'#FBF8F4';
-      const bd=isAd?'var(--red)':isBreak?'var(--blue)':/inset|training/.test(category)?'var(--amber)':'var(--mid-gray)';
-      html+=`<div data-calendar-event="${esc(e.event_id)}" style="background:${bg};border-left:4px solid ${bd};border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:8px;">
-        <div style="font-weight:600;font-size:13px;">${esc(e.event)}</div>
-        <div style="font-size:12px;color:var(--dark-gray);margin-top:2px;">📅 ${esc(SCHOOL_CALENDAR.dates(e))}</div>
-        <div style="font-size:12px;color:${isAd?'var(--red)':'var(--dark-gray)'};margin-top:3px;font-weight:${isAd?'600':'400'}">${esc(SCHOOL_CALENDAR.details(e))}</div>
-      </div>`;
-    });
-    html+='</div>';
+// Merge the separate daily rows that make up one window into a single entry,
+// so a five-day mock week is one line rather than five.
+function calendarRows(){
+  const merged=new Map();
+  KEY_DATES.filter(e=>e.start_date&&!SCHOOL_CALENDAR.isExternal(e)).forEach(e=>{
+    const start=parseIsoDate(e.start_date);
+    const end=parseIsoDate(e.end_date||e.start_date)||start;
+    if(!start) return;
+    const name=windowEventName(e.event);
+    const key=`${name.toLowerCase()}|${SCHOOL_CALENDAR.audience(e)}`;
+    const row=merged.get(key);
+    if(!row){
+      merged.set(key,{start,end,event:name,term:e.term,category:e.category,
+        event_type:e.event_type,eventId:e.event_id,
+        details:cleanEventDetails(SCHOOL_CALENDAR.details(e)),explicitEnd:end>start});
+      return;
+    }
+    // Only fold in rows that continue the same window, never a repeat of the
+    // same name months later.
+    const gap=(start-row.end)/86400000;
+    if(gap>4){ merged.set(`${key}|${e.event_id}`,{start,end,event:name,term:e.term,
+      category:e.category,event_type:e.event_type,eventId:e.event_id,
+      details:cleanEventDetails(SCHOOL_CALENDAR.details(e)),explicitEnd:end>start}); return; }
+    if(start<row.start) row.start=start;
+    if(end>row.end) row.end=end;
+    if(!row.details) row.details=cleanEventDetails(SCHOOL_CALENDAR.details(e));
   });
-  document.getElementById('calendar-content').innerHTML=calendarNotice()+html;
+  return [...merged.values()].sort((a,b)=>a.start-b.start||a.event.localeCompare(b.event));
+}
+
+function calendarEventHtml(row,today){
+  const category=String(row.category||'').toLowerCase();
+  const isAd=/adventure|exam|assessment/.test(category)||row.event_type==='reporting_deadline';
+  const isBreak=/holiday|half.term|break/.test(category);
+  const past=row.end<today;
+  const fmt=d=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  const when=row.end>row.start?`${fmt(row.start)} – ${fmt(row.end)}`:fmt(row.start);
+  return `<div class="cal-event${isAd?' is-key':''}${isBreak?' is-break':''}${past?' is-past':''}"
+      data-calendar-event="${esc(row.eventId)}">
+    <div class="cal-event-name">${esc(row.event)}</div>
+    <div class="cal-event-when">${esc(when)}</div>
+    ${row.details?`<div class="cal-event-meta">${esc(row.details)}</div>`:''}
+  </div>`;
+}
+
+function renderCalendar(){
+  const today=parseIsoDate(SCHOOL_CALENDAR.todayISO())||new Date();
+  const rows=calendarRows();
+  const horizon=new Date(today); horizon.setDate(horizon.getDate()+21);
+
+  // What is actually coming, before any of the year's history. Term-length
+  // summary rows are excluded: "Michaelmas Term, 26 Aug – 16 Dec" is true all
+  // term and tells a teacher nothing about the next three weeks.
+  const soon=rows.filter(row=>row.end>=today && row.start<=horizon
+    && (row.end-row.start)/86400000<=21);
+  const upcoming=`<section class="cal-upcoming">
+    <div class="cal-upcoming-head">
+      <h3>Next 3 weeks</h3>
+      <span>${today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}</span>
+    </div>
+    ${soon.length?soon.map(row=>calendarEventHtml(row,today)).join('')
+      :'<p class="cal-empty">Nothing scheduled in the next three weeks.</p>'}
+  </section>`;
+
+  // Everything else by month, with the months already gone folded away.
+  const months=new Map();
+  rows.forEach(row=>{
+    const key=`${row.start.getFullYear()}-${String(row.start.getMonth()+1).padStart(2,'0')}`;
+    if(!months.has(key)) months.set(key,{key,date:new Date(row.start.getFullYear(),row.start.getMonth(),1),rows:[]});
+    months.get(key).rows.push(row);
+  });
+  const thisMonth=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  const monthsHtml=[...months.values()].sort((a,b)=>a.date-b.date).map(month=>{
+    const open=month.key>=thisMonth && month.key<=nextMonthKey(today);
+    const term=month.rows.find(row=>row.term)?.term||'';
+    return `<section class="cal-month${open?'':' collapsed'}" data-cal-month="${month.key}">
+      <button type="button" class="cal-month-head" aria-expanded="${open}">
+        <span class="cal-month-chevron" aria-hidden="true">▼</span>
+        <span class="cal-month-name">${month.date.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</span>
+        ${term?`<span class="cal-month-term">${esc(term)}</span>`:''}
+        <span class="cal-month-count">${month.rows.length} date${month.rows.length===1?'':'s'}</span>
+      </button>
+      <div class="cal-month-body">${month.rows.map(row=>calendarEventHtml(row,today)).join('')}</div>
+    </section>`;
+  }).join('');
+
+  document.getElementById('calendar-content').innerHTML=
+    calendarNotice()+upcoming+`<div class="cal-months">${monthsHtml}</div>`;
+
+  document.querySelectorAll('#calendar-content .cal-month-head').forEach(head=>{
+    head.addEventListener('click',()=>{
+      const section=head.parentElement;
+      const collapsed=section.classList.toggle('collapsed');
+      head.setAttribute('aria-expanded',String(!collapsed));
+    });
+  });
+}
+function nextMonthKey(today){
+  const d=new Date(today.getFullYear(),today.getMonth()+1,1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 }
 
 // ════════════════════════════════════════════════════════════════════
